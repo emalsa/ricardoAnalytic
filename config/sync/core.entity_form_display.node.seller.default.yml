@@ -51,11 +51,12 @@ content:
     type: string_textfield
     region: content
   field_seller_id:
-    weight: 2
+    weight: 26
     settings:
+      size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: number
+    type: string_textfield
     region: content
   status:
     type: boolean_checkbox

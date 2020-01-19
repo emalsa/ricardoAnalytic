@@ -5,6 +5,7 @@
  * Contains ra_seller.module.
  */
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -32,4 +33,14 @@ function ra_seller_cron() {
     ->condition('status', 1)
     ->execute();
   $a = 1;
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function ra_seller_node_presave(EntityInterface $entity) {
+  if ($entity->getType() === 'seller') {
+    $entity->field_seller_id->value = $entity->label();
+  }
 }

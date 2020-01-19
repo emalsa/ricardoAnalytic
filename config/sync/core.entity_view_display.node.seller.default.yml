@@ -51,13 +51,12 @@ content:
     type: string
     region: content
   field_seller_id:
-    weight: 101
+    weight: 106
     label: above
     settings:
-      thousand_separator: ''
-      prefix_suffix: true
+      link_to_entity: false
     third_party_settings: {  }
-    type: number_integer
+    type: string
     region: content
   links:
     weight: 100
