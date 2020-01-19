@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains ra_seller.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ra_seller_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the ra_seller module.
+    case 'help.page.ra_seller':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Seller') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_cron().
+ */
+function ra_seller_cron() {
+  $nids = \Drupal::entityQuery('node')
+    ->condition('type', 'seller')
+    ->condition('status', 1)
+    ->execute();
+  $a = 1;
+}

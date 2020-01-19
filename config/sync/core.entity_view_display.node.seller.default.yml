@@ -1,0 +1,68 @@
+uuid: 84b0b12a-50e6-44c1-8e9d-28358369d56c
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.seller.field_items_sold
+    - field.field.node.seller.field_location
+    - field.field.node.seller.field_member_since
+    - field.field.node.seller.field_postal_code
+    - field.field.node.seller.field_seller_id
+    - node.type.seller
+  module:
+    - user
+id: node.seller.default
+targetEntityType: node
+bundle: seller
+mode: default
+content:
+  field_items_sold:
+    weight: 105
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_location:
+    weight: 103
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_member_since:
+    weight: 104
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_postal_code:
+    weight: 102
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_seller_id:
+    weight: 101
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

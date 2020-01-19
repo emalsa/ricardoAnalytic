@@ -1,0 +1,23 @@
+uuid: fe2d4a5c-d0fb-436c-a1f0-eaebe3a3ea99
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_id
+    - node.type.seller
+id: node.seller.field_seller_id
+field_name: field_seller_id
+entity_type: node
+bundle: seller
+label: 'Seller Id'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

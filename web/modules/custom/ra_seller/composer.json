@@ -1,0 +1,13 @@
+{
+    "name": "ra_seller",
+    "type": "drupal-module",
+    "description": "Seller",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/ra_seller",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/ra_seller",
+        "source": "http://cgit.drupalcode.org/ra_seller",
+    },
+}

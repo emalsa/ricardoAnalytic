@@ -1,0 +1,20 @@
+uuid: 2d003ed1-fc8f-478a-8581-3af95540ab1a
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_items_sold
+field_name: field_items_sold
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

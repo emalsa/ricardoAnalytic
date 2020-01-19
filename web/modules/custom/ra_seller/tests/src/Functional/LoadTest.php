@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\Tests\dni_base\Functional;
+namespace Drupal\Tests\ra_seller\Functional;
 
 use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
@@ -8,7 +8,7 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Simple test to ensure that main page loads with module enabled.
  *
- * @group dni_base
+ * @group ra_seller
  */
 class LoadTest extends BrowserTestBase {
 
@@ -17,7 +17,7 @@ class LoadTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['dni_base'];
+  public static $modules = ['ra_seller'];
 
   /**
    * A user with permission to administer site configuration.

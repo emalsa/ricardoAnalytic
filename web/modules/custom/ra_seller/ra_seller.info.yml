@@ -1,5 +1,5 @@
-name: 'dni_base'
+name: 'ra_seller'
 type: module
-description: 'Base'
+description: 'Seller'
 core: 8.x
 package: 'Custom'

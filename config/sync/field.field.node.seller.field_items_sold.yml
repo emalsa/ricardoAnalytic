@@ -1,0 +1,23 @@
+uuid: 7863ffe6-4888-47e0-bd6c-912d6ce10eef
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_items_sold
+    - node.type.seller
+id: node.seller.field_items_sold
+field_name: field_items_sold
+entity_type: node
+bundle: seller
+label: 'Verkaufte Artikel'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

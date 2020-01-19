@@ -1,0 +1,20 @@
+uuid: 46d7f39c-ac45-4148-b316-ccd4f8933f09
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_seller_id
+field_name: field_seller_id
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

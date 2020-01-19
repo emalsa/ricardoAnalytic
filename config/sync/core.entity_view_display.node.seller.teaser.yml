@@ -1,0 +1,31 @@
+uuid: 2abcce89-7486-4afd-bddc-b16f184731a2
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.seller.field_items_sold
+    - field.field.node.seller.field_location
+    - field.field.node.seller.field_member_since
+    - field.field.node.seller.field_postal_code
+    - field.field.node.seller.field_seller_id
+    - node.type.seller
+  module:
+    - user
+id: node.seller.teaser
+targetEntityType: node
+bundle: seller
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_items_sold: true
+  field_location: true
+  field_member_since: true
+  field_postal_code: true
+  field_seller_id: true
+  langcode: true
