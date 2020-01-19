@@ -1,0 +1,5 @@
+name: 'dni_base'
+type: module
+description: 'Base'
+core: 8.x
+package: 'Custom'

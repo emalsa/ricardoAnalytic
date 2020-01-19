@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * @file
+ * Contains dni_base.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function dni_base_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the dni_base module.
+    case 'help.page.dni_base':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Base') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function dni_base_theme() {
+  return [
+    'dni_base' => [
+      'render element' => 'children',
+    ],
+  ];
+}
