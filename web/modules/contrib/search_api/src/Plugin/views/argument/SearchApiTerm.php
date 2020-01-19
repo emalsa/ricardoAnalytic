@@ -2,8 +2,9 @@
 
 namespace Drupal\search_api\Plugin\views\argument;
 
-use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\taxonomy\Entity\Term;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a contextual filter searching through all indexed taxonomy fields.
@@ -21,6 +22,48 @@ use Drupal\taxonomy\Entity\Term;
 class SearchApiTerm extends SearchApiStandard {
 
   /**
+   * The entity repository.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    /** @var static $plugin */
+    $plugin = parent::create($container, $configuration, $plugin_id, $plugin_definition);
+
+    $plugin->setEntityRepository($container->get('entity.repository'));
+
+    return $plugin;
+  }
+
+  /**
+   * Retrieves the entity repository.
+   *
+   * @return \Drupal\Core\Entity\EntityRepositoryInterface
+   *   The entity repository.
+   */
+  public function getEntityRepository() {
+    return $this->entityRepository ?: \Drupal::service('entity.repository');
+  }
+
+  /**
+   * Sets the entity repository.
+   *
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository.
+   *
+   * @return $this
+   */
+  public function setEntityRepository(EntityRepositoryInterface $entity_repository) {
+    $this->entityRepository = $entity_repository;
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function title() {
@@ -30,14 +73,16 @@ class SearchApiTerm extends SearchApiStandard {
       foreach ($this->value as $tid) {
         $taxonomy_term = Term::load($tid);
         if ($taxonomy_term) {
-          $terms[] = Html::escape($taxonomy_term->label());
+          $terms[] = $this->getEntityRepository()
+            ->getTranslationFromContext($taxonomy_term)
+            ->label();
         }
       }
 
-      return $terms ? implode(', ', $terms) : Html::escape($this->argument);
+      return $terms ? implode(', ', $terms) : $this->argument;
     }
     else {
-      return Html::escape($this->argument);
+      return $this->argument;
     }
   }
 

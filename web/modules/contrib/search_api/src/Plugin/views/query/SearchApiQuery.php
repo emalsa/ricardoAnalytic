@@ -3,7 +3,6 @@
 namespace Drupal\search_api\Plugin\views\query;
 
 use Drupal\Component\Render\FormattableMarkup;
-use Drupal\Component\Utility\Html;
 use Drupal\Core\Database\Query\ConditionInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -14,16 +13,18 @@ use Drupal\Core\Url;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\LoggerTrait;
 use Drupal\search_api\ParseMode\ParseModeInterface;
+use Drupal\search_api\Plugin\search_api\parse_mode\Terms;
 use Drupal\search_api\Plugin\views\field\SearchApiStandard;
+use Drupal\search_api\Plugin\views\ResultRow;
 use Drupal\search_api\Processor\ConfigurablePropertyInterface;
+use Drupal\search_api\Query\ConditionGroup;
 use Drupal\search_api\Query\ConditionGroupInterface;
 use Drupal\search_api\Query\QueryInterface;
+use Drupal\search_api\Query\ResultSetInterface;
 use Drupal\search_api\SearchApiException;
-use Drupal\search_api\Utility\Utility;
 use Drupal\user\Entity\User;
 use Drupal\views\Plugin\views\display\DisplayPluginBase;
 use Drupal\views\Plugin\views\query\QueryPluginBase;
-use Drupal\views\ResultRow;
 use Drupal\views\ViewExecutable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -86,14 +87,11 @@ class SearchApiQuery extends QueryPluginBase {
   protected $abort = FALSE;
 
   /**
-   * The properties that should be retrieved from result items.
+   * The IDs of fields whose values should be retrieved by the backend.
    *
-   * The array is keyed by datasource ID (which might be NULL) and property
-   * path, the values are the associated combined property paths.
-   *
-   * @var string[][]
+   * @var string[]
    */
-  protected $retrievedProperties = [];
+  protected $retrievedFieldValues = [];
 
   /**
    * The query's conditions representing the different Views filter groups.
@@ -178,7 +176,12 @@ class SearchApiQuery extends QueryPluginBase {
    */
   public static function getEntityFromRow(ResultRow $row, $relationship_id, ViewExecutable $view) {
     if ($relationship_id === 'none') {
-      $object = $row->_object ?: $row->_item->getOriginalObject();
+      try {
+        $object = $row->_object ?: $row->_item->getOriginalObject();
+      }
+      catch (SearchApiException $e) {
+        return NULL;
+      }
       $entity = $object->getValue();
       if ($entity instanceof EntityInterface) {
         return $entity;
@@ -250,8 +253,6 @@ class SearchApiQuery extends QueryPluginBase {
       if (!$this->index) {
         $this->abort(new FormattableMarkup('View %view is not based on Search API but tries to use its query plugin.', ['%view' => $view->storage->label()]));
       }
-      $this->retrievedProperties = array_fill_keys($this->index->getDatasourceIds(), []);
-      $this->retrievedProperties[NULL] = [];
       $this->query = $this->index->query();
       $this->query->addTag('views');
       $this->query->addTag('views_' . $view->id());
@@ -278,10 +279,28 @@ class SearchApiQuery extends QueryPluginBase {
    *   The combined property path of the property that should be retrieved.
    *
    * @return $this
+   *
+   * @deprecated in 8.x-1.11. Use ::addRetrievedFieldValue() instead.
    */
   public function addRetrievedProperty($combined_property_path) {
-    list($datasource_id, $property_path) = Utility::splitCombinedId($combined_property_path);
-    $this->retrievedProperties[$datasource_id][$property_path] = $combined_property_path;
+    @trigger_error('\Drupal\search_api\Plugin\views\query\SearchApiQuery::addRetrievedProperty() is deprecated in Search API 8.x-1.11. Use addRetrievedFieldValue() instead. See https://www.drupal.org/node/3009136', E_USER_DEPRECATED);
+    $this->addField(NULL, $combined_property_path);
+    return $this;
+  }
+
+  /**
+   * Adds a field value to be retrieved.
+   *
+   * Helps backends that support returning fields to determine which of the
+   * fields should actually be returned.
+   *
+   * @param string $field_id
+   *   The ID of the field whose value should be retrieved.
+   *
+   * @return $this
+   */
+  public function addRetrievedFieldValue($field_id) {
+    $this->retrievedFieldValues[$field_id] = $field_id;
     return $this;
   }
 
@@ -290,7 +309,7 @@ class SearchApiQuery extends QueryPluginBase {
    *
    * This replicates the interface of Views' default SQL backend to simplify
    * the Views integration of the Search API. If you are writing Search
-   * API-specific Views code, you should better use the addRetrievedProperty()
+   * API-specific Views code, you should better use the addRetrievedFieldValue()
    * method.
    *
    * @param string|null $table
@@ -306,10 +325,27 @@ class SearchApiQuery extends QueryPluginBase {
    *   The name that this field can be referred to as (always $field).
    *
    * @see \Drupal\views\Plugin\views\query\Sql::addField()
-   * @see \Drupal\search_api\Plugin\views\query\SearchApiQuery::addField()
+   * @see \Drupal\search_api\Plugin\views\query\SearchApiQuery::addRetrievedFieldValue()
    */
   public function addField($table, $field, $alias = '', array $params = []) {
-    $this->addRetrievedProperty($field);
+    // Ignore calls for built-in fields which don't need to be retrieved.
+    $built_in = [
+      'search_api_id' => TRUE,
+      'search_api_datasource' => TRUE,
+      'search_api_language' => TRUE,
+      'search_api_relevance' => TRUE,
+      'search_api_excerpt' => TRUE,
+    ];
+    if (isset($built_in[$field])) {
+      return $field;
+    }
+
+    foreach ($this->getIndex()->getFields(TRUE) as $field_id => $field_object) {
+      if ($field_object->getCombinedPropertyPath() === $field) {
+        $this->addRetrievedFieldValue($field_id);
+        break;
+      }
+    }
     return $field;
   }
 
@@ -322,6 +358,9 @@ class SearchApiQuery extends QueryPluginBase {
         'default' => FALSE,
       ],
       'skip_access' => [
+        'default' => FALSE,
+      ],
+      'preserve_facet_query_args' => [
         'default' => FALSE,
       ],
     ];
@@ -348,6 +387,21 @@ class SearchApiQuery extends QueryPluginBase {
       '#default_value' => $this->options['bypass_access'],
     ];
     $form['bypass_access']['#states']['visible'][':input[name="query[options][skip_access]"]']['checked'] = TRUE;
+
+    if ($this->getModuleHandler()->moduleExists('facets')) {
+      $form['preserve_facet_query_args'] = [
+        '#type' => 'checkbox',
+        '#title' => $this->t('Preserve facets while using filters'),
+        '#description' => $this->t("By default, changing an exposed filter would reset all selected facets. This option allows you to prevent this behavior."),
+        '#default_value' => $this->options['preserve_facet_query_args'],
+      ];
+    }
+    else {
+      $form['preserve_facet_query_args'] = [
+        '#type' => 'value',
+        '#value' => FALSE,
+      ];
+    }
   }
 
   /**
@@ -365,8 +419,31 @@ class SearchApiQuery extends QueryPluginBase {
    *   \Drupal\search_api\IndexInterface::getEntityTypes() instead.
    */
   public function getEntityTypes($return_bool = FALSE) {
+    @trigger_error('\Drupal\search_api\Plugin\views\query\SearchApiQuery::getEntityTypes() is deprecated in Search API 8.x-1.5. Use \Drupal\search_api\IndexInterface::getEntityTypes() instead. See https://www.drupal.org/node/2899678', E_USER_DEPRECATED);
     $types = $this->index->getEntityTypes();
     return $return_bool ? (bool) $types : $types;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function query($get_count = FALSE) {
+    // Try to determine whether build() has been called yet.
+    if (empty($this->view->build_info['query'])) {
+      // If not, call it in case we at least have a view set. If we don't, we
+      // can't really do anything.
+      if (!$this->view) {
+        return NULL;
+      }
+      $this->build($this->view);
+    }
+
+    $query = clone $this->query;
+    // A count query doesn't need to return any results.
+    if ($get_count) {
+      $query->range(0, 0);
+    }
+    return $query;
   }
 
   /**
@@ -433,16 +510,16 @@ class SearchApiQuery extends QueryPluginBase {
 
     // If the View and the Panel conspire to provide an overridden path then
     // pass that through as the base path.
-    if (($path = $this->view->getPath()) && strpos(Url::fromRoute('<current>')->toString(), $this->view->override_path) !== 0) {
+    if (($path = $this->view->getPath()) && strpos(Url::fromRoute('<current>')->toString(), $path) !== 0) {
       $this->query->setOption('search_api_base_path', $path);
     }
 
     // Save query information for Views UI.
     $view->build_info['query'] = (string) $this->query;
 
-    // Add the properties to be retrieved to the query, as information for the
+    // Add the fields to be retrieved to the query, as information for the
     // backend.
-    $this->query->setOption('search_api_retrieved_properties', $this->retrievedProperties);
+    $this->query->setOption('search_api_retrieved_field_values', array_values($this->retrievedFieldValues));
   }
 
   /**
@@ -459,7 +536,7 @@ class SearchApiQuery extends QueryPluginBase {
     if ($this->shouldAbort()) {
       if (error_displayable()) {
         foreach ($this->errors as $msg) {
-          $this->getMessenger()->addError(Html::escape($msg));
+          $this->getMessenger()->addError($msg);
         }
       }
       $view->result = [];
@@ -505,7 +582,7 @@ class SearchApiQuery extends QueryPluginBase {
       }
       $view->result = [];
       if ($results->getResultItems()) {
-        $this->addResults($results->getResultItems(), $view);
+        $this->addResults($results, $view);
       }
       $view->execute_time = microtime(TRUE) - $start;
 
@@ -554,12 +631,14 @@ class SearchApiQuery extends QueryPluginBase {
   /**
    * Adds Search API result items to a view's result set.
    *
-   * @param \Drupal\search_api\Item\ItemInterface[] $results
+   * @param \Drupal\search_api\Query\ResultSetInterface $result_set
    *   The search results.
    * @param \Drupal\views\ViewExecutable $view
    *   The executed view.
    */
-  protected function addResults(array $results, ViewExecutable $view) {
+  protected function addResults(ResultSetInterface $result_set, ViewExecutable $view) {
+    $results = $result_set->getResultItems();
+
     // Views \Drupal\views\Plugin\views\style\StylePluginBase::renderFields()
     // uses a numeric results index to key the rendered results.
     // The ResultRow::index property is the key then used to retrieve these.
@@ -568,8 +647,11 @@ class SearchApiQuery extends QueryPluginBase {
     // First, unless disabled, check access for all entities in the results.
     if (!$this->options['skip_access']) {
       $account = $this->getAccessAccount();
+      // If search items are not loaded already, pre-load them now in bulk to
+      // avoid them being individually loaded inside checkAccess().
+      $result_set->preLoadResultItems();
       foreach ($results as $item_id => $result) {
-        if (!$result->checkAccess($account)) {
+        if (!$result->getAccessResult($account)->isAllowed()) {
           unset($results[$item_id]);
         }
       }
@@ -578,16 +660,17 @@ class SearchApiQuery extends QueryPluginBase {
     foreach ($results as $item_id => $result) {
       $values = [];
       $values['_item'] = $result;
-      $object = $result->getOriginalObject(FALSE);
-      if ($object) {
-        $values['_object'] = $object;
-        $values['_relationship_objects'][NULL] = [$object];
+      try {
+        $object = $result->getOriginalObject(FALSE);
+        if ($object) {
+          $values['_object'] = $object;
+          $values['_relationship_objects'][NULL] = [$object];
+        }
       }
-      $values['search_api_id'] = $item_id;
-      $values['search_api_datasource'] = $result->getDatasourceId();
-      $values['search_api_language'] = $result->getLanguage();
-      $values['search_api_relevance'] = $result->getScore();
-      $values['search_api_excerpt'] = $result->getExcerpt() ?: '';
+      catch (SearchApiException $e) {
+        // Can't actually be thrown here, but catch for the static analyzer's
+        // sake.
+      }
 
       // Gather any properties from the search results.
       foreach ($result->getFields(FALSE) as $field_id => $field) {
@@ -712,8 +795,8 @@ class SearchApiQuery extends QueryPluginBase {
   /**
    * Retrieves the parse mode.
    *
-   * @return \Drupal\search_api\ParseMode\ParseModeInterface|null
-   *   The parse mode, or NULL if the query was aborted.
+   * @return \Drupal\search_api\ParseMode\ParseModeInterface
+   *   The parse mode.
    *
    * @see \Drupal\search_api\Query\QueryInterface::getParseMode()
    */
@@ -721,7 +804,7 @@ class SearchApiQuery extends QueryPluginBase {
     if (!$this->shouldAbort()) {
       return $this->query->getParseMode();
     }
-    return NULL;
+    return new Terms([], 'terms', []);
   }
 
   /**
@@ -792,7 +875,7 @@ class SearchApiQuery extends QueryPluginBase {
     if (!$this->shouldAbort()) {
       return $this->query->createConditionGroup($conjunction, $tags);
     }
-    return NULL;
+    return new ConditionGroup($conjunction, $tags);
   }
 
   /**
@@ -826,9 +909,6 @@ class SearchApiQuery extends QueryPluginBase {
    *   An array containing fulltext fields that should be searched.
    *
    * @return $this
-   *
-   * @throws \Drupal\search_api\SearchApiException
-   *   Thrown if one of the fields isn't of type "text".
    *
    * @see \Drupal\search_api\Query\QueryInterface::setFulltextFields()
    */
@@ -1106,9 +1186,6 @@ class SearchApiQuery extends QueryPluginBase {
    *
    * @return $this
    *
-   * @throws \Drupal\search_api\SearchApiException
-   *   Thrown if the field is multi-valued or of a fulltext type.
-   *
    * @see \Drupal\search_api\Query\QueryInterface::sort()
    */
   public function sort($field, $order = 'ASC') {
@@ -1130,21 +1207,21 @@ class SearchApiQuery extends QueryPluginBase {
    * ignored.
    *
    * @param string|null $table
-   *   The table this field is part of. If a formula, enter NULL. If you want to
-   *   order the results randomly, use "rand" as table and nothing else.
+   *   The table this field is part of. If you want to order the results
+   *   randomly, use "rand" as table and nothing else. Otherwise, use NULL.
    * @param string|null $field
-   *   (optional) The field or formula to sort on. If already a field, enter
-   *   NULL and put in the alias.
+   *   (optional) Ignored.
    * @param string $order
-   *   (optional) Either ASC or DESC.
+   *   (optional) Either ASC or DESC. (Lowercase variants will be uppercased.)
    * @param string $alias
-   *   (optional) The alias to add the field as. In SQL, all fields in the order
-   *   by must also be in the SELECT portion. If an $alias isn't specified one
-   *   will be generated for from the $field; however, if the $field is a
-   *   formula, this alias will likely fail.
+   *   (optional) The field to sort on. Unless sorting randomly, "search_api_id"
+   *   and "search_api_datasource" are supported.
    * @param array $params
-   *   (optional) Any parameters that should be passed through to the addField()
-   *   call.
+   *   (optional) For sorting randomly, additional random sort parameters can be
+   *   passed through here. Otherwise, the parameter is ignored.
+   *
+   * @throws \Drupal\search_api\SearchApiException
+   *   Thrown if the searched index's server couldn't be loaded.
    *
    * @see \Drupal\views\Plugin\views\query\Sql::addOrderBy()
    */
@@ -1161,6 +1238,10 @@ class SearchApiQuery extends QueryPluginBase {
         $variables['%server'] = $server->label();
         $this->getLogger()->warning('Tried to sort results randomly on server %server which does not support random sorting.', $variables);
       }
+    }
+    elseif (in_array($alias, ['search_api_id', 'search_api_datasource'])) {
+      $order = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
+      $this->sort($alias, $order);
     }
   }
 
