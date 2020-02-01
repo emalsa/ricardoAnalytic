@@ -1,0 +1,19 @@
+uuid: 5e5efe6b-1d8b-4e76-b37b-9e8b1ebe442c
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_item_buyer
+    - node.type.item
+id: node.item.field_item_buyer
+field_name: field_item_buyer
+entity_type: node
+bundle: item
+label: Buyer
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

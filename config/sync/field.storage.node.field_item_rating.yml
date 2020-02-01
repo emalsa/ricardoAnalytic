@@ -1,0 +1,30 @@
+uuid: 490cb83c-0d90-401b-b904-1b90ac64183f
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+    - options
+id: node.field_item_rating
+field_name: field_item_rating
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: positiv
+      label: Positiv
+    -
+      value: neutral
+      label: Neutral
+    -
+      value: negativ
+      label: Negativ
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
