@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains ra_item.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ra_item_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the ra_item module.
+    case 'help.page.ra_item':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Item') . '</p>';
+      return $output;
+
+    default:
+  }
+}
