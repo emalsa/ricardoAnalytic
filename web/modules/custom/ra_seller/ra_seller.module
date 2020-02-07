@@ -30,20 +30,29 @@ function ra_seller_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_cron().
  */
 function ra_seller_cron() {
+  $nids = _ra_seller_get_nodes();
+
   /** @var QueueFactory $queue_factory */
   $queue_service = \Drupal::service('queue');
-  /** @var QueueInterface $queue */
-  $queue = $queue_service->get('seller_queue');
+  /** @var QueueInterface $queue_item */
+  $queue_item = $queue_service->get('seller_queue');
 
+  foreach ($nids as $nid) {
+    $data['nid'] = $nid;
+    $queue_item->createItem($data);
+  }
+}
+
+/**
+ * Add seller to to given queue;
+ */
+function _ra_seller_get_nodes() {
   $nids = \Drupal::entityQuery('node')
     ->condition('type', 'seller')
     ->condition('status', 1)
     ->execute();
 
-  foreach ($nids as $nid) {
-    $data['nid'] = $nid;
-    $queue->createItem($data);
-  }
+  return $nids;
 }
 
 /**

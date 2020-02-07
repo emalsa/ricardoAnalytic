@@ -26,7 +26,6 @@ class SellerQueue extends QueueWorkerBase implements ContainerFactoryPluginInter
   public function __construct(array $configuration, $plugin_id, $plugin_definition, SellerCrawler $sellerCrawler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->sellerCrawler = $sellerCrawler;
-
   }
 
   /**

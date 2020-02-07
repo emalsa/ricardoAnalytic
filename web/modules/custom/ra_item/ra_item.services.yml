@@ -1,0 +1,7 @@
+services:
+  logger.channel.ra_item:
+    parent: logger.channel_base
+    arguments: ['ra_item']
+  ra_item.item_rating_crawler:
+    class: Drupal\ra_item\ItemRatingCrawler
+    arguments: ['@entity_type.manager', '@config.manager']
