@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.seller.field_member_since
     - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
+    - field.field.node.seller.field_seller_id_numeric
     - node.type.seller
 id: node.seller.default
 targetEntityType: node
@@ -57,6 +58,13 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
+    region: content
+  field_seller_id_numeric:
+    weight: 27
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
     region: content
   status:
     type: boolean_checkbox

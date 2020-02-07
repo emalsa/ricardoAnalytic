@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.seller.field_member_since
     - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
+    - field.field.node.seller.field_seller_id_numeric
     - node.type.seller
   module:
     - user
@@ -57,6 +58,15 @@ content:
       link_to_entity: false
     third_party_settings: {  }
     type: string
+    region: content
+  field_seller_id_numeric:
+    weight: 107
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
     region: content
   links:
     weight: 100

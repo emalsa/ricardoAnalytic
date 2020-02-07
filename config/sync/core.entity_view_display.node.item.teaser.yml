@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.item.field_item_is_sold
     - field.field.node.item.field_item_rating
     - field.field.node.item.field_item_rating_date
+    - field.field.node.item.field_item_seller_ref
     - field.field.node.item.field_item_sold_date
     - field.field.node.item.field_item_sold_price
     - field.field.node.item.field_item_start_price
@@ -41,6 +42,7 @@ hidden:
   field_item_is_sold: true
   field_item_rating: true
   field_item_rating_date: true
+  field_item_seller_ref: true
   field_item_sold_date: true
   field_item_sold_price: true
   field_item_start_price: true

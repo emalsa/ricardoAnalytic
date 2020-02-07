@@ -1,0 +1,23 @@
+uuid: 61452e26-5e0c-487c-92f8-2c3e85e53508
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_id_numeric
+    - node.type.seller
+id: node.seller.field_seller_id_numeric
+field_name: field_seller_id_numeric
+entity_type: node
+bundle: seller
+label: 'Seller Id (numeric)'
+description: "The numeric seller id.\r\nAlias to Seller Id string and stored in rating_to"
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

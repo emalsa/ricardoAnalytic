@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.seller.field_member_since
     - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
+    - field.field.node.seller.field_seller_id_numeric
     - node.type.seller
   module:
     - user
@@ -28,4 +29,5 @@ hidden:
   field_member_since: true
   field_postal_code: true
   field_seller_id: true
+  field_seller_id_numeric: true
   langcode: true

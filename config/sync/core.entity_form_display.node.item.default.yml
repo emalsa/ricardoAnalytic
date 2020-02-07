@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.item.field_item_is_sold
     - field.field.node.item.field_item_rating
     - field.field.node.item.field_item_rating_date
+    - field.field.node.item.field_item_seller_ref
     - field.field.node.item.field_item_sold_date
     - field.field.node.item.field_item_sold_price
     - field.field.node.item.field_item_start_price
@@ -72,6 +73,16 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
+    region: content
+  field_item_seller_ref:
+    weight: 131
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
     region: content
   field_item_sold_date:
     weight: 127

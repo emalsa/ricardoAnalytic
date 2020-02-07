@@ -24,7 +24,14 @@ class SellerCrawler implements SellerCrawlerInterface {
    */
   protected $sellerUrl;
 
-  /** @var \Drupal\node\NodeInterface */
+  /**
+   * @var string
+   */
+  protected $sellerUrlApi;
+
+  /**
+   * @var \Drupal\node\NodeInterface
+   */
   protected $node;
 
   /**
@@ -52,7 +59,6 @@ class SellerCrawler implements SellerCrawlerInterface {
     $this->configStorage = $config_storage;
   }
 
-
   /**
    * @param $sellerId
    *
@@ -62,6 +68,7 @@ class SellerCrawler implements SellerCrawlerInterface {
     if ($sellerId) {
       $this->sellerId = $sellerId;
       $this->sellerUrl = "https://www.ricardo.ch/de/ratings/$sellerId";
+      $this->sellerUrlApi = "https://www.ricardo.ch/marketplace-spa/api/ratings/to/$sellerId/?page=1";
     }
     else {
       throw new Exception('No Seller Id is set');
@@ -82,7 +89,7 @@ class SellerCrawler implements SellerCrawlerInterface {
       $client = new Client();
       $crawler = $client->request('GET', $this->sellerUrl);
       $this->setSellerInformation($crawler);
-
+      $this->setSellerIdNumeric($client);
     } catch (Exception $e) {
       Drupal::logger('ra_seller')->error($e);
       return;
@@ -95,6 +102,22 @@ class SellerCrawler implements SellerCrawlerInterface {
       Drupal::logger('ra_seller')->error($e);
     }
 
+  }
+
+  /**
+   * Get seller id numeric (ratings_to id)
+   *
+   * @param  \Goutte\Client  $client
+   */
+  protected function setSellerIdNumeric(Client $client) {
+    $client->request('GET', 'https://www.ricardo.ch/marketplace-spa/api/ratings/to/keller001');
+    if ($client->getResponse()->getStatus() === 200) {
+      $response = $client->getResponse()->getContent();
+      $response = json_decode($response);
+      if (!empty($response->list) && isset($response->list[0]->rating_to->id)) {
+        $this->node->field_seller_id_numeric = $response->list[0]->rating_to->id;
+      }
+    }
   }
 
   /**
