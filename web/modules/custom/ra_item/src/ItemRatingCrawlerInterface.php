@@ -7,5 +7,6 @@ namespace Drupal\ra_item;
  */
 interface ItemRatingCrawlerInterface {
 
+  public function addItemRatings(int $nid);
 
 }

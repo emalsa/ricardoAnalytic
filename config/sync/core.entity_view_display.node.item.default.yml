@@ -5,14 +5,15 @@ dependencies:
   config:
     - field.field.node.item.body
     - field.field.node.item.field_item_buyer
-    - field.field.node.item.field_item_id
     - field.field.node.item.field_item_is_sold
     - field.field.node.item.field_item_rating
+    - field.field.node.item.field_item_rating_article_ref
     - field.field.node.item.field_item_rating_date
     - field.field.node.item.field_item_seller_ref
     - field.field.node.item.field_item_sold_date
     - field.field.node.item.field_item_sold_price
     - field.field.node.item.field_item_start_price
+    - field.field.node.item.field_rating_id
     - node.type.item
   module:
     - datetime
@@ -39,14 +40,6 @@ content:
     third_party_settings: {  }
     type: string
     region: content
-  field_item_id:
-    weight: 104
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    type: string
-    region: content
   field_item_is_sold:
     weight: 110
     label: above
@@ -63,6 +56,14 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: list_default
+    region: content
+  field_item_rating_article_ref:
+    weight: 113
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
     region: content
   field_item_rating_date:
     weight: 106
@@ -111,6 +112,15 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_decimal
+    region: content
+  field_rating_id:
+    weight: 112
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
     region: content
   links:
     weight: 100

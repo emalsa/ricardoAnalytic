@@ -1,0 +1,38 @@
+uuid: 294741bc-4af2-4a51-87f1-33095b9bdb77
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.item_article.body
+    - field.field.node.item_article.field_item_rating_ref
+    - node.type.item_article
+  module:
+    - text
+    - user
+id: node.item_article.default
+targetEntityType: node
+bundle: item_article
+mode: default
+content:
+  body:
+    label: hidden
+    type: text_default
+    weight: 101
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+  field_item_rating_ref:
+    weight: 102
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

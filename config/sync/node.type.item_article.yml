@@ -1,4 +1,4 @@
-uuid: 2ac5a70b-e23a-4763-9d21-77381afbc9c5
+uuid: 7ac3e20d-02a7-446f-988b-b9c10d2ac277
 langcode: de
 status: true
 dependencies:
@@ -9,8 +9,8 @@ third_party_settings:
     available_menus:
       - main
     parent: 'main:'
-name: 'Item (Rating)'
-type: item
+name: 'Item (Article)'
+type: item_article
 description: ''
 help: ''
 new_revision: true

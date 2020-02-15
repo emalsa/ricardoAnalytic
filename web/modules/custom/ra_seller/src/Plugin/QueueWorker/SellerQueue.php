@@ -7,6 +7,7 @@ use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\ra_seller\SellerCrawler;
+use Drupal\ra_seller\SellerCrawlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -20,10 +21,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SellerQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
-  /** @var \Drupal\ra_seller\SellerCrawler */
+  /** @var \Drupal\ra_seller\SellerCrawlerInterface */
   protected $sellerCrawler;
 
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, SellerCrawler $sellerCrawler) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, SellerCrawlerInterface $sellerCrawler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->sellerCrawler = $sellerCrawler;
   }

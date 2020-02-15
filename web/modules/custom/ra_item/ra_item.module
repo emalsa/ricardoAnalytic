@@ -37,7 +37,7 @@ function ra_item_cron() {
   $queue_item = $queue_service->get('item_rating_queue');
 
   foreach ($nids as $nid) {
-    $data['nid'] = $nid;
+    $data['seller_nid'] = $nid;
     $queue_item->createItem($data);
   }
 }

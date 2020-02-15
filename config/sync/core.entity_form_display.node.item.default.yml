@@ -5,14 +5,15 @@ dependencies:
   config:
     - field.field.node.item.body
     - field.field.node.item.field_item_buyer
-    - field.field.node.item.field_item_id
     - field.field.node.item.field_item_is_sold
     - field.field.node.item.field_item_rating
+    - field.field.node.item.field_item_rating_article_ref
     - field.field.node.item.field_item_rating_date
     - field.field.node.item.field_item_seller_ref
     - field.field.node.item.field_item_sold_date
     - field.field.node.item.field_item_sold_price
     - field.field.node.item.field_item_start_price
+    - field.field.node.item.field_rating_id
     - node.type.item
   module:
     - datetime
@@ -47,14 +48,6 @@ content:
     third_party_settings: {  }
     type: string_textfield
     region: content
-  field_item_id:
-    weight: 124
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_item_is_sold:
     weight: 130
     settings:
@@ -67,6 +60,16 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
+  field_item_rating_article_ref:
+    weight: 133
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
     region: content
   field_item_rating_date:
     weight: 126
@@ -99,6 +102,13 @@ content:
     region: content
   field_item_start_price:
     weight: 129
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_rating_id:
+    weight: 132
     settings:
       placeholder: ''
     third_party_settings: {  }

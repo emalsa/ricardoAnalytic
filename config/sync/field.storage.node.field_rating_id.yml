@@ -1,17 +1,16 @@
-uuid: 86465b3d-9097-4bc9-8cff-fac6c9407945
+uuid: 6770a21d-d5b6-4fcb-9bad-d93bf807860a
 langcode: de
 status: true
 dependencies:
   module:
     - node
-id: node.field_item_id
-field_name: field_item_id
+id: node.field_rating_id
+field_name: field_rating_id
 entity_type: node
-type: string
+type: integer
 settings:
-  max_length: 255
-  is_ascii: false
-  case_sensitive: false
+  unsigned: false
+  size: normal
 module: core
 locked: false
 cardinality: 1

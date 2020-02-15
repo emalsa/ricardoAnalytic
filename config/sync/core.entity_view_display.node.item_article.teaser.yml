@@ -1,0 +1,33 @@
+uuid: b3777f34-e52c-4cfb-8f58-a2958056ba7f
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.item_article.body
+    - field.field.node.item_article.field_item_rating_ref
+    - node.type.item_article
+  module:
+    - text
+    - user
+id: node.item_article.teaser
+targetEntityType: node
+bundle: item_article
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_item_rating_ref: true
+  langcode: true

@@ -1,16 +1,16 @@
-uuid: 89e07110-d08a-4c33-8c94-87782c300ca3
+uuid: fbc37eb0-ff6d-453f-b87c-f988bbeeeea9
 langcode: de
 status: true
 dependencies:
   config:
-    - field.storage.node.field_item_seller_ref
+    - field.storage.node.field_item_rating_article_ref
     - node.type.item
-    - node.type.seller
-id: node.item.field_item_seller_ref
-field_name: field_item_seller_ref
+    - node.type.item_article
+id: node.item.field_item_rating_article_ref
+field_name: field_item_rating_article_ref
 entity_type: node
 bundle: item
-label: Seller
+label: Article
 description: ''
 required: false
 translatable: false
@@ -20,9 +20,9 @@ settings:
   handler: 'default:node'
   handler_settings:
     target_bundles:
-      seller: seller
+      item_article: item_article
     sort:
       field: _none
     auto_create: false
-    auto_create_bundle: ''
+    auto_create_bundle: item
 field_type: entity_reference

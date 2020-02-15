@@ -3,6 +3,7 @@
 namespace Drupal\ra_seller;
 
 use Drupal;
+use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\CachedStorage;
 use Exception;
@@ -52,11 +53,11 @@ class SellerCrawler implements SellerCrawlerInterface {
    * Constructs a new SellerCrawler object.
    *
    * @param  \Drupal\Core\Entity\EntityTypeManagerInterface  $entity_type_manager
-   * @param  \Drupal\Core\Config\CachedStorage  $config_storage
+   * @param  \Drupal\Core\Config\ConfigManagerInterface  $config_manager
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, CachedStorage $config_storage) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigManagerInterface $config_manager) {
     $this->entityTypeManager = $entity_type_manager;
-    $this->configStorage = $config_storage;
+    $this->configStorage = $config_manager;
   }
 
   /**
