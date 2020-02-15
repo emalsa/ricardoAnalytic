@@ -5,7 +5,6 @@ namespace Drupal\ra_seller;
 use Drupal;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Config\CachedStorage;
 use Exception;
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -43,11 +42,11 @@ class SellerCrawler implements SellerCrawlerInterface {
   protected $entityTypeManager;
 
   /**
-   * Drupal\Core\Config\CachedStorage definition.
+   * \Drupal\Core\Config\ConfigManagerInterface definition.
    *
-   * @var \Drupal\Core\Config\CachedStorage
+   * @var \Drupal\Core\Config\ConfigManagerInterface
    */
-  protected $configStorage;
+  protected $configManager;
 
   /**
    * Constructs a new SellerCrawler object.
@@ -57,7 +56,7 @@ class SellerCrawler implements SellerCrawlerInterface {
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigManagerInterface $config_manager) {
     $this->entityTypeManager = $entity_type_manager;
-    $this->configStorage = $config_manager;
+    $this->configManager = $config_manager;
   }
 
   /**

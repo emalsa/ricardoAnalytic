@@ -26,7 +26,7 @@ class ItemRatingQueue extends QueueWorkerBase implements ContainerFactoryPluginI
 
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ItemRatingCrawlerInterface $itemRatingCrawler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->$itemRatingCrawler = $itemRatingCrawler;
+    $this->itemRatingCrawler = $itemRatingCrawler;
   }
 
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
