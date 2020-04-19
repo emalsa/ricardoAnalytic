@@ -1,0 +1,23 @@
+uuid: 7fe9d8a6-4be5-4c59-b9e6-a398c78b992a
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_buyer_id
+    - node.type.item
+id: node.item.field_buyer_id
+field_name: field_buyer_id
+entity_type: node
+bundle: item
+label: 'Buyer ID'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

@@ -4,6 +4,7 @@ status: true
 dependencies:
   config:
     - field.field.node.item_article.body
+    - field.field.node.item_article.field_article_id
     - field.field.node.item_article.field_item_rating_ref
     - node.type.item_article
   module:
@@ -30,6 +31,14 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_article_id:
+    weight: 123
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_item_rating_ref:
     weight: 122
     settings:

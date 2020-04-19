@@ -5,6 +5,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.item_article.body
+    - field.field.node.item_article.field_article_id
     - field.field.node.item_article.field_item_rating_ref
     - node.type.item_article
   module:
@@ -29,5 +30,6 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
+  field_article_id: true
   field_item_rating_ref: true
   langcode: true

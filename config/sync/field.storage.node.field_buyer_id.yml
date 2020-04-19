@@ -1,0 +1,20 @@
+uuid: 1a6b808f-5c86-4a26-a6ea-57b027f6e5b1
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_buyer_id
+field_name: field_buyer_id
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

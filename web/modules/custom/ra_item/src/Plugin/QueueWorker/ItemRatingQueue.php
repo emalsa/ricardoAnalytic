@@ -43,7 +43,7 @@ class ItemRatingQueue extends QueueWorkerBase implements ContainerFactoryPluginI
    */
   public function processItem($data) {
     // Process item operations.
-    $data['seller_nid'];
+    $this->itemRatingCrawler->initItemRatingsCrawler($data['seller_nid']);
   }
 
 }

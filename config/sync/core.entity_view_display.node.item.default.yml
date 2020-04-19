@@ -4,6 +4,8 @@ status: true
 dependencies:
   config:
     - field.field.node.item.body
+    - field.field.node.item.field_article_id
+    - field.field.node.item.field_buyer_id
     - field.field.node.item.field_item_buyer
     - field.field.node.item.field_item_is_sold
     - field.field.node.item.field_item_rating
@@ -31,6 +33,23 @@ content:
     weight: 101
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_article_id:
+    weight: 115
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_buyer_id:
+    weight: 114
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
     region: content
   field_item_buyer:
     weight: 105

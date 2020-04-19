@@ -12,13 +12,13 @@ type: list_string
 settings:
   allowed_values:
     -
-      value: positiv
+      value: positive
       label: Positiv
     -
       value: neutral
       label: Neutral
     -
-      value: negativ
+      value: negative
       label: Negativ
   allowed_values_function: ''
 module: options

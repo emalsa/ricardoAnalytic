@@ -136,7 +136,7 @@ class SellerCrawler implements SellerCrawlerInterface {
   /**
    * Set location and membership start year.
    *
-   * @param  string  $sellerInformation
+   * @param string $sellerInformation
    */
   protected function setLocationAndMemberSinceYear(string $sellerInformation) {
     if (substr($sellerInformation, 0, 5) === 'place') {
@@ -152,7 +152,7 @@ class SellerCrawler implements SellerCrawlerInterface {
   /**
    * Set key figures (items sold, ...).
    *
-   * @param  string  $sellerInformation
+   * @param string $sellerInformation
    */
   protected function setSellerFigures(string $sellerInformation) {
     $sellerInformation = explode(' ', $sellerInformation);
