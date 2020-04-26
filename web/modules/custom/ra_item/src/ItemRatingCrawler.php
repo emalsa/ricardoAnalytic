@@ -78,12 +78,17 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
    */
   protected function setSeller(string $sellerNodeId) {
     if ($sellerNodeId) {
+      $result = $this->entityTypeManager->getStorage('node')
+        ->loadByProperties(
+          [
+            'type' => 'seller',
+            'nid' => $sellerNodeId,
+          ]);
 
-      $result = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => 'seller', 'nid' => $sellerNodeId]);
       $this->sellerNode = reset($result);
-
       $this->sellerId = $this->sellerNode->field_seller_id_numeric->value;
-      // The username and not numeric id is required for the url.
+
+      /// The username and not numeric id is required for the url.
       $this->sellerUrlApi = "https://www.ricardo.ch/marketplace-spa/api/ratings/to/{$this->sellerNode->field_seller_id->value}?page=";
     }
     else {
@@ -91,6 +96,9 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     }
   }
 
+  /**
+   * @param  int  $sellerNodeId
+   */
   public function initItemRatingsCrawler(int $sellerNodeId) {
     try {
       $this->setSeller($sellerNodeId);
@@ -106,6 +114,9 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     }
   }
 
+  /**
+   *
+   */
   protected function processPage() {
     $this->client->request('GET', $this->sellerUrlApi . "{$this->nextPage}");
     if ($this->client->getResponse()->getStatusCode() === 200) {
@@ -124,15 +135,13 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
         $this->processRatingItem($rating);
       }
+
     }
   }
 
   /**
    * @param $rating
    *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function processRatingItem($rating) {
     $ratingNode = $this->entityTypeManager->getStorage('node')->create([
@@ -150,12 +159,18 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
     ]);
     $ratingNode->save();
-    $articleNodeId = $this->getOrCreateArticle($rating->entity->details->id, $ratingNode);
+    $articleNodeId = $this->updateOrCreateArticle($rating->entity->details->id, $ratingNode);
     $ratingNode->set('field_item_rating_article_ref', $articleNodeId);
     $ratingNode->save();
   }
 
-  protected function getOrCreateArticle($articleId, $ratingNode) {
+  /**
+   * @param $articleId
+   * @param $ratingNode
+   *
+   * @return int|string|null
+   */
+  protected function updateOrCreateArticle($articleId, $ratingNode) {
     /** @var \Drupal\node\NodeInterface $article */
     $article = $this->entityTypeManager
       ->getStorage('node')
@@ -164,19 +179,22 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
       ->condition('field_article_id', $articleId, '=')
       ->execute();
 
+    // Create
     if (empty($article)) {
       $article = $this->entityTypeManager->getStorage('node')->create([
         'type' => 'item_article',
         'field_article_id' => $articleId,
         'field_item_rating_ref' => $ratingNode->id(),
-        'title' => "Article title not set currently",
+        'title' => "Article title set from rating. Will be changed when processing article self",
       ]);
+
       $article->save();
     }
-    else {
+    else { // Edit
       $article = reset($article);
       $article = $this->entityTypeManager->getStorage('node')->load($article);
       $article->set('field_item_rating_ref', "1110");
+
       $article->save();
     }
     //@Todo: Add to article queue, but on both cases?
@@ -184,7 +202,13 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     return $article->id();
   }
 
-  protected function ratingItemExists($rating_id, $rating_from_id) {
+  /**
+   * @param  string  $rating_id
+   * @param  string  $rating_from_id
+   *
+   * @return bool
+   */
+  protected function ratingItemExists(string $rating_id, string $rating_from_id) {
     $rating = $this->entityTypeManager
       ->getStorage('node')
       ->getQuery()
