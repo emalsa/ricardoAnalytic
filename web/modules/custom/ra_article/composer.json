@@ -1,0 +1,13 @@
+{
+    "name": "ra_article",
+    "type": "drupal-module",
+    "description": "Article",
+    "keywords": [
+    ],
+    "homepage": "https://www.drupal.org/project/ra_article",
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/ra_article",
+        "source": "http://cgit.drupalcode.org/ra_article",
+    },
+}

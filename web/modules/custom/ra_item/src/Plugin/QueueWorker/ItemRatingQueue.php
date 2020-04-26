@@ -21,14 +21,32 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ItemRatingQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
-  /** @var \Drupal\ra_item\ItemRatingCrawlerInterface */
+  /**
+   * @var \Drupal\ra_item\ItemRatingCrawlerInterface
+   */
   protected $itemRatingCrawler;
 
+  /**
+   * ItemRatingQueue constructor.
+   *
+   * @param  array  $configuration
+   * @param $plugin_id
+   * @param $plugin_definition
+   * @param  \Drupal\ra_item\ItemRatingCrawlerInterface  $itemRatingCrawler
+   */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ItemRatingCrawlerInterface $itemRatingCrawler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->itemRatingCrawler = $itemRatingCrawler;
   }
 
+  /**
+   * @param  \Symfony\Component\DependencyInjection\ContainerInterface  $container
+   * @param  array  $configuration
+   * @param  string  $plugin_id
+   * @param  mixed  $plugin_definition
+   *
+   * @return \Drupal\Core\Plugin\ContainerFactoryPluginInterface|\Drupal\ra_item\Plugin\QueueWorker\ItemRatingQueue
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration,
@@ -42,7 +60,6 @@ class ItemRatingQueue extends QueueWorkerBase implements ContainerFactoryPluginI
    * {@inheritdoc}
    */
   public function processItem($data) {
-    // Process item operations.
     $this->itemRatingCrawler->initItemRatingsCrawler($data['seller_nid']);
   }
 

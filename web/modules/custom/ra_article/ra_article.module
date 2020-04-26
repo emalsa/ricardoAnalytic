@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains ra_article.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ra_article_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the ra_article module.
+    case 'help.page.ra_article':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Article') . '</p>';
+      return $output;
+
+    default:
+  }
+}
