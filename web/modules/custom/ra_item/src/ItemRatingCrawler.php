@@ -144,6 +144,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
    *
    */
   protected function processRatingItem($rating) {
+    $articleId = $rating->entity->details->id;
     $ratingNode = $this->entityTypeManager->getStorage('node')->create([
       'type' => 'item',
       'title' => 'rating: ' . $rating->entity->details->id . ' - ' . $rating->id,
@@ -155,11 +156,11 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
       'field_buyer_id' => $rating->rating_from->id,
       'field_item_buyer' => $rating->rating_from->nickname,
       'field_item_seller_ref' => $this->sellerNode->id(),
-      'field_article_id' => $rating->entity->details->id,
+      'field_article_id' => $articleId,
 
     ]);
     $ratingNode->save();
-    $articleNodeId = $this->updateOrCreateArticle($rating->entity->details->id, $ratingNode);
+    $articleNodeId = $this->updateOrCreateArticle($articleId, $ratingNode);
     $ratingNode->set('field_item_rating_article_ref', $articleNodeId);
     $ratingNode->save();
   }
@@ -193,11 +194,13 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     else { // Edit
       $article = reset($article);
       $article = $this->entityTypeManager->getStorage('node')->load($article);
-      $article->set('field_item_rating_ref', "1110");
+      $article->set('field_item_rating_ref', $ratingNode->id());
 
       $article->save();
     }
+
     //@Todo: Add to article queue, but on both cases?
+    Drupal::service('ra_article.article_crawler')->createItem($articleId);
 
     return $article->id();
   }
