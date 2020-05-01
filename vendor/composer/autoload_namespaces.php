@@ -12,6 +12,7 @@ return array(
     'Solarium\\' => array($vendorDir . '/solarium/solarium/library'),
     'PhantomInstaller\\' => array($vendorDir . '/jakoch/phantomjs-installer/src'),
     'JonnyW\\PhantomJs\\' => array($vendorDir . '/jonnyw/php-phantomjs/src'),
+    'FSHL' => array($vendorDir . '/kukulich/fshl'),
     'EasyRdf_' => array($vendorDir . '/easyrdf/easyrdf/lib'),
     'Drush' => array($vendorDir . '/drush/drush/lib'),
     'Dflydev\\PlaceholderResolver' => array($vendorDir . '/dflydev/placeholder-resolver/src'),

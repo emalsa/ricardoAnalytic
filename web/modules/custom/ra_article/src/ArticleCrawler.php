@@ -4,6 +4,7 @@ namespace Drupal\ra_article;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Goutte\Client;
+use JonnyW\PhantomJs\Client as PhantomJS;
 
 /**
  * Class ArticleCrawler.
@@ -45,17 +46,63 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setArticle($articleId);
       $this->processArticlePage();
     } catch (\Exception $exception) {
-
+      $a = 1;
     }
   }
 
   /**
    *
    */
+  protected function setTitle() {
+    $this->client->getCrawler()->filter('h1')->each(function ($node) {
+      $this->articleNode->setTitle($node->text());
+    });
+  }
+
+  /**
+   *
+   */
+  protected function setBody() {
+    $this->client->getCrawler()->filter('div article')->each(function ($node) {
+      $this->articleNode->body->value = $node->html();
+      $this->articleNode->body->format = 'full_html';
+    });
+
+  }
+
+  /**
+   *
+   */
   protected function processArticlePage() {
-    $this->client->request('GET', $this->articleUrl);
-    if ($this->client->getResponse()->getStatusCode === 200) {
-      $data = json_decode($this->client->getResponse()->getContent());
+    $this->client->request('GET', $this->articleUrl)->html();
+    if ($this->client->getResponse()->getStatusCode() === 200) {
+
+      //      $this->setTitle();
+      //      $this->setBody();
+      //      $this->setPrice();
+
+
+      $client = PhantomJS::getInstance();
+      $client->getEngine()->setPath('/app/bin/phantomjs');
+      $client->getEngine()->debug(true);
+
+      $request = $client->getMessageFactory()->createRequest('https://google.ch', 'GET');
+      $request->setTimeout(10000);
+
+      $response = $client->getMessageFactory()->createResponse();
+      $client->send($request, $response);
+      if ($response->getStatus() === 200) {
+        //        echo $response->getContent();
+        $a = 1;
+      }
+      $client->getLog();
+      //
+      //      $this->articleNode->save();
+
+      $a = 1;
+    }
+    else {
+      // @Todo article not available
     }
 
   }

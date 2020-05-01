@@ -5,6 +5,8 @@ namespace Drupal\ra_item;
 use Drupal;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueInterface;
 use Exception;
 use Goutte\Client;
 
@@ -103,10 +105,11 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     try {
       $this->setSeller($sellerNodeId);
       $this->processPage();
-      //
-      //      foreach ($this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]) as $node) {
-      //        $node->delete();
-      //      }
+//
+//      foreach ($this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]) as $node) {
+//        $node->delete();
+//      }
+
 
     } catch (Exception $e) {
       Drupal::logger('ra_item')->error($e);
@@ -126,7 +129,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
         $i++;
         if ($i > 1) {
-          break;
+          //          break;
         }
 
         if ($this->ratingItemExists($rating->id, $rating->rating_from->id)) {
@@ -200,7 +203,13 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     }
 
     //@Todo: Add to article queue, but on both cases?
-    Drupal::service('ra_article.article_crawler')->createItem($articleId);
+
+    /** @var QueueFactory $queue_factory */
+    $queue_service = \Drupal::service('queue');
+    /** @var QueueInterface $queue_item */
+    $queue_item = $queue_service->get('article_queue');
+    $data['article_id'] = $articleId;
+    $queue_item->createItem($data);
 
     return $article->id();
   }

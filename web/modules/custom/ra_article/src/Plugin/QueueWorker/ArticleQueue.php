@@ -2,6 +2,7 @@
 
 namespace Drupal\ra_article\Plugin\QueueWorker;
 
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\ra_article\ArticleCrawler;
 use Drupal\ra_article\ArticleCrawlerInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   cron = {"time" = 30}
  * )
  */
-class ArticleQueue extends QueueWorkerBase {
+class ArticleQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface{
 
   /**
    * @var \Drupal\ra_article\ArticleCrawlerInterface

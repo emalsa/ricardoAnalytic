@@ -30,8 +30,11 @@
         "drupal/purge": "^3.0",
         "drupal/adminimal_admin_toolbar": "^1.10",
         "drupal/adminimal_theme": "^1.5",
-        "jonnyw/php-phantomjs":"^4.0",
-        "zaporylie/composer-drupal-optimizations": "^1.1"
+        "zaporylie/composer-drupal-optimizations": "^1.1",
+        "drupal/web_page_archive": "^2.13",
+        "drupal/wpa_screenshot_capture": "^2.13",
+        "jakoch/phantomjs-installer": "^2.1",
+        "jonnyw/php-phantomjs": "4.*"
     },
     "require-dev": {
         "behat/mink": "~1.7",
