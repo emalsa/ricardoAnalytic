@@ -29,7 +29,9 @@
         "drupal/varnish_purge": "^1.10",
         "drupal/purge": "^3.0",
         "drupal/adminimal_admin_toolbar": "^1.10",
-        "drupal/adminimal_theme": "^1.5"
+        "drupal/adminimal_theme": "^1.5",
+        "jonnyw/php-phantomjs":"^4.0",
+        "zaporylie/composer-drupal-optimizations": "^1.1"
     },
     "require-dev": {
         "behat/mink": "~1.7",
@@ -50,6 +52,9 @@
             "scripts/composer/ScriptHandler.php"
         ]
     },
+    "config": {
+        "bin-dir": "bin"
+    },
     "scripts": {
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
         "pre-install-cmd": [
@@ -59,10 +64,12 @@
             "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
         ],
         "post-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
+            "PhantomInstaller\\Installer::installPhantomJS"
         ],
         "post-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles",
+            "PhantomInstaller\\Installer::installPhantomJS"
         ]
     },
     "extra": {

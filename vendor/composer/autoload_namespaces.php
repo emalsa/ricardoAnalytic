@@ -10,6 +10,8 @@ return array(
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Stack' => array($vendorDir . '/stack/builder/src'),
     'Solarium\\' => array($vendorDir . '/solarium/solarium/library'),
+    'PhantomInstaller\\' => array($vendorDir . '/jakoch/phantomjs-installer/src'),
+    'JonnyW\\PhantomJs\\' => array($vendorDir . '/jonnyw/php-phantomjs/src'),
     'EasyRdf_' => array($vendorDir . '/easyrdf/easyrdf/lib'),
     'Drush' => array($vendorDir . '/drush/drush/lib'),
     'Dflydev\\PlaceholderResolver' => array($vendorDir . '/dflydev/placeholder-resolver/src'),
