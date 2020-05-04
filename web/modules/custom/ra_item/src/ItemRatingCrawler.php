@@ -106,11 +106,11 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
   public function initItemRatingsCrawler(int $sellerNodeId) {
     try {
       $this->setSeller($sellerNodeId);
-      //      $this->processPage();
-
-      foreach ($this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]) as $node) {
-        $node->delete();
-      }
+      $this->processPage();
+      //
+      //      foreach ($this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]) as $node) {
+      //        $node->delete();
+      //      }
 
 
     } catch (Exception $e) {
