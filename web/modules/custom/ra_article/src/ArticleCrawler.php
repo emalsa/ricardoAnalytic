@@ -3,8 +3,8 @@
 namespace Drupal\ra_article;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Goutte\Client;
-use JonnyW\PhantomJs\Client as PhantomJS;
+use Drupal\node\NodeInterface;
+use HeadlessChromium\BrowserFactory;
 
 /**
  * Class ArticleCrawler.
@@ -18,14 +18,20 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected $entityTypeManager;
 
-  protected $client;
+  /**
+   * @var \HeadlessChromium\Browser\ProcessAwareBrowser
+   */
+  protected $browser;
 
   /**
    * @var \Drupal\node\NodeInterface
    */
   protected $articleNode;
 
-  protected $articleUrl = "http://ricardo.ch/de/s/";
+  /**
+   * @var string
+   */
+  protected $articleUrl;
 
   /**
    * Constructs a new ArticleCrawler object.
@@ -34,8 +40,8 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
-    $this->client = new Client();
-
+    $browserFactory = new BrowserFactory('chromium-browser');
+    $this->browser = $browserFactory->createBrowser(['noSandbox' => TRUE]);
   }
 
   /**
@@ -46,90 +52,173 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setArticle($articleId);
       $this->processArticlePage();
     } catch (\Exception $exception) {
-      $a = 1;
+      \Drupal::logger('a')->error($exception->getMessage());
     }
   }
 
-  /**
-   *
-   */
-  protected function setTitle() {
-    $this->client->getCrawler()->filter('h1')->each(function ($node) {
-      $this->articleNode->setTitle($node->text());
-    });
-  }
 
   /**
-   *
-   */
-  protected function setBody() {
-    $this->client->getCrawler()->filter('div article')->each(function ($node) {
-      $this->articleNode->body->value = $node->html();
-      $this->articleNode->body->format = 'full_html';
-    });
-
-  }
-
-  /**
-   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @throws \HeadlessChromium\Exception\CommunicationException
+   * @throws \HeadlessChromium\Exception\CommunicationException\CannotReadResponse
+   * @throws \HeadlessChromium\Exception\CommunicationException\InvalidResponse
+   * @throws \HeadlessChromium\Exception\CommunicationException\ResponseHasError
+   * @throws \HeadlessChromium\Exception\EvaluationFailed
+   * @throws \HeadlessChromium\Exception\NavigationExpired
+   * @throws \HeadlessChromium\Exception\NoResponseAvailable
+   * @throws \HeadlessChromium\Exception\OperationTimedOut
+   * @throws \Exception
    */
   protected function processArticlePage() {
-    $this->client->request('GET', $this->articleUrl)->html();
-    if ($this->client->getResponse()->getStatusCode() === 200) {
+    // Get data
+    $page = $this->browser->createPage();
+    // $page->navigate($this->articleUrl)->waitForNavigation();
 
-      //      $this->setTitle();
-      //      $this->setBody();
-      //      $this->setPrice();
+    $page->navigate('https://www.ricardo.ch/de/s/1011548154/')->waitForNavigation();
 
-
-      $client = PhantomJS::getInstance();
-      $client->getEngine()->setPath('/app/bin/phantomjs');
-      $client->getEngine()->debug(true);
-
-      $request = $client->getMessageFactory()->createRequest('https://google.ch', 'GET');
-      $request->setTimeout(10000);
-
-      $response = $client->getMessageFactory()->createResponse();
-      $client->send($request, $response);
-      if ($response->getStatus() === 200) {
-        //        echo $response->getContent();
-        $a = 1;
-      }
-      $client->getLog();
-      //
-      //      $this->articleNode->save();
-
-      $a = 1;
+    $data = $page->evaluate('window.ricardo')->getReturnValue();
+    $this->browser->close();
+    if (isset($data['initialState']['pdp'])) {
+      $pdp = $data['initialState']['pdp'];
+      $this->setSeller($pdp);
+      $this->setStatus($pdp);
+      $this->setTitle($pdp);
+      $this->setBody($pdp);
+      $this->setPrice($pdp);
+      $this->setSoldDate($pdp);
     }
     else {
-      // @Todo article not available
+      // @todo: handling old article (todo)
+      // @todo: handle not exisitng article (OK)
+      // article not available anymore (old)
+      if (!($this->articleNode->field_item_rating_ref->isEmpty())) {
+        $ratingNodeId = $this->articleNode->field_item_rating_ref->target_id;
+        /** @var \Drupal\node\NodeInterface $ratingNode */
+        $ratingNode = $this->entityTypeManager->getStorage('node')->load($ratingNodeId);
+        if ($ratingNode && $ratingNode->bundle() === 'item' && $ratingNode instanceof NodeInterface && !($ratingNode->field_item_seller_ref->isEmpty())) {
+          $this->articleNode->field_item_seller_ref->target_id = $ratingNode->field_item_seller_ref->target_id;
+        }
+      }
+
+      // Is sold
+      $this->articleNode->field_item_is_sold = 1;
+      $this->articleNode->setTitle('Article not found: ' . $this->articleUrl);
+
     }
 
+    $this->articleNode->save();
   }
 
   /**
    * @param  string  $articleId
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function setArticle(string $articleId) {
-    $result = $this->entityTypeManager->getStorage('node')->loadByProperties(
-      [
-        'type' => 'item_article',
-        'field_article_id' => $articleId,
-      ]);
+    $result = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => 'item_article', 'field_article_id' => $articleId,]);
 
     if (empty($result)) {
       $this->articleNode = $this->entityTypeManager->getStorage('node')->create([
         'type' => 'item_article',
         'field_article_id' => $articleId,
-        'title' => "Article title not set. Will be changed when processing article self",
+        'title' => 'Article title not set. Will be changed when processing article self',
       ]);
+
       $this->articleNode->save();
     }
     else {
       $this->articleNode = reset($result);
     }
 
+    $this->articleUrl = 'http://ricardo.ch/de/s/';
     $this->articleUrl = $this->articleUrl . $articleId;
+  }
+
+  /**
+   * @param $data
+   */
+  protected function setSoldDate($data) {
+    if (isset($data['article']['end_date'])) {
+      $this->articleNode->field_item_sold_date->value = date('Y-m-d\TH:i:s', strtotime($data['article']['end_date']));
+    }
+  }
+
+  /**
+   * @param $data
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function setSeller($data) {
+    if (isset($data['article']['user_id'])) {
+      $sellerNode = $this->entityTypeManager
+        ->getStorage('node')
+        ->loadByProperties(['field_seller_id_numeric' => $data['article']['user_id']]);
+
+      if ($sellerNode) {
+        $sellerNode = reset($sellerNode);
+        $this->articleNode->field_item_seller_ref->target_id = $sellerNode->id();
+      }
+    }
+  }
+
+
+  /**
+   * @param $data
+   */
+  protected function setTitle($data) {
+    if (isset($data['article']['title'])) {
+      $this->articleNode->setTitle($data['article']['title']);
+      return;
+    }
+
+    $this->articleNode->setTitle('No title: ' . $this->articleUrl);
+  }
+
+  /**
+   * @param $data
+   */
+  protected function setBody($data) {
+    if (isset($data['article']['description']['html'])) {
+      $this->articleNode->body->value = $data['article']['description']['html'];
+      $this->articleNode->body->format = 'full_html';
+      return;
+    }
+
+    $this->articleNode->body->value = 'No body value: ' . $this->articleUrl;
+    $this->articleNode->body->format = 'full_html';
+  }
+
+  /**
+   * @param $data
+   */
+  protected function setPrice($data) {
+    // Start price
+    if (isset($data['bid']['data']['start_price'])) {
+      $this->articleNode->field_item_start_price = $data['bid']['data']['start_price'];
+    }
+
+    // Sold price
+    if ($this->articleNode->field_item_is_sold->value && isset($data['bid']['data']['last_bid'])) {
+      $this->articleNode->field_item_sold_price = $data['bid']['data']['last_bid'];
+    }
+  }
+
+  /**
+   * @param $data
+   */
+  protected function setStatus($data) {
+    // Sold
+    if ($data['article']['status']) {
+      $this->articleNode->field_item_is_sold = 1;
+    }
+    else { // Active
+      $this->articleNode->field_item_is_sold = 0;
+    }
   }
 
 }

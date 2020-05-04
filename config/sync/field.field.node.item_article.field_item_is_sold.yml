@@ -1,0 +1,23 @@
+uuid: dcffcc74-0246-40ef-9f87-7f05240d1b7c
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_item_is_sold
+    - node.type.item_article
+id: node.item_article.field_item_is_sold
+field_name: field_item_is_sold
+entity_type: node
+bundle: item_article
+label: 'Is sold'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Ja
+  off_label: Nein
+field_type: boolean

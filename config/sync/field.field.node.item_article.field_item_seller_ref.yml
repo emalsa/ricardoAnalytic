@@ -1,0 +1,28 @@
+uuid: e6bb79aa-4fdd-4ee5-ab93-8740e5199b07
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_item_seller_ref
+    - node.type.item_article
+    - node.type.seller
+id: node.item_article.field_item_seller_ref
+field_name: field_item_seller_ref
+entity_type: node
+bundle: item_article
+label: Seller
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      seller: seller
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

@@ -6,7 +6,12 @@ dependencies:
     - core.entity_view_mode.node.teaser
     - field.field.node.item_article.body
     - field.field.node.item_article.field_article_id
+    - field.field.node.item_article.field_item_is_sold
     - field.field.node.item_article.field_item_rating_ref
+    - field.field.node.item_article.field_item_seller_ref
+    - field.field.node.item_article.field_item_sold_date
+    - field.field.node.item_article.field_item_sold_price
+    - field.field.node.item_article.field_item_start_price
     - node.type.item_article
   module:
     - text
@@ -31,5 +36,10 @@ content:
     region: content
 hidden:
   field_article_id: true
+  field_item_is_sold: true
   field_item_rating_ref: true
+  field_item_seller_ref: true
+  field_item_sold_date: true
+  field_item_sold_price: true
+  field_item_start_price: true
   langcode: true

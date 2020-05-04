@@ -66,6 +66,59 @@
         ]
     },
     {
+        "name": "apix/log",
+        "version": "1.2.1",
+        "version_normalized": "1.2.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apix/log.git",
+            "reference": "fd9b520fa962d7dfba410c08ea59894819b2fcd3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/apix/log/zipball/fd9b520fa962d7dfba410c08ea59894819b2fcd3",
+            "reference": "fd9b520fa962d7dfba410c08ea59894819b2fcd3",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3",
+            "psr/log": "~1.0"
+        },
+        "provide": {
+            "psr/log-implementation": "1.0.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.8.*"
+        },
+        "time": "2016-09-22T10:51:22+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Apix\\Log\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Franck Cassedanne",
+                "email": "franck@ouarz.net"
+            }
+        ],
+        "description": "Minimalist, thin and fast PSR-3 compliant (multi-bucket) logger.",
+        "homepage": "https://github.com/frqnck/apix-log",
+        "keywords": [
+            "apix",
+            "log",
+            "logger",
+            "psr",
+            "psr-3"
+        ]
+    },
+    {
         "name": "asm89/stack-cors",
         "version": "1.3.0",
         "version_normalized": "1.3.0.0",
@@ -299,6 +352,65 @@
         ]
     },
     {
+        "name": "chrome-php/chrome",
+        "version": "v0.8.1",
+        "version_normalized": "0.8.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/chrome-php/headless-chromium-php.git",
+            "reference": "7abdf64d706cbf568e7c0dfa7c4532ce687028a8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/chrome-php/headless-chromium-php/zipball/7abdf64d706cbf568e7c0dfa7c4532ce687028a8",
+            "reference": "7abdf64d706cbf568e7c0dfa7c4532ce687028a8",
+            "shasum": ""
+        },
+        "require": {
+            "apix/log": "^1.2",
+            "evenement/evenement": "^3.0.1",
+            "php": ">=7.0",
+            "psr/log": "^1.0",
+            "symfony/filesystem": "^3|^4|^5",
+            "symfony/process": "^3|^4|^5",
+            "wrench/wrench": "^2.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^6.0",
+            "squizlabs/php_codesniffer": "^3.1",
+            "symfony/var-dumper": "^3.3"
+        },
+        "time": "2020-02-20T20:36:20+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "HeadlessChromium\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Fair"
+        ],
+        "authors": [
+            {
+                "name": "Soufiane GHZAL",
+                "homepage": "https://github.com/gsouf"
+            }
+        ],
+        "description": "Instrument headless chrome/chromium instances from php",
+        "homepage": "https://github.com/gsouf/headless-chromium-php",
+        "keywords": [
+            "browser",
+            "chrome",
+            "chromium",
+            "crawl",
+            "headless",
+            "pdf",
+            "screenshot"
+        ]
+    },
+    {
         "name": "composer/installers",
         "version": "v1.9.0",
         "version_normalized": "1.9.0.0",
@@ -425,6 +537,16 @@
             "yawik",
             "zend",
             "zikula"
+        ],
+        "funding": [
+            {
+                "url": "https://packagist.com",
+                "type": "custom"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/composer/composer",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -1613,6 +1735,20 @@
             "odm",
             "orm",
             "persistence"
+        ],
+        "funding": [
+            {
+                "url": "https://www.doctrine-project.org/sponsorship.html",
+                "type": "custom"
+            },
+            {
+                "url": "https://www.patreon.com/phpdoctrine",
+                "type": "patreon"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fpersistence",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -2619,7 +2755,7 @@
         "extra": {
             "drupal": {
                 "version": "8.x-1.16",
-                "datestamp": "1586374699",
+                "datestamp": "1588361091",
                 "security-coverage": {
                     "status": "covered",
                     "message": "Covered by Drupal's security advisory policy"
@@ -2794,149 +2930,6 @@
         "homepage": "https://www.drupal.org/project/varnish_purge",
         "support": {
             "source": "https://git.drupalcode.org/project/varnish_purge"
-        }
-    },
-    {
-        "name": "drupal/web_page_archive",
-        "version": "2.13.0",
-        "version_normalized": "2.13.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://git.drupalcode.org/project/web_page_archive.git",
-            "reference": "8.x-2.13"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://ftp.drupal.org/files/projects/web_page_archive-8.x-2.13.zip",
-            "reference": "8.x-2.13",
-            "shasum": "ebb2d80574c7081935c685f1a682769c111ac266"
-        },
-        "require": {
-            "drupal/core": "^8 || ^9",
-            "kukulich/fshl": "2.1.0",
-            "mtdowling/cron-expression": "1.2.0",
-            "php": ">=7.1.0",
-            "spatie/browsershot": "~3.26.0",
-            "t1gor/robots-txt-parser": "0.2.3"
-        },
-        "require-dev": {
-            "drupal/wpa_html_capture": "*",
-            "drupal/wpa_screenshot_capture": "*",
-            "drupal/wpa_skeleton_capture": "*",
-            "microweber/screen": "1.0.*"
-        },
-        "type": "drupal-module",
-        "extra": {
-            "branch-alias": {
-                "dev-2.x": "2.x-dev"
-            },
-            "drupal": {
-                "version": "8.x-2.13",
-                "datestamp": "1579063687",
-                "security-coverage": {
-                    "status": "covered",
-                    "message": "Covered by Drupal's security advisory policy"
-                }
-            },
-            "drush": {
-                "services": {
-                    "drush.services.yml": "^9"
-                }
-            }
-        },
-        "installation-source": "dist",
-        "notification-url": "https://packages.drupal.org/8/downloads",
-        "license": [
-            "GPL-3.0-or-later"
-        ],
-        "authors": [
-            {
-                "name": "bighappyface",
-                "homepage": "https://www.drupal.org/user/2508346",
-                "email": "anomalous20@gmail.com"
-            },
-            {
-                "name": "WidgetsBurritos",
-                "homepage": "https://www.drupal.org/user/2513682",
-                "email": "davidstinemetze@gmail.com"
-            },
-            {
-                "name": "pobster",
-                "homepage": "https://www.drupal.org/user/25159",
-                "email": "pobster@25159.no-reply.drupal.org"
-            },
-            {
-                "name": "vessel_adrift",
-                "homepage": "https://www.drupal.org/user/3253044"
-            }
-        ],
-        "description": "Provides web page data archiving and reporting functionality.",
-        "homepage": "http://drupal.org/project/web_page_archive",
-        "support": {
-            "source": "https://git.drupalcode.org/project/web_page_archive"
-        }
-    },
-    {
-        "name": "drupal/wpa_screenshot_capture",
-        "version": "2.13.0",
-        "version_normalized": "2.13.0.0",
-        "require": {
-            "drupal/core": "^8 || ^9",
-            "drupal/web_page_archive": "self.version",
-            "jakoch/phantomjs-installer": "2.1.1",
-            "microweber/screen": "1.0.*"
-        },
-        "type": "metapackage",
-        "extra": {
-            "branch-alias": {
-                "dev-2.x": "2.x-dev"
-            },
-            "drupal": {
-                "version": "8.x-2.13",
-                "datestamp": "1579063687",
-                "security-coverage": {
-                    "status": "covered",
-                    "message": "Covered by Drupal's security advisory policy"
-                }
-            }
-        },
-        "notification-url": "https://packages.drupal.org/8/downloads",
-        "scripts": {
-            "post-install-cmd": [
-                "PhantomInstaller\\Installer::installPhantomJS"
-            ],
-            "post-update-cmd": [
-                "PhantomInstaller\\Installer::installPhantomJS"
-            ]
-        },
-        "license": [
-            "GPL-3.0-or-later"
-        ],
-        "authors": [
-            {
-                "name": "bighappyface",
-                "homepage": "https://www.drupal.org/user/2508346",
-                "email": "anomalous20@gmail.com"
-            },
-            {
-                "name": "WidgetsBurritos",
-                "homepage": "https://www.drupal.org/user/2513682",
-                "email": "davidstinemetze@gmail.com"
-            },
-            {
-                "name": "pobster",
-                "homepage": "https://www.drupal.org/user/25159",
-                "email": "pobster@25159.no-reply.drupal.org"
-            },
-            {
-                "name": "vessel_adrift",
-                "homepage": "https://www.drupal.org/user/3253044"
-            }
-        ],
-        "description": "Provides a screenshot capture utility based on PhantomJS.",
-        "homepage": "http://drupal.org/project/web_page_archive",
-        "support": {
-            "source": "https://git.drupalcode.org/project/web_page_archive"
         }
     },
     {
@@ -3176,6 +3169,51 @@
             "emailvalidator",
             "validation",
             "validator"
+        ]
+    },
+    {
+        "name": "evenement/evenement",
+        "version": "v3.0.1",
+        "version_normalized": "3.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/igorw/evenement.git",
+            "reference": "531bfb9d15f8aa57454f5f0285b18bec903b8fb7"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/igorw/evenement/zipball/531bfb9d15f8aa57454f5f0285b18bec903b8fb7",
+            "reference": "531bfb9d15f8aa57454f5f0285b18bec903b8fb7",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^6.0"
+        },
+        "time": "2017-07-23T21:35:13+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Evenement": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Igor Wiedler",
+                "email": "igor@wiedler.ch"
+            }
+        ],
+        "description": "Événement is a very simple event dispatching library for PHP",
+        "keywords": [
+            "event-dispatcher",
+            "event-emitter"
         ]
     },
     {
@@ -3431,121 +3469,6 @@
         ]
     },
     {
-        "name": "intervention/image",
-        "version": "2.5.1",
-        "version_normalized": "2.5.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/Intervention/image.git",
-            "reference": "abbf18d5ab8367f96b3205ca3c89fb2fa598c69e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/Intervention/image/zipball/abbf18d5ab8367f96b3205ca3c89fb2fa598c69e",
-            "reference": "abbf18d5ab8367f96b3205ca3c89fb2fa598c69e",
-            "shasum": ""
-        },
-        "require": {
-            "ext-fileinfo": "*",
-            "guzzlehttp/psr7": "~1.1",
-            "php": ">=5.4.0"
-        },
-        "require-dev": {
-            "mockery/mockery": "~0.9.2",
-            "phpunit/phpunit": "^4.8 || ^5.7"
-        },
-        "suggest": {
-            "ext-gd": "to use GD library based image processing.",
-            "ext-imagick": "to use Imagick based image processing.",
-            "intervention/imagecache": "Caching extension for the Intervention Image library"
-        },
-        "time": "2019-11-02T09:15:47+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.4-dev"
-            },
-            "laravel": {
-                "providers": [
-                    "Intervention\\Image\\ImageServiceProvider"
-                ],
-                "aliases": {
-                    "Image": "Intervention\\Image\\Facades\\Image"
-                }
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Intervention\\Image\\": "src/Intervention/Image"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Oliver Vogel",
-                "email": "oliver@olivervogel.com",
-                "homepage": "http://olivervogel.com/"
-            }
-        ],
-        "description": "Image handling and manipulation library with support for Laravel integration",
-        "homepage": "http://image.intervention.io/",
-        "keywords": [
-            "gd",
-            "image",
-            "imagick",
-            "laravel",
-            "thumbnail",
-            "watermark"
-        ]
-    },
-    {
-        "name": "jakoch/phantomjs-installer",
-        "version": "2.1.1",
-        "version_normalized": "2.1.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/jakoch/phantomjs-installer.git",
-            "reference": "b8ee2aac9b95f9a9ee30a05a4df4a0984a8a8b85"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/jakoch/phantomjs-installer/zipball/b8ee2aac9b95f9a9ee30a05a4df4a0984a8a8b85",
-            "reference": "b8ee2aac9b95f9a9ee30a05a4df4a0984a8a8b85",
-            "shasum": ""
-        },
-        "require": {
-            "ext-openssl": "*"
-        },
-        "time": "2016-01-25T16:30:30+00:00",
-        "type": "custom-installer",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "PhantomInstaller\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jens-André Koch",
-                "email": "jakoch@web.de"
-            }
-        ],
-        "description": "A Composer package which installs the PhantomJS binary (Linux, Windows, Mac) into `/bin` of your project.",
-        "keywords": [
-            "binaries",
-            "headless",
-            "phantomjs"
-        ]
-    },
-    {
         "name": "jcalderonzumba/gastonjs",
         "version": "v1.0.3",
         "version_normalized": "1.0.3.0",
@@ -3665,257 +3588,6 @@
         ]
     },
     {
-        "name": "jonnyw/php-phantomjs",
-        "version": "v4.5.1",
-        "version_normalized": "4.5.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/jonnnnyw/php-phantomjs.git",
-            "reference": "cf8d9a221f4c624aa1537c55a2e181f4b50367d7"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/jonnnnyw/php-phantomjs/zipball/cf8d9a221f4c624aa1537c55a2e181f4b50367d7",
-            "reference": "cf8d9a221f4c624aa1537c55a2e181f4b50367d7",
-            "shasum": ""
-        },
-        "require": {
-            "jakoch/phantomjs-installer": "2.1.1",
-            "php": ">=5.3.0",
-            "symfony/config": "~2.3|~3.0",
-            "symfony/dependency-injection": "~2.3|~3.0",
-            "symfony/filesystem": "~2.3|~3.0",
-            "symfony/yaml": "~2.3|~3.0",
-            "twig/twig": "~1.16"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~4.0",
-            "smalot/pdfparser": "~0.9",
-            "zendframework/zendpdf": "~2.0"
-        },
-        "time": "2016-06-28T16:00:15+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "JonnyW\\PhantomJs\\": "src"
-            },
-            "classmap": [
-                "src/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jonny Wenmoth",
-                "email": "contact@jonnyw.me",
-                "homepage": "http://jonnyw.me/"
-            }
-        ],
-        "description": "A PHP wrapper for loading pages through PhantomJS",
-        "keywords": [
-            "Headless Browser",
-            "phantomjs",
-            "testing"
-        ]
-    },
-    {
-        "name": "kukulich/fshl",
-        "version": "2.1.0",
-        "version_normalized": "2.1.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/kukulich/fshl.git",
-            "reference": "974c294ade5d76c0c16b6fe3fd3a584ba999b24f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/kukulich/fshl/zipball/974c294ade5d76c0c16b6fe3fd3a584ba999b24f",
-            "reference": "974c294ade5d76c0c16b6fe3fd3a584ba999b24f",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3"
-        },
-        "time": "2012-09-08T19:00:07+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "FSHL": "./"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-2.0+"
-        ],
-        "authors": [
-            {
-                "name": "Jaroslav Hanslík",
-                "homepage": "https://github.com/kukulich"
-            }
-        ],
-        "description": "FSHL is a free, open source, universal, fast syntax highlighter written in PHP.",
-        "homepage": "http://fshl.kukulich.cz/",
-        "keywords": [
-            "highlight",
-            "library",
-            "syntax"
-        ]
-    },
-    {
-        "name": "league/flysystem",
-        "version": "1.0.67",
-        "version_normalized": "1.0.67.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/thephpleague/flysystem.git",
-            "reference": "5b1f36c75c4bdde981294c2a0ebdb437ee6f275e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/5b1f36c75c4bdde981294c2a0ebdb437ee6f275e",
-            "reference": "5b1f36c75c4bdde981294c2a0ebdb437ee6f275e",
-            "shasum": ""
-        },
-        "require": {
-            "ext-fileinfo": "*",
-            "php": ">=5.5.9"
-        },
-        "conflict": {
-            "league/flysystem-sftp": "<1.0.6"
-        },
-        "require-dev": {
-            "phpspec/phpspec": "^3.4",
-            "phpunit/phpunit": "^5.7.26"
-        },
-        "suggest": {
-            "ext-fileinfo": "Required for MimeType",
-            "ext-ftp": "Allows you to use FTP server storage",
-            "ext-openssl": "Allows you to use FTPS server storage",
-            "league/flysystem-aws-s3-v2": "Allows you to use S3 storage with AWS SDK v2",
-            "league/flysystem-aws-s3-v3": "Allows you to use S3 storage with AWS SDK v3",
-            "league/flysystem-azure": "Allows you to use Windows Azure Blob storage",
-            "league/flysystem-cached-adapter": "Flysystem adapter decorator for metadata caching",
-            "league/flysystem-eventable-filesystem": "Allows you to use EventableFilesystem",
-            "league/flysystem-rackspace": "Allows you to use Rackspace Cloud Files",
-            "league/flysystem-sftp": "Allows you to use SFTP server storage via phpseclib",
-            "league/flysystem-webdav": "Allows you to use WebDAV storage",
-            "league/flysystem-ziparchive": "Allows you to use ZipArchive adapter",
-            "spatie/flysystem-dropbox": "Allows you to use Dropbox storage",
-            "srmklive/flysystem-dropbox-v2": "Allows you to use Dropbox storage for PHP 5 applications"
-        },
-        "time": "2020-04-16T13:21:26+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "League\\Flysystem\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Frank de Jonge",
-                "email": "info@frenky.net"
-            }
-        ],
-        "description": "Filesystem abstraction: Many filesystems, one API.",
-        "keywords": [
-            "Cloud Files",
-            "WebDAV",
-            "abstraction",
-            "aws",
-            "cloud",
-            "copy.com",
-            "dropbox",
-            "file systems",
-            "files",
-            "filesystem",
-            "filesystems",
-            "ftp",
-            "rackspace",
-            "remote",
-            "s3",
-            "sftp",
-            "storage"
-        ]
-    },
-    {
-        "name": "league/glide",
-        "version": "1.5.0",
-        "version_normalized": "1.5.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/thephpleague/glide.git",
-            "reference": "a5477e9e822ed57b39861a17092b92553634932d"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/thephpleague/glide/zipball/a5477e9e822ed57b39861a17092b92553634932d",
-            "reference": "a5477e9e822ed57b39861a17092b92553634932d",
-            "shasum": ""
-        },
-        "require": {
-            "intervention/image": "^2.4",
-            "league/flysystem": "^1.0",
-            "php": "^5.5 | ^7.0",
-            "psr/http-message": "^1.0"
-        },
-        "require-dev": {
-            "mockery/mockery": "~0.9",
-            "phpunit/php-token-stream": "^1.4",
-            "phpunit/phpunit": "~4.4"
-        },
-        "time": "2019-04-03T23:46:42+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "League\\Glide\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jonathan Reinink",
-                "email": "jonathan@reinink.ca",
-                "homepage": "http://reinink.ca"
-            }
-        ],
-        "description": "Wonderfully easy on-demand image manipulation library with an HTTP based API.",
-        "homepage": "http://glide.thephpleague.com",
-        "keywords": [
-            "ImageMagick",
-            "editing",
-            "gd",
-            "image",
-            "imagick",
-            "league",
-            "manipulation",
-            "processing"
-        ]
-    },
-    {
         "name": "masterminds/html5",
         "version": "2.7.0",
         "version_normalized": "2.7.0.0",
@@ -3985,59 +3657,6 @@
         ]
     },
     {
-        "name": "microweber/screen",
-        "version": "v1.0.6",
-        "version_normalized": "1.0.6.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/microweber/screen.git",
-            "reference": "a7865099d2fbb8960052cfb408b4cbe463b31774"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/microweber/screen/zipball/a7865099d2fbb8960052cfb408b4cbe463b31774",
-            "reference": "a7865099d2fbb8960052cfb408b4cbe463b31774",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3"
-        },
-        "require-dev": {
-            "symfony/var-dumper": "~3.0"
-        },
-        "time": "2017-01-20T15:21:43+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Screen\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Peter Ivanov",
-                "email": "peter@microweber.com",
-                "homepage": "http://microweber.com"
-            },
-            {
-                "name": "André Filipe",
-                "email": "andre.r.flip@gmail.com",
-                "homepage": "http://masnathan.com"
-            }
-        ],
-        "description": "A PHP Class to interact with PhantomJs and capture screenshot of a webpage",
-        "keywords": [
-            "capture",
-            "phantomjs",
-            "print-screen",
-            "screen"
-        ]
-    },
-    {
         "name": "mikey179/vfsstream",
         "version": "v1.6.8",
         "version_normalized": "1.6.8.0",
@@ -4084,53 +3703,6 @@
         ],
         "description": "Virtual file system to mock the real file system in unit tests.",
         "homepage": "http://vfs.bovigo.org/"
-    },
-    {
-        "name": "mtdowling/cron-expression",
-        "version": "v1.2.0",
-        "version_normalized": "1.2.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/mtdowling/cron-expression.git",
-            "reference": "9504fa9ea681b586028adaaa0877db4aecf32bad"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/mtdowling/cron-expression/zipball/9504fa9ea681b586028adaaa0877db4aecf32bad",
-            "reference": "9504fa9ea681b586028adaaa0877db4aecf32bad",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.2"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~4.0|~5.0"
-        },
-        "time": "2017-01-23T04:29:33+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Cron\\": "src/Cron/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Michael Dowling",
-                "email": "mtdowling@gmail.com",
-                "homepage": "https://github.com/mtdowling"
-            }
-        ],
-        "description": "CRON for PHP: Calculate the next or previous run date and determine if a CRON expression is due",
-        "keywords": [
-            "cron",
-            "schedule"
-        ],
-        "abandoned": "dragonmantank/cron-expression"
     },
     {
         "name": "nikic/php-parser",
@@ -5835,220 +5407,6 @@
         ]
     },
     {
-        "name": "spatie/browsershot",
-        "version": "3.26.0",
-        "version_normalized": "3.26.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/spatie/browsershot.git",
-            "reference": "42dd2120577d9a4c6937773d7a233fffe72a06c7"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/spatie/browsershot/zipball/42dd2120577d9a4c6937773d7a233fffe72a06c7",
-            "reference": "42dd2120577d9a4c6937773d7a233fffe72a06c7",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.1",
-            "spatie/image": "^1.4",
-            "spatie/temporary-directory": "^1.1",
-            "symfony/process": "^3.0|^4.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "^6.1|^7.0",
-            "spatie/phpunit-snapshot-assertions": "^1.0"
-        },
-        "time": "2018-10-18T17:24:07+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Spatie\\Browsershot\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Freek Van der Herten",
-                "email": "freek@spatie.be",
-                "homepage": "https://github.com/freekmurze",
-                "role": "Developer"
-            }
-        ],
-        "description": "Convert a webpage to an image or pdf using headless Chrome",
-        "homepage": "https://github.com/spatie/browsershot",
-        "keywords": [
-            "chrome",
-            "convert",
-            "headless",
-            "image",
-            "pdf",
-            "puppeteer",
-            "screenshot",
-            "webpage"
-        ]
-    },
-    {
-        "name": "spatie/image",
-        "version": "1.7.6",
-        "version_normalized": "1.7.6.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/spatie/image.git",
-            "reference": "74535b5fd67ace75840c00c408666660843e755e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/spatie/image/zipball/74535b5fd67ace75840c00c408666660843e755e",
-            "reference": "74535b5fd67ace75840c00c408666660843e755e",
-            "shasum": ""
-        },
-        "require": {
-            "ext-exif": "*",
-            "ext-mbstring": "*",
-            "league/glide": "^1.4",
-            "php": "^7.0",
-            "spatie/image-optimizer": "^1.0",
-            "spatie/temporary-directory": "^1.0.0",
-            "symfony/process": "^3.0|^4.0|^5.0"
-        },
-        "require-dev": {
-            "larapack/dd": "^1.1",
-            "phpunit/phpunit": "^6.0|^7.0",
-            "symfony/var-dumper": "^3.2|^5.0"
-        },
-        "time": "2020-01-26T18:56:44+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Spatie\\Image\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Freek Van der Herten",
-                "email": "freek@spatie.be",
-                "homepage": "https://spatie.be",
-                "role": "Developer"
-            }
-        ],
-        "description": "Manipulate images with an expressive API",
-        "homepage": "https://github.com/spatie/image",
-        "keywords": [
-            "image",
-            "spatie"
-        ]
-    },
-    {
-        "name": "spatie/image-optimizer",
-        "version": "1.1.3",
-        "version_normalized": "1.1.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/spatie/image-optimizer.git",
-            "reference": "90d6eebf9a84cc88e4cd2af3928004ba59e693a4"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/spatie/image-optimizer/zipball/90d6eebf9a84cc88e4cd2af3928004ba59e693a4",
-            "reference": "90d6eebf9a84cc88e4cd2af3928004ba59e693a4",
-            "shasum": ""
-        },
-        "require": {
-            "ext-fileinfo": "*",
-            "php": "^7.0",
-            "psr/log": "^1.0",
-            "symfony/process": "^2.8|^3.0|^4.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "^6.2|^7.0",
-            "symfony/var-dumper": "^3.0|^4.0"
-        },
-        "time": "2018-11-19T22:17:30+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Spatie\\ImageOptimizer\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Freek Van der Herten",
-                "email": "freek@spatie.be",
-                "homepage": "https://spatie.be",
-                "role": "Developer"
-            }
-        ],
-        "description": "Easily optimize images using PHP",
-        "homepage": "https://github.com/spatie/image-optimizer",
-        "keywords": [
-            "image-optimizer",
-            "spatie"
-        ]
-    },
-    {
-        "name": "spatie/temporary-directory",
-        "version": "1.2.2",
-        "version_normalized": "1.2.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/spatie/temporary-directory.git",
-            "reference": "fcb127e615700751dac2aefee0ea2808ff3f5bb1"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/spatie/temporary-directory/zipball/fcb127e615700751dac2aefee0ea2808ff3f5bb1",
-            "reference": "fcb127e615700751dac2aefee0ea2808ff3f5bb1",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.2"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "^8.0"
-        },
-        "time": "2019-12-15T18:52:09+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Spatie\\TemporaryDirectory\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Alex Vanderbist",
-                "email": "alex@spatie.be",
-                "homepage": "https://spatie.be",
-                "role": "Developer"
-            }
-        ],
-        "description": "Easily create, use and destroy temporary directories",
-        "homepage": "https://github.com/spatie/temporary-directory",
-        "keywords": [
-            "spatie",
-            "temporary-directory"
-        ]
-    },
-    {
         "name": "stack/builder",
         "version": "v1.0.6",
         "version_normalized": "1.0.6.0",
@@ -6267,7 +5625,21 @@
             }
         ],
         "description": "Symfony BrowserKit Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/class-loader",
@@ -6325,7 +5697,21 @@
             }
         ],
         "description": "Symfony ClassLoader Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/config",
@@ -6391,7 +5777,21 @@
             }
         ],
         "description": "Symfony Config Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/console",
@@ -6465,7 +5865,21 @@
             }
         ],
         "description": "Symfony Console Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/css-selector",
@@ -6578,7 +5992,21 @@
             }
         ],
         "description": "Symfony Debug Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/dependency-injection",
@@ -6651,7 +6079,21 @@
             }
         ],
         "description": "Symfony DependencyInjection Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/dom-crawler",
@@ -6710,7 +6152,21 @@
             }
         ],
         "description": "Symfony DomCrawler Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/event-dispatcher",
@@ -6775,7 +6231,21 @@
             }
         ],
         "description": "Symfony EventDispatcher Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/filesystem",
@@ -6827,7 +6297,21 @@
             }
         ],
         "description": "Symfony Filesystem Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/finder",
@@ -6934,7 +6418,21 @@
             }
         ],
         "description": "Symfony HttpFoundation Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/http-kernel",
@@ -7026,7 +6524,21 @@
             }
         ],
         "description": "Symfony HttpKernel Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/polyfill-ctype",
@@ -7086,6 +6598,20 @@
             "ctype",
             "polyfill",
             "portable"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7147,6 +6673,20 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7211,6 +6751,20 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7272,6 +6826,20 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7330,6 +6898,20 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7448,6 +7030,20 @@
             "polyfill",
             "portable",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7502,6 +7098,20 @@
             "compatibility",
             "polyfill",
             "shim"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7553,7 +7163,21 @@
             }
         ],
         "description": "Symfony Process Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/psr-http-message-bridge",
@@ -7698,6 +7322,20 @@
             "routing",
             "uri",
             "url"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -7779,7 +7417,21 @@
             }
         ],
         "description": "Symfony Serializer Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/translation",
@@ -7851,7 +7503,21 @@
             }
         ],
         "description": "Symfony Translation Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/validator",
@@ -7939,7 +7605,21 @@
             }
         ],
         "description": "Symfony Validator Component",
-        "homepage": "https://symfony.com"
+        "homepage": "https://symfony.com",
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
+        ]
     },
     {
         "name": "symfony/var-dumper",
@@ -8010,6 +7690,20 @@
         "keywords": [
             "debug",
             "dump"
+        ],
+        "funding": [
+            {
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
+            },
+            {
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
+            }
         ]
     },
     {
@@ -8071,64 +7765,20 @@
             }
         ],
         "description": "Symfony Yaml Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "t1gor/robots-txt-parser",
-        "version": "v0.2.3",
-        "version_normalized": "0.2.3.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/t1gor/Robots.txt-Parser-Class.git",
-            "reference": "20dbf68534d042ffc3d4cf6381164d86087c806f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/t1gor/Robots.txt-Parser-Class/zipball/20dbf68534d042ffc3d4cf6381164d86087c806f",
-            "reference": "20dbf68534d042ffc3d4cf6381164d86087c806f",
-            "shasum": ""
-        },
-        "require": {
-            "ext-mbstring": "*",
-            "php": ">=5.4.0"
-        },
-        "require-dev": {
-            "codeclimate/php-test-reporter": ">=0.2",
-            "phpunit/phpunit": ">=3.7"
-        },
-        "time": "2016-08-10T19:04:18+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "source/robotstxtparser.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
+        "homepage": "https://symfony.com",
+        "funding": [
             {
-                "name": "Igor Timoshenkov",
-                "email": "igor.timoshenkov@gmail.com",
-                "role": "creator"
+                "url": "https://symfony.com/sponsor",
+                "type": "custom"
             },
             {
-                "name": "Jan-Petter Gundersen",
-                "email": "europe.jpg@gmail.com",
-                "role": "contributor"
+                "url": "https://github.com/fabpot",
+                "type": "github"
+            },
+            {
+                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                "type": "tidelift"
             }
-        ],
-        "description": "PHP class to parse robots.txt rules according to Google, Yandex, W3C and The Web Robots Pages specifications.",
-        "homepage": "https://github.com/t1gor/Robots.txt-Parser-Class",
-        "keywords": [
-            "The Web Robots Pages",
-            "W3C",
-            "google",
-            "parser",
-            "robots.txt",
-            "yandex"
         ]
     },
     {
@@ -8388,6 +8038,71 @@
             }
         ],
         "description": "A robust cross-platform utility for normalizing, comparing and modifying file paths."
+    },
+    {
+        "name": "wrench/wrench",
+        "version": "v2.0.8",
+        "version_normalized": "2.0.8.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/varspool/Wrench.git",
+            "reference": "92fb5d1c5d7a6f65884ade658b6271de93edafc2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/varspool/Wrench/zipball/92fb5d1c5d7a6f65884ade658b6271de93edafc2",
+            "reference": "92fb5d1c5d7a6f65884ade658b6271de93edafc2",
+            "shasum": ""
+        },
+        "require": {
+            "ext-sockets": "*",
+            "php": ">=5.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.5",
+            "squizlabs/php_codesniffer": "*"
+        },
+        "time": "2017-02-12T02:08:51+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Wrench": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "WTFPL"
+        ],
+        "authors": [
+            {
+                "name": "Dominic Scheirlinck",
+                "email": "dominic@varspool.com",
+                "homepage": "http://www.somethingemporium.com/"
+            },
+            {
+                "name": "Simon Samtleben",
+                "email": "web@lemmingzshadow.net",
+                "homepage": "http://lemmingzshadow.net/"
+            },
+            {
+                "name": "Nico Kaiser",
+                "email": "nico@kaiser.me",
+                "homepage": "http://siriux.net/"
+            }
+        ],
+        "description": "PHP WebSocket client/server library",
+        "homepage": "http://github.com/varspool/Wrench",
+        "keywords": [
+            "WebSockets",
+            "hybi",
+            "websocket"
+        ]
     },
     {
         "name": "zaporylie/composer-drupal-optimizations",

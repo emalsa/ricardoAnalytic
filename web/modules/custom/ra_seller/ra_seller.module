@@ -59,8 +59,17 @@ function _ra_seller_get_nodes() {
  * Implements hook_ENTITY_TYPE_presave().
  */
 function ra_seller_node_presave(EntityInterface $entity) {
-  if ($entity->getType() === 'seller') {
+  if ($entity->bundle() === 'seller') {
     // seller_id is node label.
     $entity->field_seller_id->value = $entity->label();
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function ra_seller_node_insert(EntityInterface $entity) {
+  if ($entity->bundle() === 'seller') {
+    $entity->field_seller_init_process->value = 1;
   }
 }

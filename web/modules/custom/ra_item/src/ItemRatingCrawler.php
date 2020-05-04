@@ -56,7 +56,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
   protected $client;
 
-  protected $nextPage = 1;
+  protected $page = 1;
 
   protected $processNextPage = TRUE;
 
@@ -74,9 +74,10 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
   }
 
   /**
-   * @param $sellerId
+   * @param  string  $sellerNodeId
    *
-   * @throws \Exception
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function setSeller(string $sellerNodeId) {
     if ($sellerNodeId) {
@@ -99,16 +100,17 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
   }
 
   /**
+   *
    * @param  int  $sellerNodeId
    */
   public function initItemRatingsCrawler(int $sellerNodeId) {
     try {
       $this->setSeller($sellerNodeId);
-      $this->processPage();
-//
-//      foreach ($this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]) as $node) {
-//        $node->delete();
-//      }
+      //      $this->processPage();
+
+      foreach ($this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]) as $node) {
+        $node->delete();
+      }
 
 
     } catch (Exception $e) {
@@ -119,35 +121,64 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
   /**
    *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function processPage() {
-    $this->client->request('GET', $this->sellerUrlApi . "{$this->nextPage}");
+    $this->client->request('GET', $this->sellerUrlApi . "{$this->page}");
+
     if ($this->client->getResponse()->getStatusCode() === 200) {
       $data = json_decode($this->client->getResponse()->getContent());
+
       $i = 0;
       foreach ($data->list as $rating) {
 
-        $i++;
-        if ($i > 1) {
-          //          break;
+        if ($this->ratingItemExists($rating->id, $rating->rating_from->id)) {
+          // Abort if rating item exists, because we have the older already.
+          if (!($this->sellerNode->field_seller_init_process->value)) {
+            $this->processNextPage = FALSE;
+            break;
+          }
+          else { //  if all ratings have to be processed, then we only continue.
+            continue;
+          }
         }
 
-        if ($this->ratingItemExists($rating->id, $rating->rating_from->id)) {
-          continue;
+        // Break only if not "init process"
+        if ($i > 2 && !($this->sellerNode->field_seller_init_process->value)) {
+          break;
         }
 
         $this->processRatingItem($rating);
+        $i++;
+
       }
 
+      // Next page
+      if ($this->processNextPage && $data->page <= $this->page) {
+        $this->page++;
+        $this->processPage();
+      }
+
+
+      // @todo: set init_process false if reached rating older than one year (365d)
+      $this->sellerNode->field_seller_init_process->value = 0;
+      $this->sellerNode->save();
     }
+
   }
 
   /**
    * @param $rating
    *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function processRatingItem($rating) {
     $articleId = $rating->entity->details->id;
+
     $ratingNode = $this->entityTypeManager->getStorage('node')->create([
       'type' => 'item',
       'title' => 'rating: ' . $rating->entity->details->id . ' - ' . $rating->id,
@@ -159,10 +190,17 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
       'field_buyer_id' => $rating->rating_from->id,
       'field_item_buyer' => $rating->rating_from->nickname,
       'field_item_seller_ref' => $this->sellerNode->id(),
-      'field_article_id' => $articleId,
-
+      'field_article_id' => ($articleId) ? $articleId : 'not available',
     ]);
+
     $ratingNode->save();
+    return;
+
+    // Old ratings are available, but the article id is not given. We don't process further.
+    if (!$articleId) {
+      return;
+    }
+
     $articleNodeId = $this->updateOrCreateArticle($articleId, $ratingNode);
     $ratingNode->set('field_item_rating_article_ref', $articleNodeId);
     $ratingNode->save();
@@ -173,6 +211,9 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
    * @param $ratingNode
    *
    * @return int|string|null
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function updateOrCreateArticle($articleId, $ratingNode) {
     /** @var \Drupal\node\NodeInterface $article */
@@ -208,8 +249,13 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     $queue_service = \Drupal::service('queue');
     /** @var QueueInterface $queue_item */
     $queue_item = $queue_service->get('article_queue');
+
     $data['article_id'] = $articleId;
     $queue_item->createItem($data);
+
+    //    /** @var \Drupal\ra_article\ArticleCrawler $articleCrawler */
+    //    $articleCrawler = Drupal::service('ra_article.article_crawler');
+    //    $articleCrawler->processArticle($articleId);
 
     return $article->id();
   }
@@ -219,6 +265,8 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
    * @param  string  $rating_from_id
    *
    * @return bool
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function ratingItemExists(string $rating_id, string $rating_from_id) {
     $rating = $this->entityTypeManager

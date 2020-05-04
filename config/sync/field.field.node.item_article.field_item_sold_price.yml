@@ -1,0 +1,23 @@
+uuid: 89c75751-0c91-4f56-968a-78f3f78ac928
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_item_sold_price
+    - node.type.item_article
+id: node.item_article.field_item_sold_price
+field_name: field_item_sold_price
+entity_type: node
+bundle: item_article
+label: 'Sold price'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal
