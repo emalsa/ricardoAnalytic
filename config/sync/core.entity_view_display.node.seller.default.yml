@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
     - field.field.node.seller.field_seller_id_numeric
+    - field.field.node.seller.field_seller_init_process
     - node.type.seller
   module:
     - user
@@ -67,6 +68,16 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_integer
+    region: content
+  field_seller_init_process:
+    weight: 109
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
     region: content
   links:
     weight: 100

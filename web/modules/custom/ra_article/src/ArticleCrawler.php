@@ -52,7 +52,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setArticle($articleId);
       $this->processArticlePage();
     } catch (\Exception $exception) {
-      \Drupal::logger('a')->error($exception->getMessage());
+      \Drupal::logger('article_crawler')->error($exception->getMessage() . ' - articleId: ' . $articleId);
     }
   }
 
@@ -74,12 +74,8 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   protected function processArticlePage() {
     // Get data
     $page = $this->browser->createPage();
-    // $page->navigate($this->articleUrl)->waitForNavigation();
-
-    $page->navigate('https://www.ricardo.ch/de/s/1011548154/')->waitForNavigation();
-
+    $page->navigate($this->articleUrl)->waitForNavigation();
     $data = $page->evaluate('window.ricardo')->getReturnValue();
-    $this->browser->close();
     if (isset($data['initialState']['pdp'])) {
       $pdp = $data['initialState']['pdp'];
       $this->setSeller($pdp);
@@ -90,9 +86,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setSoldDate($pdp);
     }
     else {
-      // @todo: handling old article (todo)
-      // @todo: handle not exisitng article (OK)
-      // article not available anymore (old)
       if (!($this->articleNode->field_item_rating_ref->isEmpty())) {
         $ratingNodeId = $this->articleNode->field_item_rating_ref->target_id;
         /** @var \Drupal\node\NodeInterface $ratingNode */

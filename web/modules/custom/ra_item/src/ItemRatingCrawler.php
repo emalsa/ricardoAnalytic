@@ -15,6 +15,8 @@ use Goutte\Client;
  */
 class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
+  const MAX_ITEM_TO_PROCESS = 2;
+
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
    *
@@ -35,19 +37,9 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
   protected $sellerNode;
 
   /**
-   * @var \Drupal\node\NodeInterface
-   */
-  protected $itemNode;
-
-  /**
    * @var string
    */
   protected $sellerId;
-
-  /**
-   * @var string
-   */
-  protected $sellerUrl;
 
   /**
    * @var string
@@ -78,6 +70,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Exception
    */
   protected function setSeller(string $sellerNodeId) {
     if ($sellerNodeId) {
@@ -91,7 +84,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
       $this->sellerNode = reset($result);
       $this->sellerId = $this->sellerNode->field_seller_id_numeric->value;
 
-      /// The username and not numeric id is required for the url.
+      /// The username is required for the url and not numeric id.
       $this->sellerUrlApi = "https://www.ricardo.ch/marketplace-spa/api/ratings/to/{$this->sellerNode->field_seller_id->value}?page=";
     }
     else {
@@ -107,11 +100,9 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     try {
       $this->setSeller($sellerNodeId);
       $this->processPage();
-      //
-      //      foreach ($this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]) as $node) {
-      //        $node->delete();
-      //      }
-
+//
+//       $entities = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]);
+//       $this->entityTypeManager->getStorage('node')->delete($entities);
 
     } catch (Exception $e) {
       Drupal::logger('ra_item')->error($e);
@@ -134,37 +125,44 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
       $i = 0;
       foreach ($data->list as $rating) {
 
+        // If we reaching ratings older than 1 year, then we abort the full crawling.
+        if (strtotime($rating->creation_date) < strtotime('-1 year')) {
+          $this->processNextPage = FALSE;
+          $this->sellerNode->field_seller_init_process->value = 0;
+          $this->sellerNode->save();
+          break;
+        }
+
+
         if ($this->ratingItemExists($rating->id, $rating->rating_from->id)) {
+
           // Abort if rating item exists, because we have the older already.
           if (!($this->sellerNode->field_seller_init_process->value)) {
             $this->processNextPage = FALSE;
             break;
           }
-          else { //  if all ratings have to be processed, then we only continue.
+          else { //  if all ratings have to be processed, then we only continue foreach.
             continue;
           }
+
         }
 
-        // Break only if not "init process"
-        if ($i > 2 && !($this->sellerNode->field_seller_init_process->value)) {
+        // Break after reached max. item (if not "init process")
+        if (!($this->sellerNode->field_seller_init_process->value) && $i > self::MAX_ITEM_TO_PROCESS) {
+          $this->processNextPage = FALSE;
           break;
         }
 
         $this->processRatingItem($rating);
         $i++;
-
       }
 
       // Next page
-      if ($this->processNextPage && $data->page <= $this->page) {
+      if ($this->processNextPage && $this->page <= $data->page) {
         $this->page++;
         $this->processPage();
       }
 
-
-      // @todo: set init_process false if reached rating older than one year (365d)
-      $this->sellerNode->field_seller_init_process->value = 0;
-      $this->sellerNode->save();
     }
 
   }
@@ -194,7 +192,9 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     ]);
 
     $ratingNode->save();
-    return;
+
+    //@todo remove
+    //    return;
 
     // Old ratings are available, but the article id is not given. We don't process further.
     if (!$articleId) {
@@ -243,8 +243,6 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
       $article->save();
     }
 
-    //@Todo: Add to article queue, but on both cases?
-
     /** @var QueueFactory $queue_factory */
     $queue_service = \Drupal::service('queue');
     /** @var QueueInterface $queue_item */
@@ -252,10 +250,6 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
     $data['article_id'] = $articleId;
     $queue_item->createItem($data);
-
-    //    /** @var \Drupal\ra_article\ArticleCrawler $articleCrawler */
-    //    $articleCrawler = Drupal::service('ra_article.article_crawler');
-    //    $articleCrawler->processArticle($articleId);
 
     return $article->id();
   }

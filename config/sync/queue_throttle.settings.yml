@@ -1,0 +1,20 @@
+locale_translation:
+  enabled: false
+  time: 60
+  items: 0
+  unit: ''
+article_queue:
+  enabled: true
+  time: 20
+  items: 1
+  unit: minute
+item_rating_queue:
+  enabled: false
+  time: 60
+  items: 0
+  unit: ''
+seller_queue:
+  enabled: false
+  time: 60
+  items: 0
+  unit: ''

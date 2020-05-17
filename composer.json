@@ -31,7 +31,9 @@
         "drupal/search_api_solr": "^1.2",
         "drupal/varnish_purge": "^1.10",
         "drush/drush": "~8.0",
-        "zaporylie/composer-drupal-optimizations": "^1.1"
+        "zaporylie/composer-drupal-optimizations": "^1.1",
+        "drupal/queue_throttle": "^1.1",
+        "drupal/ultimate_cron": "^2.0@alpha"
     },
     "require-dev": {
         "behat/mink": "~1.7",

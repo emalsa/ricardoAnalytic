@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
     - field.field.node.seller.field_seller_id_numeric
+    - field.field.node.seller.field_seller_init_process
     - node.type.seller
   module:
     - user
@@ -30,4 +31,5 @@ hidden:
   field_postal_code: true
   field_seller_id: true
   field_seller_id_numeric: true
+  field_seller_init_process: true
   langcode: true

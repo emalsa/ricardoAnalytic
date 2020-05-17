@@ -31,6 +31,7 @@ module:
   page_cache: 0
   path: 0
   path_alias: 0
+  queue_throttle: 0
   quickedit: 0
   ra_article: 0
   ra_item: 0
