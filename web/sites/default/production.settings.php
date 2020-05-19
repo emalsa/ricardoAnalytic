@@ -32,4 +32,3 @@ $databases['default']['default'] = array(
   'port' => 3306,
   'prefix' => '',
 );
-
