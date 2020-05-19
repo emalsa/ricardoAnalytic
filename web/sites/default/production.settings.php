@@ -22,3 +22,13 @@ $config['system.performance']['js']['preprocess'] = 1;
 
 // Disabling stage file proxy on production, with that the module can be enabled even on production
 $config['stage_file_proxy.settings']['origin'] = false;
+
+$databases['default']['default'] = array(
+  'driver' => 'mysql',
+  'database' => 'ricardoanalytic',
+  'username' => 'ricardoanalytic',
+  'password' => 'MzZTt7mJM',
+  'host' => 'localhost',
+  'port' => 3306,
+  'prefix' => '',
+);
