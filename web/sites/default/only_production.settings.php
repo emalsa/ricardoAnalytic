@@ -25,16 +25,16 @@ $settings['file_public_base_url'] = 'https://ricardoanalytic.seauton.io/sites/de
 
 
 // Don't show any error messages on the site (will still be shown in watchdog)
-$config['system.logging']['error_level'] = 'hide';
+$config['system.logging']['error_level'] = 'verbose';
 
 // Expiration of cached pages on Varnish to 15 min
 $config['system.performance']['cache']['page']['max_age'] = 900;
 
 // Aggregate CSS files on
-$config['system.performance']['css']['preprocess'] = 1;
+$config['system.performance']['css']['preprocess'] = 0;
 
 // Aggregate JavaScript files on
-$config['system.performance']['js']['preprocess'] = 1;
+$config['system.performance']['js']['preprocess'] = 0;
 
 // Disabling stage file proxy on production, with that the module can be enabled even on production
 $config['stage_file_proxy.settings']['origin'] = FALSE;
