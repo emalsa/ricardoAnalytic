@@ -13,7 +13,7 @@ $settings['hash_salt'] = '749ab2c0d06c42ae3b841b79e79875f02b3a042e43c92378cd28bd
 $settings['config_sync_directory'] = '../config/sync';
 
 $settings['trusted_host_patterns'] = [
-    '^\.ricardoanalytic.seauton\.io$',
+    'https://ricardoanalytic.seauton.io$',
   ];
 
 // Don't show any error messages on the site (will still be shown in watchdog)
