@@ -10,6 +10,8 @@
 
 $settings['hash_salt'] = '749ab2c0d06c42ae3b841b79e79875f02b3a042e43c92378cd28bd444c04d284';
 
+$settings['config_sync_directory'] = '../config/sync';
+
 // Don't show any error messages on the site (will still be shown in watchdog)
 $config['system.logging']['error_level'] = 'hide';
 
@@ -23,9 +25,9 @@ $config['system.performance']['css']['preprocess'] = 1;
 $config['system.performance']['js']['preprocess'] = 1;
 
 // Disabling stage file proxy on production, with that the module can be enabled even on production
-$config['stage_file_proxy.settings']['origin'] = false;
+$config['stage_file_proxy.settings']['origin'] = FALSE;
 
-$databases['default']['default'] = array(
+$databases['default']['default'] = [
   'driver' => 'mysql',
   'database' => 'ricardoanalytic',
   'username' => 'ricardoanalytic',
@@ -33,5 +35,7 @@ $databases['default']['default'] = array(
   'host' => 'localhost',
   'port' => 3306,
   'prefix' => '',
-);
+];
+
+
 
