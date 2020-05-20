@@ -1,4 +1,0 @@
-RewriteEngine On
-RewriteCond %{HTTP_HOST} ^(www\.)?ricardoanalytic.seauton\.io [NC]
-RewriteCond %{REQUEST_URI} !^/web/.*$
-RewriteRule ^(.*)$ /web/$1
