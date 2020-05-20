@@ -20,6 +20,7 @@ $settings['config_sync_directory'] = '../config/sync';
   ];
 
 $settings['file_temp_path'] = '/tmp';
+$settings['file_public_path'] = 'web/sites/default/files';
 
 // Don't show any error messages on the site (will still be shown in watchdog)
 $config['system.logging']['error_level'] = 'hide';
