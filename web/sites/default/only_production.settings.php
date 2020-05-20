@@ -19,6 +19,8 @@ $settings['config_sync_directory'] = '../config/sync';
     '^.+\.seauton\.io$',
   ];
 
+$settings['file_temp_path'] = '/tmp';
+
 // Don't show any error messages on the site (will still be shown in watchdog)
 $config['system.logging']['error_level'] = 'hide';
 
