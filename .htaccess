@@ -1,4 +1,4 @@
 RewriteEngine On
-RewriteCond %{HTTP_HOST} ^(www\.)?musterhans\.ch [NC]
-RewriteCond %{REQUEST_URI} !^/cms/.*$
+RewriteCond %{HTTP_HOST} ^(www\.)?ricardoanalytics.seauton\.io [NC]
+RewriteCond %{REQUEST_URI} !^/web/.*$
 RewriteRule ^(.*)$ /cms/$1
