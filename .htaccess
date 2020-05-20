@@ -1,0 +1,11 @@
+Options -Indexes
+RewriteEngine on
+Options +FollowSymLinks
+RewriteCond %{HTTP_HOST} !^www\.[ricardoanalytic.seauton]\.[io]$ [NC]
+RewriteRule .* http://www..[ricardoanalytic.seauton].[io]/	[L,R=301]
+RewriteRule ^$ /index.php	[L]
+RewriteCond %{DOCUMENT_ROOT}/[web]%{REQUEST_URI} -f
+RewriteRule .* [web]/$0 [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule .*[web]/index.php?q=$0 [QSA]
