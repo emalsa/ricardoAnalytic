@@ -32,6 +32,7 @@ if (file_exists(__DIR__ . '/production.settings.php')) {
 }
 
 
+
 ### Lagoon Database connection
 if (getenv('LAGOON')) {
   $databases['default']['default'] = [
