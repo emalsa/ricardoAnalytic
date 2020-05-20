@@ -99,10 +99,10 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
   public function initItemRatingsCrawler(int $sellerNodeId) {
     try {
       $this->setSeller($sellerNodeId);
-      $this->processPage();
+//      $this->processPage();
 //
-//       $entities = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]);
-//       $this->entityTypeManager->getStorage('node')->delete($entities);
+       $entities = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]);
+       $this->entityTypeManager->getStorage('node')->delete($entities);
 
     } catch (Exception $e) {
       Drupal::logger('ra_item')->error($e);
