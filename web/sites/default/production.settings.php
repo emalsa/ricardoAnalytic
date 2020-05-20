@@ -8,6 +8,8 @@
  * It contains some defaults that the amazee.io team suggests, please edit them as required.
  */
 
+$settings['hash_salt'] = '749ab2c0d06c42ae3b841b79e79875f02b3a042e43c92378cd28bd444c04d284';
+
 // Don't show any error messages on the site (will still be shown in watchdog)
 $config['system.logging']['error_level'] = 'hide';
 
