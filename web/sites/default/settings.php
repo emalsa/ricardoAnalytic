@@ -26,8 +26,8 @@
  */
 
 // Use production settings. Will be renamed on deployment process
-if (file_exists(__DIR__ . '/only_production.settings.php')) {
-  include_once __DIR__ . '/only_production.settings.php';
+if (file_exists(__DIR__ . '/production.settings.php')) {
+  include_once __DIR__ . '/production.settings.php';
   return;
 }
 
