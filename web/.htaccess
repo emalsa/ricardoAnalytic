@@ -71,8 +71,8 @@ AddEncoding gzip svgz
 
 
   # Metanet
-  RewriteCond %{REQUEST_URI} !web/
-  RewriteRule ^(.*)$ /web/$1
+  #RewriteCond %{REQUEST_URI} !web/
+  #RewriteRule ^(.*)$ /web/$1
 
 
 
