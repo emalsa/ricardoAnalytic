@@ -25,9 +25,16 @@
  *
  */
 
+// Use production settings. Will be renamed on deployment process
+if (file_exists(__DIR__ . '/only_production.settings.php')) {
+  include_once __DIR__ . '/only_production.settings.php';
+  return;
+}
+
+
 ### Lagoon Database connection
-if(getenv('LAGOON')){
-  $databases['default']['default'] = array(
+if (getenv('LAGOON')) {
+  $databases['default']['default'] = [
     'driver' => 'mysql',
     'database' => getenv('MARIADB_DATABASE') ?: 'drupal',
     'username' => getenv('MARIADB_USERNAME') ?: 'drupal',
@@ -35,7 +42,7 @@ if(getenv('LAGOON')){
     'host' => getenv('MARIADB_HOST') ?: 'mariadb',
     'port' => 3306,
     'prefix' => '',
-  );
+  ];
 }
 
 ### Lagoon Solr connection
@@ -54,7 +61,7 @@ if (getenv('LAGOON')) {
 }
 
 ### Lagoon Redis connection
-if (getenv('LAGOON')){
+if (getenv('LAGOON')) {
   $settings['redis.connection']['interface'] = 'PhpRedis';
   $settings['redis.connection']['host'] = getenv('REDIS_HOST') ?: 'redis';
   $settings['redis.connection']['port'] = 6379;
@@ -117,9 +124,10 @@ if (getenv('LAGOON')) {
 ### Trusted Host Patterns, see https://www.drupal.org/node/2410395 for more information.
 ### If your site runs on multiple domains, you need to add these domains here
 if (getenv('LAGOON_ROUTES')) {
-  $settings['trusted_host_patterns'] = array(
-    '^' . str_replace(['.', 'https://', 'http://', ','], ['\.', '', '', '|'], getenv('LAGOON_ROUTES')) . '$', // escape dots, remove schema, use commas as regex separator
-   );
+  $settings['trusted_host_patterns'] = [
+    '^' . str_replace(['.', 'https://', 'http://', ','], ['\.', '', '', '|'], getenv('LAGOON_ROUTES')) . '$',
+    // escape dots, remove schema, use commas as regex separator
+  ];
 }
 
 ### Temp directory
@@ -142,7 +150,7 @@ if (file_exists(__DIR__ . '/all.services.yml')) {
   $settings['container_yamls'][] = __DIR__ . '/all.services.yml';
 }
 
-if(getenv('LAGOON_ENVIRONMENT_TYPE')){
+if (getenv('LAGOON_ENVIRONMENT_TYPE')) {
   // Environment specific settings files.
   if (file_exists(__DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php')) {
     include __DIR__ . '/' . getenv('LAGOON_ENVIRONMENT_TYPE') . '.settings.php';
