@@ -1,1 +1,4 @@
-web/.htaccess
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^(www\.)?musterhans\.ch [NC]
+RewriteCond %{REQUEST_URI} !^/cms/.*$
+RewriteRule ^(.*)$ /cms/$1
