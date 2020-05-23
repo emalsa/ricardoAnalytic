@@ -6,8 +6,8 @@ use Drupal;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Exception;
-use Goutte\Client;
-use Symfony\Component\DomCrawler\Crawler;
+use HeadlessChromium\BrowserFactory;
+use HeadlessChromium\Page;
 
 /**
  * Class SellerCrawler.
@@ -48,6 +48,14 @@ class SellerCrawler implements SellerCrawlerInterface {
    */
   protected $configManager;
 
+  protected $browserFactory;
+
+  /**
+   * @var \HeadlessChromium\Browser\ProcessAwareBrowser
+   */
+  protected $browser;
+
+
   /**
    * Constructs a new SellerCrawler object.
    *
@@ -57,6 +65,7 @@ class SellerCrawler implements SellerCrawlerInterface {
   public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigManagerInterface $config_manager) {
     $this->entityTypeManager = $entity_type_manager;
     $this->configManager = $config_manager;
+    $this->browserFactory = new BrowserFactory('chromium-browser');
   }
 
   /**
@@ -83,80 +92,45 @@ class SellerCrawler implements SellerCrawlerInterface {
    */
   public function initSellerCrawling(int $nid) {
     try {
+      $this->sellerData = NULL;
       $this->node = $this->entityTypeManager->getStorage('node')->load($nid);
       $this->setSeller($this->node->field_seller_id->value);
 
-      $client = new Client();
-      $crawler = $client->request('GET', $this->sellerUrl);
-      $this->setSellerInformation($crawler);
-      $this->setSellerIdNumeric($client);
+      $this->browser = $this->browserFactory->createBrowser(['noSandbox' => TRUE]);
+      $page = $this->browser->createPage();
+      $page->navigate($this->sellerUrl)->waitForNavigation(Page::DOM_CONTENT_LOADED);
+      $data = $page->evaluate('window.ricardo')->getReturnValue();
+      if (isset($data['initialState']['userProfile'])) {
+        $this->setSellerInformation($data['initialState']['userProfile']);
+        $this->node->setNewRevision();
+        $this->node->save();
+      }
     } catch (Exception $e) {
       Drupal::logger('ra_seller')->error($e);
       return;
     }
 
-    try {
-      $this->node->setNewRevision();
-      $this->node->save();
-    } catch (Drupal\Core\Entity\EntityStorageException $e) {
-      Drupal::logger('ra_seller')->error($e);
-    }
 
   }
 
   /**
-   * Get seller id numeric (ratings_to id)
+   * Set seller information.
    *
-   * @param  \Goutte\Client  $client
+   * @param  array  $sellerData
    */
-  protected function setSellerIdNumeric(Client $client) {
-    $client->request('GET', 'https://www.ricardo.ch/marketplace-spa/api/ratings/to/keller001');
-    if ($client->getResponse()->getStatus() === 200) {
-      $response = $client->getResponse()->getContent();
-      $response = json_decode($response);
-      if (!empty($response->list) && isset($response->list[0]->rating_to->id)) {
-        $this->node->field_seller_id_numeric = $response->list[0]->rating_to->id;
-      }
-    }
+  protected function setSellerInformation(array $sellerData) {
+    // Seller Id numeric
+    $this->node->field_seller_id_numeric = $sellerData['ratings']['list'][0]['rating_to']['id'];
+
+    // Address
+    $postalCodeAndLocation = explode(' ', $sellerData['address']);
+    $this->node->field_postal_code = $postalCodeAndLocation[0];
+    $this->node->field_location = $postalCodeAndLocation[1];
+    $this->node->field_member_since = $sellerData['memberSince'];
+
+    // Figures
+    $this->node->field_items_sold = $sellerData['articlesSold'];
   }
 
-  /**
-   * Crawl seller information.
-   *
-   * @param  \Symfony\Component\DomCrawler\Crawler  $crawler
-   */
-  protected function setSellerInformation(Crawler $crawler) {
-    $sellerInformation = $crawler->filter('p.text--3bhjl')->each(function (Crawler $htmlNode) {
-      return $htmlNode->text();
-    });
-    $this->setLocationAndMemberSinceYear($sellerInformation[0]);
-    $this->setSellerFigures($sellerInformation[1]);
-  }
 
-  /**
-   * Set location and membership start year.
-   *
-   * @param string $sellerInformation
-   */
-  protected function setLocationAndMemberSinceYear(string $sellerInformation) {
-    if (substr($sellerInformation, 0, 5) === 'place') {
-      $sellerInformation = substr($sellerInformation, 5); // remove 'place'
-      $sellerInformation = explode(' ', $sellerInformation);
-
-      $this->node->field_postal_code = $sellerInformation[0];
-      $this->node->field_location = $sellerInformation[1];
-      $this->node->field_member_since = $sellerInformation[5];
-    }
-  }
-
-  /**
-   * Set key figures (items sold, ...).
-   *
-   * @param string $sellerInformation
-   */
-  protected function setSellerFigures(string $sellerInformation) {
-    $sellerInformation = explode(' ', $sellerInformation);
-    $soldItems = str_replace("'", '', $sellerInformation[0]);
-    $this->node->field_items_sold = $soldItems;
-  }
 }

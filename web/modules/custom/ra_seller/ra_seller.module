@@ -9,6 +9,8 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_help().
@@ -38,8 +40,15 @@ function ra_seller_cron() {
   $queue_item = $queue_service->get('seller_queue');
 
   foreach ($nids as $nid) {
-    $data['nid'] = $nid;
-    $queue_item->createItem($data);
+    $node = Node::load($nid);
+    // Process if older than 2 weeks or init
+    if (
+      $node instanceof NodeInterface
+      && ($node->field_seller_init_process || $node->getChangedTime() < strtotime('-1 month'))
+    ) {
+      $data['nid'] = $nid;
+      $queue_item->createItem($data);
+    }
   }
 }
 

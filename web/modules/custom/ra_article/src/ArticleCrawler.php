@@ -5,6 +5,7 @@ namespace Drupal\ra_article;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
 use HeadlessChromium\BrowserFactory;
+use HeadlessChromium\Page;
 
 /**
  * Class ArticleCrawler.
@@ -33,6 +34,9 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected $articleUrl;
 
+  protected $browserFactory;
+
+
   /**
    * Constructs a new ArticleCrawler object.
    *
@@ -40,8 +44,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
-    $browserFactory = new BrowserFactory('chromium-browser');
-    $this->browser = $browserFactory->createBrowser(['noSandbox' => TRUE]);
+    $this->browserFactory = new BrowserFactory('chromium-browser');
   }
 
   /**
@@ -51,8 +54,10 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     try {
       $this->setArticle($articleId);
       $this->processArticlePage();
-    } catch (\Exception $exception) {
-      \Drupal::logger('article_crawler')->error($exception->getMessage() . ' - articleId: ' . $articleId);
+    }
+    catch (\Exception $exception) {
+      \Drupal::logger('article_crawler')
+        ->error($exception->getMessage() . ' - articleId: ' . $articleId);
     }
   }
 
@@ -73,8 +78,10 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected function processArticlePage() {
     // Get data
+    $this->browser = $this->browserFactory->createBrowser(['noSandbox' => TRUE]);
     $page = $this->browser->createPage();
-    $page->navigate($this->articleUrl)->waitForNavigation();
+    $page->navigate($this->articleUrl)->waitForNavigation(Page::DOM_CONTENT_LOADED);
+
     $data = $page->evaluate('window.ricardo')->getReturnValue();
     if (isset($data['initialState']['pdp'])) {
       $pdp = $data['initialState']['pdp'];
@@ -98,7 +105,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       // Is sold
       $this->articleNode->field_item_is_sold = 1;
       $this->articleNode->setTitle('Article not found: ' . $this->articleUrl);
-
     }
 
     $this->articleNode->save();
@@ -112,14 +118,19 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function setArticle(string $articleId) {
-    $result = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => 'item_article', 'field_article_id' => $articleId,]);
-
-    if (empty($result)) {
-      $this->articleNode = $this->entityTypeManager->getStorage('node')->create([
+    $result = $this->entityTypeManager->getStorage('node')
+      ->loadByProperties([
         'type' => 'item_article',
         'field_article_id' => $articleId,
-        'title' => 'Article title not set. Will be changed when processing article self',
       ]);
+
+    if (empty($result)) {
+      $this->articleNode = $this->entityTypeManager->getStorage('node')
+        ->create([
+          'type' => 'item_article',
+          'field_article_id' => $articleId,
+          'title' => 'Article title not set. Will be changed when processing article self',
+        ]);
 
       $this->articleNode->save();
     }

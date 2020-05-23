@@ -8,5 +8,11 @@ COPY scripts /app/scripts
 RUN composer install --no-dev
 COPY . /app
 
+# copy crontabs for root user
+COPY /lagoon/cronjobs /etc/crontabs/root
+
+# start crond with log level 8 in foreground, output to stderr
+CMD ["crond", "-f", "-d", "8"]
+
 # Define where the Drupal Root is located
 ENV WEBROOT=web

@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @QueueWorker (
  *   id = "item_rating_queue",
  *   title = @Translation("Item rating"),
- *   cron = {"time" = 30}
+ *   cron = {"time" = 90}
  * )
  */
 class ItemRatingQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
