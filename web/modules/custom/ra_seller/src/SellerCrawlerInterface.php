@@ -3,7 +3,6 @@
 namespace Drupal\ra_seller;
 
 
-
 /**
  * Interface SellerCrawlerInterface.
  */

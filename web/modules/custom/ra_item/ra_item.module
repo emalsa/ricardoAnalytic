@@ -38,6 +38,6 @@ function ra_item_cron() {
 
   foreach ($nids as $nid) {
     $data['seller_nid'] = $nid;
-//    $queue_item->createItem($data);
+    //    $queue_item->createItem($data);
   }
 }

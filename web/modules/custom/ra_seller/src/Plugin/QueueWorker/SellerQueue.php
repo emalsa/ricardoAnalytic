@@ -59,4 +59,5 @@ class SellerQueue extends QueueWorkerBase implements ContainerFactoryPluginInter
   public function processItem($data) {
     $this->sellerCrawler->initSellerCrawling($data['nid']);
   }
+
 }

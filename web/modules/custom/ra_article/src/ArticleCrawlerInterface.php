@@ -7,5 +7,6 @@ namespace Drupal\ra_article;
  */
 interface ArticleCrawlerInterface {
 
-public function processArticle($articleId);
+  public function processArticle($articleId);
+
 }

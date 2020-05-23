@@ -8,6 +8,6 @@
     "minimum-stability": "dev",
     "support": {
         "issues": "https://www.drupal.org/project/issues/ra_item",
-        "source": "http://cgit.drupalcode.org/ra_item",
-    },
+        "source": "http://cgit.drupalcode.org/ra_item"
+    }
 }

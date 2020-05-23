@@ -105,7 +105,8 @@ class SellerCrawler implements SellerCrawlerInterface {
         $this->node->setNewRevision();
         $this->node->save();
       }
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       Drupal::logger('ra_seller')->error($e);
       return;
     }
