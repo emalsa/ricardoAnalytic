@@ -18,7 +18,7 @@ x-environment:
   # Uncomment if you like to have the system behave like in production
   #LAGOON_ENVIRONMENT_TYPE: production
   # Uncomment to enable xdebug and then restart via `docker-compose up -d`
-  XDEBUG_ENABLE: "true"
+  #XDEBUG_ENABLE: "true"
   DOCKERHOST: "docker.for.mac.localhost"
 
 x-user:

@@ -6,7 +6,6 @@ use Drupal\Core\Annotation\QueueWorker;
 use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\ra_item\ItemRatingCrawler;
 use Drupal\ra_item\ItemRatingCrawlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

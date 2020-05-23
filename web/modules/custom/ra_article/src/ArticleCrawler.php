@@ -55,12 +55,43 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setArticle($articleId);
       $this->processArticlePage();
     }
-    catch (\Exception $exception) {
-      \Drupal::logger('article_crawler')
+    catch (Exception $exception) {
+      Drupal::logger('article_crawler')
         ->error($exception->getMessage() . ' - articleId: ' . $articleId);
     }
   }
 
+  /**
+   * @param  string  $articleId
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
+  public function setArticle(string $articleId) {
+    $result = $this->entityTypeManager->getStorage('node')
+      ->loadByProperties([
+        'type' => 'item_article',
+        'field_article_id' => $articleId,
+      ]);
+
+    if (empty($result)) {
+      $this->articleNode = $this->entityTypeManager->getStorage('node')
+        ->create([
+          'type' => 'item_article',
+          'field_article_id' => $articleId,
+          'title' => 'Article title not set. Will be changed when processing article self',
+        ]);
+
+      $this->articleNode->save();
+    }
+    else {
+      $this->articleNode = reset($result);
+    }
+
+    $this->articleUrl = 'http://ricardo.ch/de/s/';
+    $this->articleUrl = $this->articleUrl . $articleId;
+  }
 
   /**
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -111,47 +142,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   * @param  string  $articleId
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
-   */
-  public function setArticle(string $articleId) {
-    $result = $this->entityTypeManager->getStorage('node')
-      ->loadByProperties([
-        'type' => 'item_article',
-        'field_article_id' => $articleId,
-      ]);
-
-    if (empty($result)) {
-      $this->articleNode = $this->entityTypeManager->getStorage('node')
-        ->create([
-          'type' => 'item_article',
-          'field_article_id' => $articleId,
-          'title' => 'Article title not set. Will be changed when processing article self',
-        ]);
-
-      $this->articleNode->save();
-    }
-    else {
-      $this->articleNode = reset($result);
-    }
-
-    $this->articleUrl = 'http://ricardo.ch/de/s/';
-    $this->articleUrl = $this->articleUrl . $articleId;
-  }
-
-  /**
-   * @param $data
-   */
-  protected function setSoldDate($data) {
-    if (isset($data['article']['end_date'])) {
-      $this->articleNode->field_item_sold_date->value = date('Y-m-d\TH:i:s', strtotime($data['article']['end_date']));
-    }
-  }
-
-  /**
    * @param $data
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -170,6 +160,18 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     }
   }
 
+  /**
+   * @param $data
+   */
+  protected function setStatus($data) {
+    // Sold
+    if ($data['article']['status']) {
+      $this->articleNode->field_item_is_sold = 1;
+    }
+    else { // Active
+      $this->articleNode->field_item_is_sold = 0;
+    }
+  }
 
   /**
    * @param $data
@@ -215,13 +217,9 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   /**
    * @param $data
    */
-  protected function setStatus($data) {
-    // Sold
-    if ($data['article']['status']) {
-      $this->articleNode->field_item_is_sold = 1;
-    }
-    else { // Active
-      $this->articleNode->field_item_is_sold = 0;
+  protected function setSoldDate($data) {
+    if (isset($data['article']['end_date'])) {
+      $this->articleNode->field_item_sold_date->value = date('Y-m-d\TH:i:s', strtotime($data['article']['end_date']));
     }
   }
 

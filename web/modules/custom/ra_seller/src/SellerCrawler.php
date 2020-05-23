@@ -69,23 +69,6 @@ class SellerCrawler implements SellerCrawlerInterface {
   }
 
   /**
-   * @param $sellerId
-   *
-   * @throws \Exception
-   */
-  protected function setSeller(string $sellerId) {
-    if ($sellerId) {
-      $this->sellerId = $sellerId;
-      $this->sellerUrl = "https://www.ricardo.ch/de/ratings/$sellerId";
-      $this->sellerUrlApi = "https://www.ricardo.ch/marketplace-spa/api/ratings/to/$sellerId/?page=1";
-    }
-    else {
-      throw new Exception('No Seller Id is set');
-    }
-  }
-
-
-  /**
    * Init crawler and get sellers page
    *
    * @param  int  $nid
@@ -112,6 +95,22 @@ class SellerCrawler implements SellerCrawlerInterface {
     }
 
 
+  }
+
+  /**
+   * @param $sellerId
+   *
+   * @throws \Exception
+   */
+  protected function setSeller(string $sellerId) {
+    if ($sellerId) {
+      $this->sellerId = $sellerId;
+      $this->sellerUrl = "https://www.ricardo.ch/de/ratings/$sellerId";
+      $this->sellerUrlApi = "https://www.ricardo.ch/marketplace-spa/api/ratings/to/$sellerId/?page=1";
+    }
+    else {
+      throw new Exception('No Seller Id is set');
+    }
   }
 
   /**

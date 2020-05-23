@@ -5,9 +5,9 @@
  * Contains ra_item.module.
  */
 
-use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Implements hook_help().
@@ -32,7 +32,7 @@ function ra_item_cron() {
   $nids = _ra_seller_get_nodes();
 
   /** @var QueueFactory $queue_factory */
-  $queue_service = \Drupal::service('queue');
+  $queue_service = Drupal::service('queue');
   /** @var QueueInterface $queue_item */
   $queue_item = $queue_service->get('item_rating_queue');
 

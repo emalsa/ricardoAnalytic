@@ -3,8 +3,8 @@
 namespace Drupal\ra_item;
 
 use Drupal;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
 use Exception;
@@ -66,6 +66,24 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
   }
 
   /**
+   *
+   * @param  int  $sellerNodeId
+   */
+  public function initItemRatingsCrawler(int $sellerNodeId) {
+    try {
+      $this->setSeller($sellerNodeId);
+      $this->processPage();
+      //       $entities = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]);
+      //       $this->entityTypeManager->getStorage('node')->delete($entities);
+
+    }
+    catch (Exception $e) {
+      Drupal::logger('ra_item')->error($e);
+      return;
+    }
+  }
+
+  /**
    * @param  string  $sellerNodeId
    *
    * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
@@ -89,24 +107,6 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     }
     else {
       throw new Exception('No Seller Id is set');
-    }
-  }
-
-  /**
-   *
-   * @param  int  $sellerNodeId
-   */
-  public function initItemRatingsCrawler(int $sellerNodeId) {
-    try {
-      $this->setSeller($sellerNodeId);
-      $this->processPage();
-      //       $entities = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'item_article']]);
-      //       $this->entityTypeManager->getStorage('node')->delete($entities);
-
-    }
-    catch (Exception $e) {
-      Drupal::logger('ra_item')->error($e);
-      return;
     }
   }
 
@@ -165,6 +165,30 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
     }
 
+  }
+
+  /**
+   * @param  string  $rating_id
+   * @param  string  $rating_from_id
+   *
+   * @return bool
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  protected function ratingItemExists(string $rating_id, string $rating_from_id) {
+    $rating = $this->entityTypeManager
+      ->getStorage('node')
+      ->getQuery()
+      ->condition('type', 'item', '=')
+      ->condition('field_rating_id', $rating_id, '=')
+      ->condition('field_buyer_id', $rating_from_id, '=')
+      ->execute();
+
+    if (empty($rating)) {
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
   /**
@@ -244,7 +268,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     }
 
     /** @var QueueFactory $queue_factory */
-    $queue_service = \Drupal::service('queue');
+    $queue_service = Drupal::service('queue');
     /** @var QueueInterface $queue_item */
     $queue_item = $queue_service->get('article_queue');
 
@@ -252,30 +276,6 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
     $queue_item->createItem($data);
 
     return $article->id();
-  }
-
-  /**
-   * @param  string  $rating_id
-   * @param  string  $rating_from_id
-   *
-   * @return bool
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   */
-  protected function ratingItemExists(string $rating_id, string $rating_from_id) {
-    $rating = $this->entityTypeManager
-      ->getStorage('node')
-      ->getQuery()
-      ->condition('type', 'item', '=')
-      ->condition('field_rating_id', $rating_id, '=')
-      ->condition('field_buyer_id', $rating_from_id, '=')
-      ->execute();
-
-    if (empty($rating)) {
-      return FALSE;
-    }
-
-    return TRUE;
   }
 
 }
