@@ -44,7 +44,7 @@ function ra_seller_cron() {
     // Process if older than 2 weeks or init
     if (
       $node instanceof NodeInterface
-      && ($node->field_seller_init_process || $node->getChangedTime() < strtotime('-1 month'))
+      && ($node->field_seller_init_process->value || $node->getChangedTime() < strtotime('-1 month'))
     ) {
       $data['nid'] = $nid;
       $queue_item->createItem($data);
