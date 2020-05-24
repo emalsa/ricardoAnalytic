@@ -50,7 +50,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
 
   protected $page = 1;
 
-  protected $processNextPage = TRUE;
+  protected $processNextPage;
 
 
   /**
@@ -117,6 +117,7 @@ class ItemRatingCrawler implements ItemRatingCrawlerInterface {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function processPage() {
+    $this->processNextPage = TRUE;
     $this->client->request('GET', $this->sellerUrlApi . "{$this->page}");
 
     if ($this->client->getResponse()->getStatusCode() === 200) {
