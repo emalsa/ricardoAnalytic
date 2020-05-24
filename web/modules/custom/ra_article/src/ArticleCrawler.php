@@ -2,8 +2,10 @@
 
 namespace Drupal\ra_article;
 
+use Drupal;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
+use Exception;
 use HeadlessChromium\BrowserFactory;
 use HeadlessChromium\Page;
 
@@ -111,7 +113,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     // Get data
     $this->browser = $this->browserFactory->createBrowser(['noSandbox' => TRUE]);
     $page = $this->browser->createPage();
-    $page->navigate($this->articleUrl)->waitForNavigation(Page::DOM_CONTENT_LOADED);
+    $page->navigate($this->articleUrl)->waitForNavigation(Page::DOM_CONTENT_LOADED, 45000);
 
     $data = $page->evaluate('window.ricardo')->getReturnValue();
     if (isset($data['initialState']['pdp'])) {
@@ -135,6 +137,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
 
       // Is sold
       $this->articleNode->field_item_is_sold = 1;
+      $this->articleNode->setPublished(FALSE);
       $this->articleNode->setTitle('Article not found: ' . $this->articleUrl);
     }
 
