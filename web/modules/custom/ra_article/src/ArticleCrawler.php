@@ -111,19 +111,20 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected function processArticlePage() {
     // Get data
+    $pdp = NULL;
     $this->browser = $this->browserFactory->createBrowser(['noSandbox' => TRUE]);
     $page = $this->browser->createPage();
     $page->navigate($this->articleUrl)->waitForNavigation(Page::DOM_CONTENT_LOADED, 45000);
 
     $data = $page->evaluate('window.ricardo')->getReturnValue();
     if (isset($data['initialState']['pdp'])) {
-      $pdp = $data['initialState']['pdp'];
-      $this->setSeller($pdp);
-      $this->setStatus($pdp);
-      $this->setTitle($pdp);
-      $this->setBody($pdp);
-      $this->setPrice($pdp);
-      $this->setSoldDate($pdp);
+      $data = $data['initialState']['pdp'];
+      $this->setSeller($data);
+      $this->setStatus($data);
+      $this->setTitle($data);
+      $this->setBody($data);
+      $this->setPrice($data);
+      $this->setSoldDate($data);
     }
     else {
       if (!($this->articleNode->field_item_rating_ref->isEmpty())) {
@@ -206,14 +207,25 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    * @param $data
    */
   protected function setPrice($data) {
-    // Start price
-    if (isset($data['bid']['data']['start_price'])) {
-      $this->articleNode->field_item_start_price = $data['bid']['data']['start_price'];
+    // Fixed price
+    if ($data['article']['offer']['offer_type'] === 'fixed_price') {
+      $this->articleNode->field_item_start_price = $data['article']['offer']['price'];
+      // Sold price
+      // @Todo: Handle fixed price if sold or not?
+      if ($this->articleNode->field_item_is_sold->value) {
+        $this->articleNode->field_item_sold_price = $data['article']['offer']['price'];
+      }
     }
-
-    // Sold price
-    if ($this->articleNode->field_item_is_sold->value && isset($data['bid']['data']['last_bid'])) {
-      $this->articleNode->field_item_sold_price = $data['bid']['data']['last_bid'];
+    // Auction
+    elseif ($data['article']['offer']['offer_type'] === 'auction') {
+      // Start price
+      if (isset($data['bid']['data']['start_price'])) {
+        $this->articleNode->field_item_start_price = $data['bid']['data']['start_price'];
+      }
+      // Sold price
+      if ($this->articleNode->field_item_is_sold->value && isset($data['bid']['data']['last_bid'])) {
+        $this->articleNode->field_item_sold_price = $data['bid']['data']['last_bid'];
+      }
     }
   }
 
