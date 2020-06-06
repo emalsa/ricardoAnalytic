@@ -5,6 +5,8 @@
  * Contains ra_article.module.
  */
 
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
@@ -28,12 +30,38 @@ function ra_article_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_cron().
  */
 function ra_article_cron() {
+  __tagging_articles();
+  __fix_articles();
+}
+
+function __tagging_articles() {
+  $nids = Drupal::entityQuery('node')
+    ->condition('type', 'item_article')
+    ->condition('status', 1)
+    ->condition('field_item_is_sold', 1)
+    ->condition('field_item_is_tagged', 0)
+    ->range(0, 1)
+    ->execute();
+
+  /** @var QueueFactory $queue_factory */
+  $queue_service = Drupal::service('queue');
+  /** @var QueueInterface $queue_item */
+  $queue_item = $queue_service->get('article_tag_queue');
+
+  foreach ($nids as $nid) {
+    $data['nid'] = $nid;
+    $queue_item->createItem($data);
+  }
+}
+
+function __fix_articles() {
   // Process articles again (FIXES)
 
   //  $nids = Drupal::entityQuery('node')
   //    ->condition('type', 'item_article')
   //        ->condition('status', 1)
   //        ->condition('title', 'Article title set', 'STARTS_WITH')
+
   //        ->condition('field_item_start_price', '0')
   //    ->execute();
 

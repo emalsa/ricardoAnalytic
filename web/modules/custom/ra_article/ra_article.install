@@ -1,0 +1,21 @@
+<?php
+
+use Drupal\node\Entity\Node;
+
+/**
+ * Update all article with new field "is tagged".
+ */
+function ra_article_update_8001() {
+  $nids = Drupal::entityQuery('node')
+    ->condition('type', 'item_article')
+    ->condition('status', 1)
+    ->condition('field_item_is_sold', 1)
+    ->execute();
+
+  foreach ($nids as $nid) {
+    $node = Node::load($nid);
+    $node->field_item_is_tagged = 0;
+    $node->save();
+  }
+
+}

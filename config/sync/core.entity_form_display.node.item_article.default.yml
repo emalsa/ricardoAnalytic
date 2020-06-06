@@ -5,7 +5,9 @@ dependencies:
   config:
     - field.field.node.item_article.body
     - field.field.node.item_article.field_article_id
+    - field.field.node.item_article.field_item_article_tags
     - field.field.node.item_article.field_item_is_sold
+    - field.field.node.item_article.field_item_is_tagged
     - field.field.node.item_article.field_item_rating_ref
     - field.field.node.item_article.field_item_seller_ref
     - field.field.node.item_article.field_item_sold_date
@@ -45,8 +47,25 @@ content:
     third_party_settings: {  }
     type: string_textfield
     region: content
+  field_item_article_tags:
+    weight: 130
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
   field_item_is_sold:
     weight: 129
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_item_is_tagged:
+    weight: 131
     settings:
       display_label: true
     third_party_settings: {  }

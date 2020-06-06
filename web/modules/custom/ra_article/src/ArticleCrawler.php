@@ -171,6 +171,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     // Sold
     if ($data['article']['status']) {
       $this->articleNode->field_item_is_sold = 1;
+      $this->articleNode->field_item_is_tagged = 0; // Can now be tagged
     }
     else { // Active
       $this->articleNode->field_item_is_sold = 0;
