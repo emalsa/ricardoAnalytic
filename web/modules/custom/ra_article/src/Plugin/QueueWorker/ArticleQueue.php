@@ -4,9 +4,7 @@ namespace Drupal\ra_article\Plugin\QueueWorker;
 
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Drupal\ra_article\ArticleCrawler;
 use Drupal\ra_article\ArticleCrawlerInterface;
-use Drupal\ra_item\ItemRatingCrawlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
