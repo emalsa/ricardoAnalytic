@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\node\Entity\Node;
+use Drupal\taxonomy\Entity\Term;
 
 /**
  * Update all article with new field "is tagged".
@@ -18,4 +19,29 @@ function ra_article_update_8001() {
     $node->save();
   }
 
+}
+
+/**
+ * Remove all tags for cleanup
+ */
+function ra_article_update_8002() {
+  $tagsIds = Drupal::entityQuery('taxonomy_term')
+    ->condition('vid', 'tags')
+    ->execute();
+
+  foreach ($tagsIds as $tid) {
+    $entity = Term::load($tid);
+    $entity->delete();
+  }
+
+  $nids = Drupal::entityQuery('node')
+    ->condition('type', 'item_article')
+    ->execute();
+
+  foreach ($nids as $nid) {
+    $node = Node::load($nid);
+    $node->field_item_is_tagged = 0;
+    $node->set('field_item_article_tags', []);
+    $node->save();
+  }
 }
