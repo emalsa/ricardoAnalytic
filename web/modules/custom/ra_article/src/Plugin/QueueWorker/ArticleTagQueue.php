@@ -79,9 +79,11 @@ class ArticleTagQueue extends QueueWorkerBase implements ContainerFactoryPluginI
         $labelArray = explode(' ', $node->label());
         $node->set('field_item_article_tags', []);
         foreach ($labelArray as $label) {
-          $label = strtolower($label);
-          $tid = $this->getTermId($label);
-          $node->field_item_article_tags->appendItem($tid);
+          if (!empty($label)) {
+            $label = strtolower($label);
+            $tid = $this->getTermId($label);
+            $node->field_item_article_tags->appendItem($tid);
+          }
         }
         $node->field_item_is_tagged = 1;
         $node->save();
