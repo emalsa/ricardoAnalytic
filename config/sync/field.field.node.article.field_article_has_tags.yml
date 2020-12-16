@@ -1,0 +1,23 @@
+uuid: c0ba6763-1619-4068-810a-5de17afafbd9
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_has_tags
+    - node.type.article
+id: node.article.field_article_has_tags
+field_name: field_article_has_tags
+entity_type: node
+bundle: article
+label: 'Has Tags'
+description: 'If article is already tagged. In most cases we tag it later and independent. It''s good to have a flag if we have to do something.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

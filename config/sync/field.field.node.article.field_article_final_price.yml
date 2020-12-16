@@ -1,0 +1,23 @@
+uuid: 770f23a2-673e-4c2d-91aa-faccd643b982
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_final_price
+    - node.type.article
+id: node.article.field_article_final_price
+field_name: field_article_final_price
+entity_type: node
+bundle: article
+label: 'Final price'
+description: 'The final price which was paid.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

@@ -1,4 +1,4 @@
-uuid: d6482fa4-7de9-41e7-9c13-528008a504ac
+uuid: 2c3d971b-1f66-4d90-8158-b8f91f3213d7
 langcode: de
 status: true
 dependencies:
@@ -8,9 +8,9 @@ third_party_settings:
   menu_ui:
     available_menus: {  }
     parent: ''
-name: Seller
-type: seller
-description: 'The seller'
+name: Article
+type: article
+description: 'The article'
 help: ''
 new_revision: true
 preview_mode: 0

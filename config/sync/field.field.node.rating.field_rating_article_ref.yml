@@ -1,0 +1,28 @@
+uuid: d33b4280-91f7-4009-b748-01b6ea9d1765
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_rating_article_ref
+    - node.type.article
+    - node.type.rating
+id: node.rating.field_rating_article_ref
+field_name: field_rating_article_ref
+entity_type: node
+bundle: rating
+label: 'Article Reference'
+description: 'The article content.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      article: article
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

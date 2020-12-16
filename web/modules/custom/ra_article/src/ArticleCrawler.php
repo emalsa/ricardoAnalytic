@@ -73,14 +73,14 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   public function setArticle(string $articleId) {
     $result = $this->entityTypeManager->getStorage('node')
       ->loadByProperties([
-        'type' => 'item_article',
+        'type' => 'article',
         'field_article_id' => $articleId,
       ]);
 
     if (empty($result)) {
       $this->articleNode = $this->entityTypeManager->getStorage('node')
         ->create([
-          'type' => 'item_article',
+          'type' => 'article',
           'field_article_id' => $articleId,
           'title' => 'Article title not set. Will be changed when processing article self',
         ]);
@@ -122,22 +122,22 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setSeller($data);
       $this->setStatus($data);
       $this->setTitle($data);
-      $this->setBody($data);
+      $this->setDescription($data);
       $this->setPrice($data);
       $this->setSoldDate($data);
     }
     else {
-      if (!($this->articleNode->field_item_rating_ref->isEmpty())) {
-        $ratingNodeId = $this->articleNode->field_item_rating_ref->target_id;
+      if (!($this->articleNode->field_article_rating_ref->isEmpty())) {
+        $ratingNodeId = $this->articleNode->field_article_rating_ref->target_id;
         /** @var \Drupal\node\NodeInterface $ratingNode */
         $ratingNode = $this->entityTypeManager->getStorage('node')->load($ratingNodeId);
-        if ($ratingNode && $ratingNode->bundle() === 'item' && $ratingNode instanceof NodeInterface && !($ratingNode->field_item_seller_ref->isEmpty())) {
-          $this->articleNode->field_item_seller_ref->target_id = $ratingNode->field_item_seller_ref->target_id;
+        if ($ratingNode && $ratingNode->bundle() === 'item' && $ratingNode instanceof NodeInterface && !($ratingNode->field_rating_seller_ref->isEmpty())) {
+          $this->articleNode->field_rating_seller_ref->target_id = $ratingNode->field_rating_seller_ref->target_id;
         }
       }
 
       // Is sold
-      $this->articleNode->field_item_is_sold = 1;
+      $this->articleNode->field_article_is_sold = 1;
       $this->articleNode->setPublished(FALSE);
       $this->articleNode->setTitle('Article not found: ' . $this->articleUrl);
     }
@@ -159,7 +159,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
 
       if ($sellerNode) {
         $sellerNode = reset($sellerNode);
-        $this->articleNode->field_item_seller_ref->target_id = $sellerNode->id();
+        $this->articleNode->field_rating_seller_ref->target_id = $sellerNode->id();
       }
     }
   }
@@ -170,11 +170,11 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   protected function setStatus($data) {
     // Sold
     if ($data['article']['status']) {
-      $this->articleNode->field_item_is_sold = 1;
-      $this->articleNode->field_item_is_tagged = 0; // Can now be tagged
+      $this->articleNode->field_article_is_sold = 1;
+      $this->articleNode->field_article_has_tags = 0; // Can now be tagged
     }
     else { // Active
-      $this->articleNode->field_item_is_sold = 0;
+      $this->articleNode->field_article_is_sold = 0;
     }
   }
 
@@ -193,15 +193,15 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   /**
    * @param $data
    */
-  protected function setBody($data) {
+  protected function setDescription($data) {
     if (isset($data['article']['description']['html'])) {
-      $this->articleNode->body->value = $data['article']['description']['html'];
-      $this->articleNode->body->format = 'full_html';
+      $this->articleNode->field_article_description->value = $data['article']['description']['html'];
+      $this->articleNode->field_article_description->format = 'full_html';
       return;
     }
 
-    $this->articleNode->body->value = 'No body value: ' . $this->articleUrl;
-    $this->articleNode->body->format = 'full_html';
+    $this->articleNode->field_article_description->value = 'No description text: ' . $this->articleUrl;
+    $this->articleNode->field_article_description->format = 'full_html';
   }
 
   /**
@@ -210,22 +210,22 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   protected function setPrice($data) {
     // Fixed price
     if ($data['article']['offer']['offer_type'] === 'fixed_price') {
-      $this->articleNode->field_item_start_price = $data['article']['offer']['price'];
+      $this->articleNode->field_article_start_price = $data['article']['offer']['price'];
       // Sold price
       // @Todo: Handle fixed price if sold or not?
-      if ($this->articleNode->field_item_is_sold->value) {
-        $this->articleNode->field_item_sold_price = $data['article']['offer']['price'];
+      if ($this->articleNode->field_article_is_sold->value) {
+        $this->articleNode->field_article_final_price = $data['article']['offer']['price'];
       }
     }
     // Auction
     elseif ($data['article']['offer']['offer_type'] === 'auction') {
       // Start price
       if (isset($data['bid']['data']['start_price'])) {
-        $this->articleNode->field_item_start_price = $data['bid']['data']['start_price'];
+        $this->articleNode->field_article_start_price = $data['bid']['data']['start_price'];
       }
       // Sold price
-      if ($this->articleNode->field_item_is_sold->value && isset($data['bid']['data']['last_bid'])) {
-        $this->articleNode->field_item_sold_price = $data['bid']['data']['last_bid'];
+      if ($this->articleNode->field_article_is_sold->value && isset($data['bid']['data']['last_bid'])) {
+        $this->articleNode->field_article_final_price = $data['bid']['data']['last_bid'];
       }
     }
   }
@@ -235,7 +235,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected function setSoldDate($data) {
     if (isset($data['article']['end_date'])) {
-      $this->articleNode->field_item_sold_date->value = date('Y-m-d\TH:i:s', strtotime($data['article']['end_date']));
+      $this->articleNode->field_article_sold_date->value = date('Y-m-d\TH:i:s', strtotime($data['article']['end_date']));
     }
   }
 

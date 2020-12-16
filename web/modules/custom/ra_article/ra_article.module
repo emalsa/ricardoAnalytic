@@ -38,10 +38,10 @@ function ra_article_cron() {
 
 function __tagging_articles() {
   $nids = Drupal::entityQuery('node')
-    ->condition('type', 'item_article')
+    ->condition('type', 'article')
     ->condition('status', 1)
-    ->condition('field_item_is_sold', 1)
-    ->condition('field_item_is_tagged', 0)
+    ->condition('field_article_is_sold', 1)
+    ->condition('field_article_has_tags', 0)
     ->range(0, 1000)
     ->execute();
 
@@ -60,11 +60,11 @@ function __fix_articles() {
   // Process articles again (FIXES)
 
   $nids = Drupal::entityQuery('node')
-    ->condition('type', 'item_article')
+    ->condition('type', 'article')
     ->condition('status', 1)
 //     ->condition('title', 'Article title set', 'STARTS_WITH')
 
-    ->condition('field_item_start_price', '0')
+    ->condition('field_article_start_price', '0')
     ->execute();
 
   /** @var QueueFactory $queue_factory */

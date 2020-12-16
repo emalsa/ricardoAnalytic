@@ -1,0 +1,41 @@
+uuid: 2d5e4f3c-e807-4181-b322-ec9d4dd74213
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.article.field_article_description
+    - field.field.node.article.field_article_final_price
+    - field.field.node.article.field_article_has_tags
+    - field.field.node.article.field_article_id
+    - field.field.node.article.field_article_is_sold
+    - field.field.node.article.field_article_rating_ref
+    - field.field.node.article.field_article_seller_ref
+    - field.field.node.article.field_article_sold_date
+    - field.field.node.article.field_article_start_price
+    - field.field.node.article.field_article_tags
+    - node.type.article
+  module:
+    - user
+id: node.article.teaser
+targetEntityType: node
+bundle: article
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_article_description: true
+  field_article_final_price: true
+  field_article_has_tags: true
+  field_article_id: true
+  field_article_is_sold: true
+  field_article_rating_ref: true
+  field_article_seller_ref: true
+  field_article_sold_date: true
+  field_article_start_price: true
+  field_article_tags: true
+  langcode: true

@@ -1,0 +1,23 @@
+uuid: 1fb52d50-7f31-480a-a719-85d21416bd47
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_start_price
+    - node.type.article
+id: node.article.field_article_start_price
+field_name: field_article_start_price
+entity_type: node
+bundle: article
+label: 'Start price'
+description: 'The price when the auction had started.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

@@ -1,0 +1,105 @@
+uuid: 2460ab83-6f07-410c-a99d-cd19a5620345
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.rating.field_rating_article_id
+    - field.field.node.rating.field_rating_article_ref
+    - field.field.node.rating.field_rating_buyer_id
+    - field.field.node.rating.field_rating_buyer_username
+    - field.field.node.rating.field_rating_comment
+    - field.field.node.rating.field_rating_date
+    - field.field.node.rating.field_rating_id
+    - field.field.node.rating.field_rating_seller_ref
+    - field.field.node.rating.field_rating_type
+    - node.type.rating
+  module:
+    - datetime
+    - options
+    - text
+    - user
+id: node.rating.default
+targetEntityType: node
+bundle: rating
+mode: default
+content:
+  field_rating_article_id:
+    weight: 109
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_rating_article_ref:
+    weight: 110
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_rating_buyer_id:
+    weight: 103
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_rating_buyer_username:
+    weight: 104
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_rating_comment:
+    weight: 111
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: text_default
+    region: content
+  field_rating_date:
+    weight: 106
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_rating_id:
+    weight: 102
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_rating_seller_ref:
+    weight: 105
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    type: entity_reference_label
+    region: content
+  field_rating_type:
+    weight: 108
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: list_default
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

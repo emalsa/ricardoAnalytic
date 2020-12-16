@@ -1,5 +1,0 @@
-name: 'ra_item'
-type: module
-description: 'Item'
-core: 8.x
-package: 'Custom'

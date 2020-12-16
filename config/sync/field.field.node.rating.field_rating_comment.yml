@@ -1,0 +1,21 @@
+uuid: 5634abe4-1579-4e0a-bd01-a336ccf699f2
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_rating_comment
+    - node.type.rating
+  module:
+    - text
+id: node.rating.field_rating_comment
+field_name: field_rating_comment
+entity_type: node
+bundle: rating
+label: 'Rating comment'
+description: 'The rating text'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

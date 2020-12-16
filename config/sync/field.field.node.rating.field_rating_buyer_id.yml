@@ -1,0 +1,23 @@
+uuid: 55925b6c-ac2a-4896-97bd-a3de8a500bf6
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_rating_buyer_id
+    - node.type.rating
+id: node.rating.field_rating_buyer_id
+field_name: field_rating_buyer_id
+entity_type: node
+bundle: rating
+label: 'Buyer user ID'
+description: 'User id of buyer'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

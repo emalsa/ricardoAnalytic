@@ -1,0 +1,19 @@
+uuid: 341713ca-fe32-4621-956d-f6e2a91fd809
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_rating_article_id
+    - node.type.rating
+id: node.rating.field_rating_article_id
+field_name: field_rating_article_id
+entity_type: node
+bundle: rating
+label: 'Article ID'
+description: 'The article ID which belongs to this ratings. Needed when we have only the rating but have to create/crawle the article.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

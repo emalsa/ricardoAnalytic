@@ -1,0 +1,23 @@
+uuid: f6c60bcc-f64f-4b2b-860b-3785bf2c62f2
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_is_sold
+    - node.type.article
+id: node.article.field_article_is_sold
+field_name: field_article_is_sold
+entity_type: node
+bundle: article
+label: 'Article is sold'
+description: 'Flag if the article is sold and the auction is closed.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

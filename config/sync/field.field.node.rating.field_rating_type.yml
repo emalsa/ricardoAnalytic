@@ -1,0 +1,21 @@
+uuid: 3714ef3b-ce95-43ae-a352-2393213c6c77
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_rating_type
+    - node.type.rating
+  module:
+    - options
+id: node.rating.field_rating_type
+field_name: field_rating_type
+entity_type: node
+bundle: rating
+label: 'Rating type'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
