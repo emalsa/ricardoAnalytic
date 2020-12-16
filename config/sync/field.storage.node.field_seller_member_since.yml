@@ -1,11 +1,11 @@
-uuid: 995c0a4c-c1cd-4add-b905-db320a8ff881
+uuid: d5481264-07b0-4352-8c60-379e6f0b63cb
 langcode: de
 status: true
 dependencies:
   module:
     - node
-id: node.field_member_since
-field_name: field_member_since
+id: node.field_seller_member_since
+field_name: field_seller_member_since
 entity_type: node
 type: integer
 settings:

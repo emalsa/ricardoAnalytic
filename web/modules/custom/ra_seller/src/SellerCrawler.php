@@ -124,12 +124,12 @@ class SellerCrawler implements SellerCrawlerInterface {
 
     // Address
     $postalCodeAndLocation = explode(' ', $sellerData['address']);
-    $this->node->field_postal_code = $postalCodeAndLocation[0];
-    $this->node->field_location = $postalCodeAndLocation[1];
-    $this->node->field_member_since = $sellerData['memberSince'];
+    $this->node->field_seller_postal_code = $postalCodeAndLocation[0];
+    $this->node->field_seller_location = $postalCodeAndLocation[1];
+    $this->node->field_seller_member_since = $sellerData['memberSince'];
 
     // Figures
-    $this->node->field_items_sold = $sellerData['articlesSold'];
+    $this->node->field_seller_sold_items = $sellerData['articlesSold'];
   }
 
 

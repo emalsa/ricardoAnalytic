@@ -1,16 +1,17 @@
-uuid: 2d003ed1-fc8f-478a-8581-3af95540ab1a
+uuid: 0c728be4-9b2c-4453-87d0-916195c4550a
 langcode: de
 status: true
 dependencies:
   module:
     - node
-id: node.field_items_sold
-field_name: field_items_sold
+id: node.field_seller_location
+field_name: field_seller_location
 entity_type: node
-type: integer
+type: string
 settings:
-  unsigned: false
-  size: normal
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
 module: core
 locked: false
 cardinality: 1

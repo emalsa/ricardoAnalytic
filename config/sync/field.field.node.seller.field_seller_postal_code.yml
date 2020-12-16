@@ -1,15 +1,15 @@
-uuid: b80b28e2-3e01-4181-a009-7e8d36eda11f
+uuid: 26708957-4702-41ec-a37c-134a68aacebc
 langcode: de
 status: true
 dependencies:
   config:
-    - field.storage.node.field_location
+    - field.storage.node.field_seller_postal_code
     - node.type.seller
-id: node.seller.field_location
-field_name: field_location
+id: node.seller.field_seller_postal_code
+field_name: field_seller_postal_code
 entity_type: node
 bundle: seller
-label: Ort
+label: PLZ
 description: ''
 required: false
 translatable: false

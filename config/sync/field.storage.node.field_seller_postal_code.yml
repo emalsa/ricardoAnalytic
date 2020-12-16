@@ -1,11 +1,11 @@
-uuid: db218add-9e76-4be1-b97a-b9508954d35c
+uuid: 97299c9f-7950-4062-9ffe-2b7b4720cd6d
 langcode: de
 status: true
 dependencies:
   module:
     - node
-id: node.field_postal_code
-field_name: field_postal_code
+id: node.field_seller_postal_code
+field_name: field_seller_postal_code
 entity_type: node
 type: string
 settings:

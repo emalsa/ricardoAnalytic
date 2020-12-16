@@ -1,15 +1,15 @@
-uuid: 40fe9e4a-9dec-40d7-80e6-6bd058d3e0df
+uuid: 4923b4ba-3423-4404-b3ba-b8304a6e2828
 langcode: de
 status: true
 dependencies:
   config:
-    - field.storage.node.field_member_since
+    - field.storage.node.field_seller_sold_items
     - node.type.seller
-id: node.seller.field_member_since
-field_name: field_member_since
+id: node.seller.field_seller_sold_items
+field_name: field_seller_sold_items
 entity_type: node
 bundle: seller
-label: 'Mitglied seit'
+label: 'Sold items'
 description: ''
 required: false
 translatable: false

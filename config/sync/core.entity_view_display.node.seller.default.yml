@@ -3,13 +3,13 @@ langcode: de
 status: true
 dependencies:
   config:
-    - field.field.node.seller.field_items_sold
-    - field.field.node.seller.field_location
-    - field.field.node.seller.field_member_since
-    - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
     - field.field.node.seller.field_seller_id_numeric
     - field.field.node.seller.field_seller_init_process
+    - field.field.node.seller.field_seller_location
+    - field.field.node.seller.field_seller_member_since
+    - field.field.node.seller.field_seller_postal_code
+    - field.field.node.seller.field_seller_sold_items
     - node.type.seller
   module:
     - user
@@ -18,40 +18,6 @@ targetEntityType: node
 bundle: seller
 mode: default
 content:
-  field_items_sold:
-    weight: 105
-    label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-    type: number_integer
-    region: content
-  field_location:
-    weight: 103
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    type: string
-    region: content
-  field_member_since:
-    weight: 104
-    label: above
-    settings:
-      thousand_separator: ''
-      prefix_suffix: true
-    third_party_settings: {  }
-    type: number_integer
-    region: content
-  field_postal_code:
-    weight: 102
-    label: above
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
-    type: string
-    region: content
   field_seller_id:
     weight: 106
     label: above
@@ -78,6 +44,40 @@ content:
       format_custom_true: ''
     third_party_settings: {  }
     type: boolean
+    region: content
+  field_seller_location:
+    weight: 112
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_seller_member_since:
+    weight: 113
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_seller_postal_code:
+    weight: 111
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_seller_sold_items:
+    weight: 110
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
     region: content
   links:
     weight: 100

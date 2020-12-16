@@ -4,13 +4,13 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - field.field.node.seller.field_items_sold
-    - field.field.node.seller.field_location
-    - field.field.node.seller.field_member_since
-    - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
     - field.field.node.seller.field_seller_id_numeric
     - field.field.node.seller.field_seller_init_process
+    - field.field.node.seller.field_seller_location
+    - field.field.node.seller.field_seller_member_since
+    - field.field.node.seller.field_seller_postal_code
+    - field.field.node.seller.field_seller_sold_items
     - node.type.seller
   module:
     - user
@@ -25,11 +25,11 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
-  field_items_sold: true
-  field_location: true
-  field_member_since: true
-  field_postal_code: true
   field_seller_id: true
   field_seller_id_numeric: true
   field_seller_init_process: true
+  field_seller_location: true
+  field_seller_member_since: true
+  field_seller_postal_code: true
+  field_seller_sold_items: true
   langcode: true

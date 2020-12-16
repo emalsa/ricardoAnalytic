@@ -3,13 +3,13 @@ langcode: de
 status: true
 dependencies:
   config:
-    - field.field.node.seller.field_items_sold
-    - field.field.node.seller.field_location
-    - field.field.node.seller.field_member_since
-    - field.field.node.seller.field_postal_code
     - field.field.node.seller.field_seller_id
     - field.field.node.seller.field_seller_id_numeric
     - field.field.node.seller.field_seller_init_process
+    - field.field.node.seller.field_seller_location
+    - field.field.node.seller.field_seller_member_since
+    - field.field.node.seller.field_seller_postal_code
+    - field.field.node.seller.field_seller_sold_items
     - node.type.seller
 id: node.seller.default
 targetEntityType: node
@@ -22,36 +22,6 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-  field_items_sold:
-    weight: 6
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: number
-    region: content
-  field_location:
-    weight: 4
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
-  field_member_since:
-    weight: 5
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: number
-    region: content
-  field_postal_code:
-    weight: 3
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_seller_id:
     weight: 26
     settings:
@@ -73,6 +43,36 @@ content:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
+    region: content
+  field_seller_location:
+    weight: 32
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_seller_member_since:
+    weight: 33
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_seller_postal_code:
+    weight: 31
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_seller_sold_items:
+    weight: 30
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
     region: content
   status:
     type: boolean_checkbox
