@@ -41,11 +41,13 @@ function ra_seller_cron() {
 
   foreach ($nids as $nid) {
     $node = Node::load($nid);
-    // Process if older than 2 weeks or init
-    if (
-      $node instanceof NodeInterface
-      && ($node->field_seller_init_process->value || $node->getChangedTime() < strtotime('-1 month'))
-    ) {
+
+    if (!($node instanceof NodeInterface)) {
+      continue;
+    }
+
+    // Process if older than 2 weeks or init.
+    if ($node->field_seller_init_process->value || $node->getChangedTime() < strtotime('-2 week')) {
       $data['nid'] = $nid;
       $queue_item->createItem($data);
     }
@@ -56,12 +58,10 @@ function ra_seller_cron() {
  * Add seller to to given queue;
  */
 function _ra_seller_get_nodes() {
-  $nids = Drupal::entityQuery('node')
+  return Drupal::entityQuery('node')
     ->condition('type', 'seller')
     ->condition('status', 1)
     ->execute();
-
-  return $nids;
 }
 
 /**
@@ -69,7 +69,7 @@ function _ra_seller_get_nodes() {
  */
 function ra_seller_node_presave(EntityInterface $entity) {
   if ($entity->bundle() === 'seller') {
-    // seller_id is node label.
+    // The seller_id is node label.
     $entity->field_seller_id->value = $entity->label();
   }
 }

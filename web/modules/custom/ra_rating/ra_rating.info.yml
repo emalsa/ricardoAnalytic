@@ -1,5 +1,5 @@
 name: 'ra_rating'
 type: module
-description: 'Rating'
+description: 'Rating crawler'
 core: 8.x
 package: 'Crawler'

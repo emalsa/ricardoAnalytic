@@ -1,5 +1,5 @@
 name: 'ra_article'
 type: module
-description: 'Article'
+description: 'Article crawler'
 core: 8.x
-package: 'Custom'
+package: 'Crawler'

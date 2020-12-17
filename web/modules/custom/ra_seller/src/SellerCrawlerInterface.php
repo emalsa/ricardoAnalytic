@@ -8,8 +8,12 @@ namespace Drupal\ra_seller;
  */
 interface SellerCrawlerInterface {
 
-
-  public function initSellerCrawling(int $nid);
-
+  /**
+   * Init crawler and get sellers page
+   *
+   * @param  int  $nid
+   *  The sellers nid.
+   */
+  public function initSellerCrawling(int $nid): void;
 
 }

@@ -17,17 +17,7 @@ class SellerCrawler implements SellerCrawlerInterface {
   /**
    * @var string
    */
-  protected $sellerId;
-
-  /**
-   * @var string
-   */
   protected $sellerUrl;
-
-  /**
-   * @var string
-   */
-  protected $sellerUrlApi;
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -69,19 +59,18 @@ class SellerCrawler implements SellerCrawlerInterface {
   }
 
   /**
-   * Init crawler and get sellers page
-   *
-   * @param  int  $nid
+   * {@inheritDoc}
    */
-  public function initSellerCrawling(int $nid) {
+  public function initSellerCrawling(int $nid): void {
     try {
-      $this->sellerData = NULL;
       $this->node = $this->entityTypeManager->getStorage('node')->load($nid);
       $this->setSeller($this->node->field_seller_id->value);
 
       $this->browser = $this->browserFactory->createBrowser(['noSandbox' => TRUE]);
       $page = $this->browser->createPage();
-      $page->navigate($this->sellerUrl)->waitForNavigation(Page::DOM_CONTENT_LOADED);
+      $page->navigate($this->sellerUrl)
+        ->waitForNavigation(Page::DOM_CONTENT_LOADED);
+
       $data = $page->evaluate('window.ricardo')->getReturnValue();
       if (isset($data['initialState']['userProfile'])) {
         $this->setSellerInformation($data['initialState']['userProfile']);
@@ -94,7 +83,6 @@ class SellerCrawler implements SellerCrawlerInterface {
       return;
     }
 
-
   }
 
   /**
@@ -104,13 +92,9 @@ class SellerCrawler implements SellerCrawlerInterface {
    */
   protected function setSeller(string $sellerId) {
     if ($sellerId) {
-      $this->sellerId = $sellerId;
-      $this->sellerUrl = "https://www.ricardo.ch/de/ratings/$sellerId";
-      $this->sellerUrlApi = "https://www.ricardo.ch/marketplace-spa/api/ratings/to/$sellerId/?page=1";
+      throw new \Exception('No Seller Id is set');
     }
-    else {
-      throw new Exception('No Seller Id is set');
-    }
+    $this->sellerUrl = "https://www.ricardo.ch/de/ratings/$sellerId";
   }
 
   /**
@@ -119,7 +103,7 @@ class SellerCrawler implements SellerCrawlerInterface {
    * @param  array  $sellerData
    */
   protected function setSellerInformation(array $sellerData) {
-    // Seller Id numeric
+    // The numeric seller ID
     $this->node->field_seller_id_numeric = $sellerData['ratings']['list'][0]['rating_to']['id'];
 
     // Address
