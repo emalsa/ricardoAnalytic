@@ -2,11 +2,11 @@ locale_translation:
   enabled: false
   time: 60
   items: 0
-  unit: ''
+  unit: microsecond
 article_queue:
   enabled: true
-  time: 20
-  items: 1
+  time: 60
+  items: 60
   unit: minute
 item_rating_queue:
   enabled: false
@@ -14,6 +14,16 @@ item_rating_queue:
   items: 0
   unit: ''
 seller_queue:
+  enabled: false
+  time: 60
+  items: 0
+  unit: microsecond
+article_tag_queue:
+  enabled: false
+  time: 60
+  items: 0
+  unit: ''
+rating_queue:
   enabled: false
   time: 60
   items: 0

@@ -74,6 +74,7 @@ class SellerCrawler implements SellerCrawlerInterface {
       $data = $page->evaluate('window.ricardo')->getReturnValue();
       if (isset($data['initialState']['userProfile'])) {
         $this->setSellerInformation($data['initialState']['userProfile']);
+        $this->node->field_seller_init_process = 0;
         $this->node->setNewRevision();
         $this->node->save();
       }
@@ -91,7 +92,7 @@ class SellerCrawler implements SellerCrawlerInterface {
    * @throws \Exception
    */
   protected function setSeller(string $sellerId) {
-    if ($sellerId) {
+    if (!$sellerId) {
       throw new \Exception('No Seller Id is set');
     }
     $this->sellerUrl = "https://www.ricardo.ch/de/ratings/$sellerId";

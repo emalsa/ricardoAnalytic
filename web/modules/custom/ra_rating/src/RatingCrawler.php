@@ -103,7 +103,8 @@ class RatingCrawler implements RatingCrawlerInterface {
       $this->sellerId = $this->sellerNode->field_seller_id_numeric->value;
 
       /// The username is required for the url and not numeric id.
-      $this->sellerUrlApi = "https://www.ricardo.ch/marketplace-spa/api/ratings/to/{$this->sellerNode->field_seller_id->value}?page=";
+      $this->sellerUrlApi = "https://www.ricardo.ch/api/mfa/ratings?sellerName={$this->sellerNode->field_seller_id->value}&ratingValue=&page=";
+
     }
     else {
       throw new Exception('No Seller Id is set');
@@ -207,7 +208,6 @@ class RatingCrawler implements RatingCrawlerInterface {
       'title' => 'rating: ' . $rating->entity->details->id . ' - ' . $rating->id,
       'field_rating_comment' => ['value' => $rating->comment],
       'field_rating_id' => $rating->id,
-      'field_article_is_sold' => TRUE,
       'field_rating_type' => $rating->value,
       'field_rating_date' => date('Y-m-d\TH:i:s', strtotime($rating->creation_date)),
       'field_rating_buyer_id' => $rating->rating_from->id,
@@ -218,8 +218,8 @@ class RatingCrawler implements RatingCrawlerInterface {
 
     $ratingNode->save();
 
-    //@todo remove
-    //    return;
+    //@todo remove, only for debug (prevent creating queue article)
+    // return;
 
     // Old ratings are available, but the article id is not given. We don't process further.
     if (!$articleId) {
@@ -264,7 +264,7 @@ class RatingCrawler implements RatingCrawlerInterface {
       $article = reset($article);
       $article = $this->entityTypeManager->getStorage('node')->load($article);
       $article->set('field_article_rating_ref', $ratingNode->id());
-
+      $article->setNewRevision();
       $article->save();
     }
 
