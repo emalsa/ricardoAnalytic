@@ -65,6 +65,21 @@ services:
       - amazeeio-network
       - default
 
+  node:
+    container_name: ricardoanalytic_node_server
+    build:
+      context: .
+      dockerfile: lagoon/node.dockerfile
+    ports:
+      - "8080:8080"
+    << : *default-volumes # loads the defined volumes from the top
+    environment:
+      << : *default-environment # loads the defined environment variables from the top
+      LAGOON_LOCALDEV_URL: node-what.docker.amazee.io # generate another route for nginx, by default we go to varnish
+    networks:
+      - amazeeio-network
+      - default
+
   php:
     build:
       context: .

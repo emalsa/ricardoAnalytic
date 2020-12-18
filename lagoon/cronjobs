@@ -1,4 +1,4 @@
-*/3 * * * * cd /app/web && /usr/local/bin/drush queue-throttle-run article_queue --time-limit=60 --items=4 --unit=minute
+*/3 * * * * cd /app/web && /usr/local/bin/drush queue-throttle-run article_queue --time-limit=90 --items=30 --unit=minute
 */5 * * * * cd /app/web && /usr/local/bin/drush queue-throttle-run article_tag_queue --time-limit=60 --items=400 --unit=minute
 */3 * * * * cd /app/web && /usr/local/bin/drush cron
 #48 0-23/2 * * * cd /app/web && /usr/local/bin/drush cron

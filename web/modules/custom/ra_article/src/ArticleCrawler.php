@@ -6,8 +6,6 @@ use Drupal;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
 use Exception;
-use HeadlessChromium\BrowserFactory;
-use HeadlessChromium\Page;
 
 /**
  * Class ArticleCrawler.
@@ -22,11 +20,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   protected $entityTypeManager;
 
   /**
-   * @var \HeadlessChromium\Browser\ProcessAwareBrowser
-   */
-  protected $browser;
-
-  /**
    * @var \Drupal\node\NodeInterface
    */
   protected $articleNode;
@@ -36,8 +29,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected $articleUrl;
 
-  protected $browserFactory;
-
 
   /**
    * Constructs a new ArticleCrawler object.
@@ -46,7 +37,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
-    $this->browserFactory = new BrowserFactory('chromium-browser');
   }
 
   /**
@@ -66,9 +56,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   /**
    * @param  string  $articleId
    *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function setArticle(string $articleId) {
     $result = $this->entityTypeManager->getStorage('node')
@@ -96,27 +83,31 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
-   * @throws \HeadlessChromium\Exception\CommunicationException
-   * @throws \HeadlessChromium\Exception\CommunicationException\CannotReadResponse
-   * @throws \HeadlessChromium\Exception\CommunicationException\InvalidResponse
-   * @throws \HeadlessChromium\Exception\CommunicationException\ResponseHasError
-   * @throws \HeadlessChromium\Exception\EvaluationFailed
-   * @throws \HeadlessChromium\Exception\NavigationExpired
-   * @throws \HeadlessChromium\Exception\NoResponseAvailable
-   * @throws \HeadlessChromium\Exception\OperationTimedOut
-   * @throws \Exception
+   *
    */
   protected function processArticlePage() {
     // Get data
-    $pdp = NULL;
-    $this->browser = $this->browserFactory->createBrowser(['noSandbox' => TRUE]);
-    $page = $this->browser->createPage();
-    $page->navigate($this->articleUrl)->waitForNavigation(Page::DOM_CONTENT_LOADED, 45000);
+    try {
+      $puppeteerUrl = "http://ricardoanalytic_node_server:8080/puppeteer";
 
-    $data = $page->evaluate('window.ricardo')->getReturnValue();
+      $response = \Drupal::httpClient()->post($puppeteerUrl, [
+        "json" => [
+          "token" => "data-explorer",
+          "url" => $this->articleUrl,
+        ],
+        "headers" => ["Content-Type" => "application/json"],
+      ]);
+      if (!$response || !$response->getStatusCode() === 200) {
+        throw new \Exception('Status code node is not 200');
+      }
+
+      $data = json_decode($response->getBody(), TRUE);
+
+    } catch (\Exception $e) {
+      Drupal::logger('article_crawler')->error($e->getMessage());
+      throw new \Exception($e->getMessage());
+    }
+
     if (isset($data['initialState']['pdp'])) {
       $data = $data['initialState']['pdp'];
       $this->setSeller($data);
@@ -147,9 +138,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
 
   /**
    * @param $data
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function setSeller($data) {
     if (isset($data['article']['user_id'])) {

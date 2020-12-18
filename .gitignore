@@ -15,3 +15,5 @@ web/sites/simpletest
 /.idea/
 
 .gitkeep
+
+node_modules
