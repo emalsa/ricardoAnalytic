@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
 app.post('/puppeteer', async (req, res) => {
   console.log(req.body)
   const ricardoData = await run(req.body.url);
-  ricardoData.puppeteerStatus === true ? res.status(200) : res.status(404);
+  ricardoData && ricardoData.puppeteerStatus === true ? res.status(200) : res.status(404);
   res.send(JSON.stringify(ricardoData));
   res.end();
 });
@@ -43,11 +43,11 @@ async function run(url) {
         request.continue();
       }
     });
-    let ricardoSite = await page.goto(url);
     let ricardo;
-    if (ricardoSite && ricardoSite.status() === 200) {
+    let ricardoSite = await page.goto(url);
+    if (ricardoSite) {
       ricardo = await page.evaluate(() => window.ricardo);
-      ricardo.puppeteerStatus = ricardo.initialState.pdp.article.id === '-1';
+      ricardo.puppeteerStatus = ricardo.initialState.pdp.article.id === '-1' ? false : true;
     }
     await browser.close();
     return ricardo;

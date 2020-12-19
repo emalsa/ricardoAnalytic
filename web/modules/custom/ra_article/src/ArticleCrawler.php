@@ -122,7 +122,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
         $ratingNodeId = $this->articleNode->field_article_rating_ref->target_id;
         /** @var \Drupal\node\NodeInterface $ratingNode */
         $ratingNode = $this->entityTypeManager->getStorage('node')->load($ratingNodeId);
-        if ($ratingNode && $ratingNode->bundle() === 'item' && $ratingNode instanceof NodeInterface && !($ratingNode->field_rating_seller_ref->isEmpty())) {
+        if ($ratingNode && $ratingNode->bundle() === 'rating' && $ratingNode instanceof NodeInterface && !($ratingNode->field_rating_seller_ref->isEmpty())) {
           $this->articleNode->field_rating_seller_ref->target_id = $ratingNode->field_rating_seller_ref->target_id;
         }
       }
@@ -147,7 +147,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
 
       if ($sellerNode) {
         $sellerNode = reset($sellerNode);
-        $this->articleNode->field_rating_seller_ref->target_id = $sellerNode->id();
+        $this->articleNode->field_article_seller_ref->target_id = $sellerNode->id();
       }
     }
   }
