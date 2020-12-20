@@ -6,8 +6,6 @@ use Drupal;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Exception;
-use HeadlessChromium\BrowserFactory;
-use HeadlessChromium\Page;
 
 /**
  * Class SellerCrawler.
@@ -38,13 +36,6 @@ class SellerCrawler implements SellerCrawlerInterface {
    */
   protected $configManager;
 
-  protected $browserFactory;
-
-  /**
-   * @var \HeadlessChromium\Browser\ProcessAwareBrowser
-   */
-  protected $browser;
-
 
   /**
    * Constructs a new SellerCrawler object.
@@ -55,7 +46,6 @@ class SellerCrawler implements SellerCrawlerInterface {
   public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigManagerInterface $config_manager) {
     $this->entityTypeManager = $entity_type_manager;
     $this->configManager = $config_manager;
-    $this->browserFactory = new BrowserFactory('chromium-browser');
   }
 
   /**
@@ -66,12 +56,27 @@ class SellerCrawler implements SellerCrawlerInterface {
       $this->node = $this->entityTypeManager->getStorage('node')->load($nid);
       $this->setSeller($this->node->field_seller_id->value);
 
-      $this->browser = $this->browserFactory->createBrowser(['noSandbox' => TRUE]);
-      $page = $this->browser->createPage();
-      $page->navigate($this->sellerUrl)
-        ->waitForNavigation(Page::DOM_CONTENT_LOADED);
+      try {
+        $puppeteerUrl = "http://ricardoanalytic_node_server:8080/puppeteer-seller";
+        $response = \Drupal::httpClient()->post($puppeteerUrl, [
+          "json" => [
+            "token" => "data-explorer",
+            "url" => $this->sellerUrl,
+          ],
+          "headers" => ["Content-Type" => "application/json"],
+        ]);
+        if (!$response || !$response->getStatusCode() === 200) {
+          throw new \Exception('Status code node is not 200');
+        }
 
-      $data = $page->evaluate('window.ricardo')->getReturnValue();
+        $data = json_decode($response->getBody(), TRUE);
+
+      } catch
+      (\Exception $e) {
+        Drupal::logger('article_crawler')->error($e->getMessage());
+        throw new \Exception($e->getMessage());
+      }
+
       if (isset($data['initialState']['userProfile'])) {
         $this->setSellerInformation($data['initialState']['userProfile']);
         $this->node->field_seller_init_process = 0;
