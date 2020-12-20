@@ -16,10 +16,10 @@ RUN apt update \
 RUN pecl install imagick && docker-php-ext-enable imagick
 
 # Composer
-#RUN curl -sS https://getcomposer.org/installer | php -- --version=1.10.0 --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --version=1.10.0 --install-dir=/usr/local/bin --filename=composer
 
 # Redis
-#RUN pecl install redis && docker-php-ext-enable redis
+RUN pecl install redis && docker-php-ext-enable redis
 
 # XDebug
 #RUN pecl install xdebug-2.6.0 \
@@ -35,6 +35,9 @@ RUN crontab -l | { cat; echo "*/1 * * * * /var/www/bin/drush --root=/var/www/web
 # Configure supervisor
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 
+RUN ln -s /usr/local/bin/php /usr/bin/php
+
 # Start cron and php-fpm
 RUN service cron start
-CMD cron && docker-php-entrypoint php-fpm
+#CMD cron && docker-php-entrypoint php-cli
+CMD cron -f
