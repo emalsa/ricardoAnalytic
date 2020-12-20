@@ -1,6 +1,7 @@
 version: '2.3'
 services:
 
+
   # The Application
   app:
     build:
@@ -10,6 +11,19 @@ services:
     volumes:
       - ./:/var/www
       - ./.docker/xdebug.ini:/etc/php/7.4/mods-available/xdebug.ini
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=database"
+      - "PHP_IDE_CONFIG=serverName=dock"
+
+  # The Application
+  cli:
+    build:
+      context: ./.docker
+      dockerfile: cli.dockerfile
+    working_dir: /var/www
+    volumes_from:
+      - app
     environment:
       - "DB_PORT=3306"
       - "DB_HOST=database"
