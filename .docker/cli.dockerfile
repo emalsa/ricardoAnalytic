@@ -37,6 +37,9 @@ COPY ./supervisord.conf /etc/supervisor/supervisord.conf
 
 RUN ln -s /usr/local/bin/php /usr/bin/php
 
+# Ist not public this project
+RUN chmod -R 755 /var/www/
+
 # Start cron and php-fpm
 RUN service cron start
 #CMD cron && docker-php-entrypoint php-cli
