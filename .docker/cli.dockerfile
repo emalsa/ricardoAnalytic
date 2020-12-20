@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y libmcrypt-dev \
     cron \
     nano \
     supervisor \
-    && docker-php-ext-install pdo_mysql
+    && docker-php-ext-install pdo_mysql \
     && docker-php-ext-install sockets
 
 RUN apt update \
