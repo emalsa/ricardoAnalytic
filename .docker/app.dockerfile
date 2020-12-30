@@ -8,6 +8,11 @@ RUN apt-get update && apt-get install -y libmcrypt-dev \
     && docker-php-ext-install pdo_mysql \
     && docker-php-ext-install sockets
 
+RUN pecl install apcu
+RUN docker-php-ext-enable apcu
+
+RUN pecl install uploadprogress \
+    && echo 'extension=uploadprogress.so' > /usr/local/etc/php/conf.d/uploadprogress.ini
 
 RUN apt update \
     && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
@@ -27,14 +32,11 @@ RUN pecl install xdebug-2.6.0 \
     && docker-php-ext-enable xdebug
 COPY ./xdebug.ini ../../../usr/local/etc/php/conf.d/xdebug.ini
 
-# Configure cron
-#RUN crontab -l | { cat; echo "*/3 * * * * /var/www/bin/drush --root=/var/www/web/ queue-throttle-run article_queue --time-limit=90 --items=30 --unit=minute >> /var/log/cron-article-queue.log 2>&1"; } | crontab -
-#RUN crontab -l | { cat; echo "*/5 * * * * /var/www/bin/drush --root=/var/www/web/ queue-throttle-run article_tag_queue --time-limit=60 --items=400 --unit=minute >> /var/log/cron-article-tag.log 2>&1"; } | crontab -
-#RUN crontab -l | { cat; echo "*/1 * * * * /var/www/bin/drush --root=/var/www/web/ cron >> /var/log/cron.log 2>&1"; } | crontab -
+ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="0" \
+    PHP_OPCACHE_MAX_ACCELERATED_FILES="10000" \
+    PHP_OPCACHE_MEMORY_CONSUMPTION="192" \
+    PHP_OPCACHE_MAX_WASTED_PERCENTAGE="10"
 
-# Configure supervisor
-#COPY ./supervisord.conf /etc/supervisor/supervisord.conf
+RUN docker-php-ext-install opcache
 
-# Start cron and php-fpm
-#RUN service cron start
-#CMD cron && docker-php-entrypoint php-fpm
+COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini

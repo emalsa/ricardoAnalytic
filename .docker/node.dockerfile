@@ -1,7 +1,6 @@
 FROM node:12-alpine
 RUN apk add --no-cache  chromium --repository=http://dl-cdn.alpinelinux.org/alpine/v3.10/main
 
-
 # Create app directory
 WORKDIR /usr/src/app
 
@@ -20,7 +19,6 @@ RUN  apk update \
      # && apt-get install -y google-chrome-stable_current_amd64.deb \
      # && apt-get install -y chromium-browser chromium-codecs-ffmpeg \
      #&& rm -rf /var/lib/apt/lists/* \
-
 
      #&& wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
      #&& chmod +x /usr/sbin/wait-for-it.sh

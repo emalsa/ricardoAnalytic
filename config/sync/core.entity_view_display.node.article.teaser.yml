@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.article.field_article_final_price
     - field.field.node.article.field_article_has_tags
     - field.field.node.article.field_article_id
+    - field.field.node.article.field_article_is_processing
     - field.field.node.article.field_article_is_sold
     - field.field.node.article.field_article_rating_ref
     - field.field.node.article.field_article_seller_ref
@@ -32,6 +33,7 @@ hidden:
   field_article_final_price: true
   field_article_has_tags: true
   field_article_id: true
+  field_article_is_processing: true
   field_article_is_sold: true
   field_article_rating_ref: true
   field_article_seller_ref: true

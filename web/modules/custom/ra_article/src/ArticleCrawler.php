@@ -86,7 +86,9 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    *
    */
   protected function processArticlePage() {
-    // Get data
+    //@todo: add node container health check
+
+    // Get the data
     try {
       $puppeteerUrl = "http://ricardoanalytic_node_server:8080/puppeteer";
 
@@ -107,6 +109,11 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       Drupal::logger('article_crawler')->error($e->getMessage());
       throw new \Exception($e->getMessage());
     }
+
+    // @todo: add handling when accessing node container failed.
+    // maybe add a counter. Info:Will have a health for the node container to
+    // prevent article will handled as error from ricardo when container can't
+    // be accessed.
 
     if (isset($data['initialState']['pdp'])) {
       $data = $data['initialState']['pdp'];
@@ -153,16 +160,25 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
+   * Status
+   * - 1 is closed
+   * - 0 is open
+   * "1" doesn't mean if the article was sold at the end.
+   *
    * @param $data
    */
   protected function setStatus($data) {
-    // Sold
+    //@todo: Status 1 means the offer is closed, but not if the article was sold.
+    // for auction we have bid counts, but what is the behavior
+    // for "Sofort-Kaufen"?
     if ($data['article']['status']) {
       $this->articleNode->field_article_is_sold = 1;
-      $this->articleNode->field_article_has_tags = 0; // Can now be tagged
+      $this->articleNode->field_article_is_processing = 0;
+      $this->articleNode->field_article_has_tags = 0;
     }
     else { // Active
       $this->articleNode->field_article_is_sold = 0;
+      $this->articleNode->field_article_is_processing = 1;
     }
   }
 

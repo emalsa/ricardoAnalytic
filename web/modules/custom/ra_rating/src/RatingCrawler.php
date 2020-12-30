@@ -123,10 +123,9 @@ class RatingCrawler implements RatingCrawlerInterface {
 
     if ($this->client->getResponse()->getStatusCode() === 200) {
       $data = json_decode($this->client->getResponse()->getContent());
-
       $i = 0;
-      foreach ($data->list as $rating) {
 
+      foreach ($data->list as $rating) {
         // If we reaching ratings older than 1 year, then we abort the full crawling.
         if (strtotime($rating->creation_date) < strtotime('-1 year')) {
           $this->processNextPage = FALSE;
@@ -135,9 +134,7 @@ class RatingCrawler implements RatingCrawlerInterface {
           break;
         }
 
-
         if ($this->ratingExists($rating->id, $rating->rating_from->id)) {
-
           // Abort if rating item exists, because we have the older already.
           if (!($this->sellerNode->field_seller_init_process->value)) {
             $this->processNextPage = FALSE;
@@ -146,7 +143,6 @@ class RatingCrawler implements RatingCrawlerInterface {
           else { //  if all ratings have to be processed, then we only continue foreach.
             continue;
           }
-
         }
 
         // Break after reached max. item (if not "init process")
@@ -205,7 +201,7 @@ class RatingCrawler implements RatingCrawlerInterface {
 
     $ratingNode = $this->entityTypeManager->getStorage('node')->create([
       'type' => 'rating',
-      'title' => 'rating: ' . $rating->entity->details->id . ' - ' . $rating->id,
+      'title' => 'Rating for article: ' . $rating->entity->details->id . " - ({$rating->rating_from->nickname})",
       'field_rating_comment' => ['value' => $rating->comment],
       'field_rating_id' => $rating->id,
       'field_rating_type' => $rating->value,
@@ -255,9 +251,10 @@ class RatingCrawler implements RatingCrawlerInterface {
         'type' => 'article',
         'field_article_id' => $articleId,
         'field_article_rating_ref' => $ratingNode->id(),
-        'title' => "Article title set from rating. Will be changed when processing article self",
+        'title' => "Article from rating process... ({$ratingNode->field_rating_buyer_username->value})",
+        'field_rating_article_is_processing' => 1,
+        'field_rating_article_is_sold' => 0,
       ]);
-
       $article->save();
     }
     else { // Edit
