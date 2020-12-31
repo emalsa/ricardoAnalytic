@@ -1,7 +1,8 @@
-FROM php:7.2.0-cli
+FROM php:7.4.0-cli
 
 RUN apt-get update && apt-get install -y libmcrypt-dev \
-    mysql-client libmagickwand-dev --no-install-recommends \
+    mariadb-client libmagickwand-dev --no-install-recommends \
+    libonig-dev \
     cron \
     nano \
     supervisor \
@@ -10,7 +11,7 @@ RUN apt-get update && apt-get install -y libmcrypt-dev \
 
 RUN apt update \
     && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include \
     && docker-php-ext-install -j$(nproc) intl pdo_mysql bcmath mbstring exif gd
 
 RUN pecl install imagick && docker-php-ext-enable imagick
@@ -22,8 +23,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.10.0 --insta
 RUN pecl install redis && docker-php-ext-enable redis
 
 # XDebug
-RUN pecl install xdebug-2.6.0 \
-    && docker-php-ext-enable xdebug
+RUN pecl install xdebug-3.0.1
+RUN docker-php-ext-enable xdebug
 COPY ./xdebug.ini ../../../usr/local/etc/php/conf.d/xdebug.ini
 
 

@@ -1,0 +1,17 @@
+uuid: 65eb3e21-5ce4-452a-a5c5-8506fdb27d62
+langcode: de
+status: true
+dependencies:
+  module:
+    - ra_seller
+title: 'Default cron handler'
+id: ra_seller_cron
+weight: 0
+module: ra_seller
+callback: ra_seller_cron
+scheduler:
+  id: simple
+launcher:
+  id: serial
+logger:
+  id: database
