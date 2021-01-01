@@ -3,8 +3,10 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.field.node.article.field_article_counter_crawling
     - field.field.node.article.field_article_description
     - field.field.node.article.field_article_final_price
+    - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
     - field.field.node.article.field_article_id
     - field.field.node.article.field_article_is_processing
@@ -24,6 +26,15 @@ targetEntityType: node
 bundle: article
 mode: default
 content:
+  field_article_counter_crawling:
+    weight: 114
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
   field_article_description:
     weight: 111
     label: above
@@ -41,6 +52,16 @@ content:
       prefix_suffix: true
     third_party_settings: {  }
     type: number_decimal
+    region: content
+  field_article_has_crawling_error:
+    weight: 113
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
     region: content
   field_article_has_tags:
     weight: 104

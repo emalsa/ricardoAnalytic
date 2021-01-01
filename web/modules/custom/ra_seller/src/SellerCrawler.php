@@ -60,20 +60,20 @@ class SellerCrawler implements SellerCrawlerInterface {
         $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer-seller";
         $response = \Drupal::httpClient()->post($puppeteerUrl, [
           "json" => [
+            'timeout' => 100,
             "token" => "data-explorer",
             "url" => $this->sellerUrl,
           ],
           "headers" => ["Content-Type" => "application/json"],
         ]);
+
         if (!$response || !$response->getStatusCode() === 200) {
           throw new \Exception('Status code node is not 200');
         }
 
         $data = json_decode($response->getBody(), TRUE);
-
-      } catch
-      (\Exception $e) {
-        Drupal::logger('article_crawler')->error($e->getMessage());
+      } catch (\Exception $e) {
+        Drupal::logger('seller_crawler')->error($e->getMessage());
         throw new \Exception($e->getMessage());
       }
 

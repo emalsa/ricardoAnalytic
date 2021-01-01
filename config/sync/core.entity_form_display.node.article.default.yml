@@ -3,8 +3,10 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.field.node.article.field_article_counter_crawling
     - field.field.node.article.field_article_description
     - field.field.node.article.field_article_final_price
+    - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
     - field.field.node.article.field_article_id
     - field.field.node.article.field_article_is_processing
@@ -30,6 +32,13 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_article_counter_crawling:
+    weight: 134
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
   field_article_description:
     weight: 131
     settings:
@@ -44,6 +53,13 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: number
+    region: content
+  field_article_has_crawling_error:
+    weight: 133
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
     region: content
   field_article_has_tags:
     weight: 124

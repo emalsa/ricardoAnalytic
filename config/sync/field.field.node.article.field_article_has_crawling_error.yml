@@ -1,0 +1,23 @@
+uuid: a3dc3b11-2ac3-44db-835c-766d7d01df4a
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_has_crawling_error
+    - node.type.article
+id: node.article.field_article_has_crawling_error
+field_name: field_article_has_crawling_error
+entity_type: node
+bundle: article
+label: 'Has crawling error'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -4,8 +4,10 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.article.field_article_counter_crawling
     - field.field.node.article.field_article_description
     - field.field.node.article.field_article_final_price
+    - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
     - field.field.node.article.field_article_id
     - field.field.node.article.field_article_is_processing
@@ -29,8 +31,10 @@ content:
     third_party_settings: {  }
     region: content
 hidden:
+  field_article_counter_crawling: true
   field_article_description: true
   field_article_final_price: true
+  field_article_has_crawling_error: true
   field_article_has_tags: true
   field_article_id: true
   field_article_is_processing: true

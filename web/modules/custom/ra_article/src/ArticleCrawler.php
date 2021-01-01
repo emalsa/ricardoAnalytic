@@ -13,11 +13,9 @@ use Exception;
 class ArticleCrawler implements ArticleCrawlerInterface {
 
   /**
-   * Drupal\Core\Entity\EntityTypeManagerInterface definition.
-   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * @var \Drupal\node\NodeInterface
@@ -27,8 +25,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   /**
    * @var string
    */
-  protected $articleUrl;
-
+  protected string $articleUrl;
 
   /**
    * Constructs a new ArticleCrawler object.
@@ -49,13 +46,12 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     }
     catch (Exception $exception) {
       Drupal::logger('article_crawler')
-        ->error($exception->getMessage() . ' - articleId: ' . $articleId);
+        ->error('articleId: - ' . $articleId . '--' . $exception->getMessage());
     }
   }
 
   /**
    * @param  string  $articleId
-   *
    */
   public function setArticle(string $articleId) {
     $result = $this->entityTypeManager->getStorage('node')
@@ -87,26 +83,28 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected function processArticlePage() {
     //@todo: add node container health check
-
     // Get the data
     try {
       $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer";
-
       $response = \Drupal::httpClient()->post($puppeteerUrl, [
         "json" => [
+          'timeout' => 100,
           "token" => "data-explorer",
-          "url" => $this->articleUrl,
         ],
         "headers" => ["Content-Type" => "application/json"],
       ]);
+
       if (!$response || !$response->getStatusCode() === 200) {
         throw new \Exception('Status code node is not 200');
       }
 
       $data = json_decode($response->getBody(), TRUE);
+      $this->articleNode->field_article_has_crawling_error = 0;
 
     } catch (\Exception $e) {
-      Drupal::logger('article_crawler')->error($e->getMessage());
+      $this->articleNode->field_article_has_crawling_error = 1;
+      $this->articleNode->field_article_counter_crawling->value = $this->articleNode->field_article_counter_crawling->value + 1;
+      $this->articleNode->save();
       throw new \Exception($e->getMessage());
     }
 
@@ -114,7 +112,6 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     // maybe add a counter. Info:Will have a health for the node container to
     // prevent article will handled as error from ricardo when container can't
     // be accessed.
-
     if (isset($data['initialState']['pdp'])) {
       $data = $data['initialState']['pdp'];
       $this->setSeller($data);
@@ -125,19 +122,11 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setSoldDate($data);
     }
     else {
-      if (!($this->articleNode->field_article_rating_ref->isEmpty())) {
-        $ratingNodeId = $this->articleNode->field_article_rating_ref->target_id;
-        /** @var \Drupal\node\NodeInterface $ratingNode */
-        $ratingNode = $this->entityTypeManager->getStorage('node')->load($ratingNodeId);
-        if ($ratingNode && $ratingNode->bundle() === 'rating' && $ratingNode instanceof NodeInterface && !($ratingNode->field_rating_seller_ref->isEmpty())) {
-          $this->articleNode->field_rating_seller_ref->target_id = $ratingNode->field_rating_seller_ref->target_id;
-        }
-      }
-
-      // Is sold
-      $this->articleNode->field_article_is_sold = 1;
+      // No data
+      $this->articleNode->field_article_is_sold = 0;
+      $this->articleNode->field_article_is_processing = 0;
       $this->articleNode->setPublished(FALSE);
-      $this->articleNode->setTitle('Article not found: ' . $this->articleUrl);
+      $this->articleNode->setTitle('Article not found (no RDP data provided): ' . $this->articleUrl);
     }
 
     $this->articleNode->save();
@@ -168,7 +157,8 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    * @param $data
    */
   protected function setStatus($data) {
-    //@todo: Status 1 means the offer is closed, but not if the article was sold.
+    //@todo: Status 1 means the offer is closed, but it doesn't say
+    //  if the article was sold or not.
     // for auction we have bid counts, but what is the behavior
     // for "Sofort-Kaufen"?
     if ($data['article']['status']) {
