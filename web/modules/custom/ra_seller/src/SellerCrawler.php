@@ -57,7 +57,7 @@ class SellerCrawler implements SellerCrawlerInterface {
       $this->setSeller($this->node->field_seller_id->value);
 
       try {
-        $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app";
+        $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer-seller";
         $response = \Drupal::httpClient()->post($puppeteerUrl, [
           "json" => [
             "token" => "data-explorer",

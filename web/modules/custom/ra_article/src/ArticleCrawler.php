@@ -90,7 +90,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
 
     // Get the data
     try {
-      $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app";
+      $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer";
 
       $response = \Drupal::httpClient()->post($puppeteerUrl, [
         "json" => [
