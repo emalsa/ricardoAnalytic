@@ -29,8 +29,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --version=1.10.0 --insta
 RUN pecl install redis && docker-php-ext-enable redis
 
 # XDebug
-RUN pecl install xdebug-3.0.1 \
-    && docker-php-ext-enable xdebug
+RUN pecl install xdebug-2.9.2
+RUN docker-php-ext-enable xdebug
 COPY ./xdebug.ini ../../../usr/local/etc/php/conf.d/xdebug.ini
 
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="0" \
