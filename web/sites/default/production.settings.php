@@ -1,12 +1,7 @@
 <?php
 /**
  * @file
- * amazee.io Drupal 8 production environment configuration file.
- *
- * This file will only be included on production environments.
- *
- * It contains some defaults that the amazee.io team suggests, please edit them
- *   as required.
+ * Production
  */
 
 $databases['default']['default'] = [
