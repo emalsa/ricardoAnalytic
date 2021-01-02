@@ -36,6 +36,12 @@ $databases['default']['default'] = [
 ];
 $settings['hash_salt'] = 'whatever-i-like-29292929';
 
+// Show all error messages on the site
+$config['system.logging']['error_level'] = 'all';
+
+// Disable Google Analytics from sending dev GA data.
+$config['google_analytics.settings']['account'] = 'UA-XXXXXXXX-YY';
+
 // Use production settings. Will be renamed on deployment process
 if (file_exists(__DIR__ . '/production.settings.php')) {
   include_once __DIR__ . '/production.settings.php';
