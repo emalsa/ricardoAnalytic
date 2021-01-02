@@ -8,7 +8,7 @@ $databases['default']['default'] = [
   'driver' => 'mysql',
   'database' => 'ricardoanalytic',
   'username' => 'ricardoanalytic',
-  'password' => 'MzZTt7mJM',
+  'password' => 'MzZTt7mJMlaksd=22dsa3=dsadsa33=)=)*0932091',
   'host' => '127.0.0.1',
   'port' => 3306,
   'prefix' => '',
