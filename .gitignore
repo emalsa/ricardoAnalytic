@@ -15,3 +15,5 @@ web/sites/simpletest
 .gitkeep
 
 node_modules
+
+.docker-sync

@@ -42,11 +42,6 @@ $config['system.logging']['error_level'] = 'all';
 // Disable Google Analytics from sending dev GA data.
 $config['google_analytics.settings']['account'] = 'UA-XXXXXXXX-YY';
 
-// Use production settings. Will be renamed on deployment process
-if (file_exists(__DIR__ . '/production.settings.php')) {
-  include_once __DIR__ . '/production.settings.php';
-}
-
 $settings['redis.connection']['interface'] = 'PhpRedis';
 $settings['redis.connection']['host'] = 'redis';
 $settings['redis.connection']['port'] = 6379;
