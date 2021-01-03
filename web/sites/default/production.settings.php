@@ -18,10 +18,10 @@ $databases['default']['default'] = [
 
 $settings['config_sync_directory'] = '../config/sync';
 
-$settings['trusted_host_patterns'] = [
-  '*',
-  '*$',
-];
+//$settings['trusted_host_patterns'] = [
+//  '*',
+//  '*$',
+//];
 
 $settings['hash_salt'] = 'whatever-i-like-29292929';
 $settings['file_temp_path'] = '/tmp';
