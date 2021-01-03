@@ -1,6 +1,6 @@
 # Various rewrite rules.
-<IfModule mod_rewrite.c>
-RewriteEngine on
-RewriteCond %{REQUEST_URI} !web/
-RewriteRule ^(.*)$ /web/$1
-</IfModule>
+#<IfModule mod_rewrite.c>
+#RewriteEngine on
+#RewriteCond %{REQUEST_URI} !web/
+#RewriteRule ^(.*)$ /web/$1
+#</IfModule>
