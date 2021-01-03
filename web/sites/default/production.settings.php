@@ -26,7 +26,7 @@ $settings['config_sync_directory'] = '../config/sync';
 $settings['hash_salt'] = 'whatever-i-like-29292929';
 $settings['file_temp_path'] = '/tmp';
 $settings['file_public_path'] = 'sites/default/files';
-$settings['file_public_base_url'] = 'https://ricardoanalytic.nicastro.io/sites/default/files';
+$settings['file_public_base_url'] = 'https://ra.nicastro.io/sites/default/files';
 
 
 // Don't show any error messages on the site (will still be shown in watchdog)
