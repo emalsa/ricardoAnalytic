@@ -60,7 +60,7 @@ class SellerCrawler implements SellerCrawlerInterface {
         $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer-seller";
         $response = \Drupal::httpClient()->post($puppeteerUrl, [
           "json" => [
-            'timeout' => 100,
+            'timeout' => 9000,
             "token" => "data-explorer",
             "url" => $this->sellerUrl,
           ],
