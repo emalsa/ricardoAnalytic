@@ -15,7 +15,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   /**
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected EntityTypeManagerInterface $entityTypeManager;
+  protected $entityTypeManager;
 
   /**
    * @var \Drupal\node\NodeInterface
