@@ -25,7 +25,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   /**
    * @var string
    */
-  protected string $articleUrl;
+  protected $articleUrl;
 
   /**
    * Constructs a new ArticleCrawler object.
