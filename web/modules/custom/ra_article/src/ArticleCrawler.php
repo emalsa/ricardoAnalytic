@@ -88,7 +88,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer";
       $response = \Drupal::httpClient()->post($puppeteerUrl, [
         "json" => [
-          'timeout' => 9000,
+          'timeout' => 6000,
           "token" => "data-explorer",
           "url" => $this->articleUrl,
         ],
