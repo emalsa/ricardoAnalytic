@@ -19,10 +19,8 @@ $databases['default']['default'] = [
 $settings['config_sync_directory'] = '../config/sync';
 
 $settings['trusted_host_patterns'] = [
-  '^nicastro\.io$',
-  '^.+\.nicastro\.io$',
-  '^nicastro\.io$',
-  '^.+\.nicastro\.io$',
+  '*',
+  '*$',
 ];
 
 $settings['hash_salt'] = 'whatever-i-like-29292929';
