@@ -90,6 +90,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
         "json" => [
           'timeout' => 9000,
           "token" => "data-explorer",
+          "url" => $this->articleUrl,
         ],
         "headers" => ["Content-Type" => "application/json"],
       ]);
