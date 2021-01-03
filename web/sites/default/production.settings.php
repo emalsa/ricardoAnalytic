@@ -30,7 +30,7 @@ $settings['file_public_base_url'] = 'https://ricardoanalytic.nicastro.io/sites/d
 
 
 // Don't show any error messages on the site (will still be shown in watchdog)
-$config['system.logging']['error_level'] = 'all';
+$config['system.logging']['error_level'] = 'verbose';
 
 // Expiration of cached pages on Varnish to 15 min
 $config['system.performance']['cache']['page']['max_age'] = 300;
