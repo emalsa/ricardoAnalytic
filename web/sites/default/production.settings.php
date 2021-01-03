@@ -18,10 +18,12 @@ $databases['default']['default'] = [
 
 $settings['config_sync_directory'] = '../config/sync';
 
-//$settings['trusted_host_patterns'] = [
-//  '*',
-//  '*$',
-//];
+$settings['trusted_host_patterns'] = [
+  '^nicastro\.io$',
+  '^.+\.nicastro\.io$',
+  '^nicastro\.io$',
+  '^.+\.nicastro\.io$',
+];
 
 if (isset($GLOBALS['request']) && '/web/index.php' === $GLOBALS['request']->server->get('SCRIPT_NAME')) {
   $GLOBALS['request']->server->set('SCRIPT_NAME', '/index.php');
