@@ -22,9 +22,9 @@ article_tag_queue:
   enabled: false
   time: 60
   items: 0
-  unit: ''
+  unit: microsecond
 rating_queue:
   enabled: false
   time: 60
   items: 0
-  unit: ''
+  unit: microsecond

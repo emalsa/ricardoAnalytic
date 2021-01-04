@@ -32,8 +32,36 @@ function ra_article_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_cron().
  */
 function ra_article_cron() {
-//  __tagging_articles();
-//    __fix_articles();
+  __recrawle_failed_articles();
+  //  __tagging_articles();
+  //    __fix_articles();
+}
+
+/**
+ * Recrawle items which has an error after 24h
+ */
+function __recrawle_failed_articles() {
+  $olderThan = time() - (60 * 60 * 24); // 24h
+  $nids = Drupal::entityQuery('node')
+    ->condition('type', 'article')
+    ->condition('field_article_has_crawling_error', '1')
+    ->condition('field_article_counter_crawling', '3', '<=')
+    ->condition('changed', $olderThan, '<=')
+    ->accessCheck(FALSE)
+    ->execute();
+
+  /** @var QueueFactory $queue_factory */
+  $queue_service = Drupal::service('queue');
+  /** @var QueueInterface $queue_item */
+  $queue_item = $queue_service->get('article_queue');
+
+  foreach ($nids as $nid) {
+    $node = Node::load($nid);
+    $node->field_article_has_crawling_error = 0; // prevent re-add to queue
+    $node->save();
+    $data['article_id'] = $node->field_article_id->value;
+    $queue_item->createItem($data);
+  }
 }
 
 function __tagging_articles() {
