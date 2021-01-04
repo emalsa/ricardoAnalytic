@@ -1,6 +1,6 @@
 uuid: 3a896f35-7459-4c04-9be0-7e80950a1d5c
 langcode: de
-status: false
+status: true
 dependencies:
   module:
     - ra_article
@@ -11,7 +11,19 @@ module: ra_article
 callback: ra_article_cron
 scheduler:
   id: simple
+  configuration:
+    rules:
+      - '0+@ */12 * * *'
 launcher:
   id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
 logger:
   id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
