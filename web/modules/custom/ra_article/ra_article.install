@@ -54,13 +54,14 @@ function ra_article_update_8003() {
   $nids = Drupal::entityQuery('node')
     ->condition('type', 'article')
     ->condition('title', 'Article from rating process' . '%', 'LIKE')
-    ->condition('created', '1609706964', '<')
+    ->condition('created', '1610055300', '<')
     ->accessCheck(FALSE)
     ->execute();
 
   foreach ($nids as $nid) {
     $node = Node::load($nid);
-    $node->field_article_has_tags = 1;
+    $node->field_article_has_tags = 0;
+    $node->field_article_has_crawling_error = 1;
     $node->save();
   }
 

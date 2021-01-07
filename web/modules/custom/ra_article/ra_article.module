@@ -7,26 +7,8 @@
 
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
-
-/**
- * Implements hook_help().
- */
-function ra_article_help($route_name, RouteMatchInterface $route_match) {
-  switch ($route_name) {
-    // Main module help for the ra_article module.
-    case 'help.page.ra_article':
-      $output = '';
-      $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('Article') . '</p>';
-      return $output;
-
-    default:
-  }
-}
-
 
 /**
  * Implements hook_cron().
@@ -34,7 +16,7 @@ function ra_article_help($route_name, RouteMatchInterface $route_match) {
 function ra_article_cron() {
   __recrawle_failed_articles();
   //  __tagging_articles();
-  //    __fix_articles();
+  //  __fix_articles();
 }
 
 /**
@@ -86,12 +68,10 @@ function __tagging_articles() {
 
 function __fix_articles() {
   // Process articles again (FIXES)
-
   $nids = Drupal::entityQuery('node')
     ->condition('type', 'article')
     ->condition('status', 1)
-//     ->condition('title', 'Article title set', 'STARTS_WITH')
-
+    //->condition('title', 'Article title set', 'STARTS_WITH')
     ->condition('field_article_start_price', '0')
     ->execute();
 
