@@ -2,10 +2,9 @@
 
 namespace Drupal\ra_seller;
 
-use Drupal;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Exception;
+use Drupal\node\NodeInterface;
 
 /**
  * Class SellerCrawler.
@@ -13,39 +12,44 @@ use Exception;
 class SellerCrawler implements SellerCrawlerInterface {
 
   /**
+   * The sellers url.
+   *
    * @var string
    */
-  protected $sellerUrl;
+  protected string $sellerUrl;
 
   /**
+   * The node object.
+   *
    * @var \Drupal\node\NodeInterface
    */
-  protected $node;
+  protected NodeInterface $node;
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
-   * \Drupal\Core\Config\ConfigManagerInterface definition.
+   * Drupal\Core\Config\ConfigManagerInterface definition.
    *
    * @var \Drupal\Core\Config\ConfigManagerInterface
    */
-  protected $configManager;
-
+  protected ConfigManagerInterface $configManager;
 
   /**
-   * Constructs a new SellerCrawler object.
+   * Constructs SellerCrawler object.
    *
-   * @param  \Drupal\Core\Entity\EntityTypeManagerInterface  $entity_type_manager
-   * @param  \Drupal\Core\Config\ConfigManagerInterface  $config_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\Core\Config\ConfigManagerInterface $configManager
+   *   The config manager.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigManagerInterface $config_manager) {
-    $this->entityTypeManager = $entity_type_manager;
-    $this->configManager = $config_manager;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, ConfigManagerInterface $configManager) {
+    $this->entityTypeManager = $entityTypeManager;
+    $this->configManager = $configManager;
   }
 
   /**
@@ -72,8 +76,9 @@ class SellerCrawler implements SellerCrawlerInterface {
         }
 
         $data = json_decode($response->getBody(), TRUE);
-      } catch (\Exception $e) {
-        Drupal::logger('seller_crawler')->error($e->getMessage());
+      }
+      catch (\Exception $e) {
+        \Drupal::logger('seller_crawler')->error($e->getMessage());
         throw new \Exception($e->getMessage());
       }
 
@@ -84,17 +89,18 @@ class SellerCrawler implements SellerCrawlerInterface {
         $this->node->save();
       }
     }
-    catch (Exception $e) {
-      Drupal::logger('ra_seller')->error($e);
+    catch (\Exception $e) {
+      \Drupal::logger('ra_seller')->error($e);
       return;
     }
 
   }
 
   /**
-   * @param $sellerId
+   * Sets the necessary seller properties.
    *
-   * @throws \Exception
+   * @param string $sellerId
+   *   The seller id.
    */
   protected function setSeller(string $sellerId) {
     if (!$sellerId) {
@@ -104,23 +110,23 @@ class SellerCrawler implements SellerCrawlerInterface {
   }
 
   /**
-   * Set seller information.
+   * Sets the seller information.
    *
-   * @param  array  $sellerData
+   * @param array $sellerData
+   *   The crawled data.
    */
   protected function setSellerInformation(array $sellerData) {
-    // The numeric seller ID
+    // The numeric seller ID.
     $this->node->field_seller_id_numeric = $sellerData['ratings']['list'][0]['rating_to']['id'];
 
-    // Address
+    // Address.
     $postalCodeAndLocation = explode(' ', $sellerData['address']);
     $this->node->field_seller_postal_code = $postalCodeAndLocation[0];
     $this->node->field_seller_location = $postalCodeAndLocation[1];
     $this->node->field_seller_member_since = $sellerData['memberSince'];
 
-    // Figures
+    // Figures.
     $this->node->field_seller_sold_items = $sellerData['articlesSold'];
   }
-
 
 }

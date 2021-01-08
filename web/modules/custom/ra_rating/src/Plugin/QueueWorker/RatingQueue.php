@@ -2,8 +2,6 @@
 
 namespace Drupal\ra_rating\Plugin\QueueWorker;
 
-use Drupal\Core\Annotation\QueueWorker;
-use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\ra_rating\RatingCrawlerInterface;
@@ -21,17 +19,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class RatingQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
+   * The rating crawler service.
+   *
    * @var \Drupal\ra_rating\RatingCrawlerInterface
    */
-  protected $ratingCrawler;
+  protected RatingCrawlerInterface $ratingCrawler;
 
   /**
-   * ItemRatingQueue constructor.
-   *
-   * @param  array  $configuration
-   * @param $plugin_id
-   * @param $plugin_definition
-   * @param  \Drupal\ra_rating\RatingCrawlerInterface  $ratingCrawler
+   * {@inheritDoc}
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, RatingCrawlerInterface $ratingCrawler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -39,12 +34,7 @@ class RatingQueue extends QueueWorkerBase implements ContainerFactoryPluginInter
   }
 
   /**
-   * @param  \Symfony\Component\DependencyInjection\ContainerInterface  $container
-   * @param  array  $configuration
-   * @param  string  $plugin_id
-   * @param  mixed  $plugin_definition
-   *
-   * @return \Drupal\Core\Plugin\ContainerFactoryPluginInterface|\Drupal\ra_rating\Plugin\QueueWorker\RatingQueue
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(

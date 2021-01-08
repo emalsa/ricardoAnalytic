@@ -5,25 +5,23 @@
  * Contains ra_article.module.
  */
 
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Queue\QueueInterface;
 use Drupal\node\Entity\Node;
-use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_cron().
  */
 function ra_article_cron() {
   __recrawle_failed_articles();
-  //  __tagging_articles();
-  //  __fix_articles();
+  // __tagging_articles();
+  // __fix_articles();
 }
 
 /**
- * Recrawle items which has an error after 24h
+ * Recrawle items which has an error after 24h.
  */
 function __recrawle_failed_articles() {
-  $olderThan = time() - (60 * 60 * 24); // 24h
+  // 24h.
+  $olderThan = time() - (60 * 60 * 24);
   $nids = Drupal::entityQuery('node')
     ->condition('type', 'article')
     ->condition('field_article_has_crawling_error', '1')
@@ -32,20 +30,24 @@ function __recrawle_failed_articles() {
     ->accessCheck(FALSE)
     ->execute();
 
-  /** @var QueueFactory $queue_factory */
+  /** @var  Drupal\Core\Queue\QueueFactory $queue_factory */
   $queue_service = Drupal::service('queue');
-  /** @var QueueInterface $queue_item */
+  /** @var Drupal\Core\Queue\QueueInterface $queue_item */
   $queue_item = $queue_service->get('article_queue');
 
   foreach ($nids as $nid) {
     $node = Node::load($nid);
-    $node->field_article_has_crawling_error = 0; // prevent re-add to queue
+    // Prevent re-add to queue.
+    $node->field_article_has_crawling_error = 0;
     $node->save();
     $data['article_id'] = $node->field_article_id->value;
     $queue_item->createItem($data);
   }
 }
 
+/**
+ * Tagging processed articles.
+ */
 function __tagging_articles() {
   $nids = Drupal::entityQuery('node')
     ->condition('type', 'article')
@@ -55,37 +57,13 @@ function __tagging_articles() {
     ->range(0, 1000)
     ->execute();
 
-  /** @var QueueFactory $queue_factory */
+  /** @var Drupal\Core\Queue\QueueFactory $queue_factory */
   $queue_service = Drupal::service('queue');
-  /** @var QueueInterface $queue_item */
+  /** @var Drupal\Core\Queue\QueueInterface $queue_item */
   $queue_item = $queue_service->get('article_tag_queue');
 
   foreach ($nids as $nid) {
     $data['nid'] = $nid;
     $queue_item->createItem($data);
   }
-}
-
-function __fix_articles() {
-  // Process articles again (FIXES)
-  $nids = Drupal::entityQuery('node')
-    ->condition('type', 'article')
-    ->condition('status', 1)
-    //->condition('title', 'Article title set', 'STARTS_WITH')
-    ->condition('field_article_start_price', '0')
-    ->execute();
-
-  /** @var QueueFactory $queue_factory */
-  $queue_service = Drupal::service('queue');
-  /** @var QueueInterface $queue_item */
-  $queue_item = $queue_service->get('article_queue');
-
-  foreach ($nids as $nid) {
-    $node = Node::load($nid);
-    if ($node instanceof NodeInterface && !$node->field_article_id->isEmpty()) {
-      $data['article_id'] = $node->field_article_id->value;
-      $queue_item->createItem($data);
-    }
-  }
-
 }

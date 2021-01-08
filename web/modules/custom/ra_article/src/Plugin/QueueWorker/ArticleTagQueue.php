@@ -2,6 +2,7 @@
 
 namespace Drupal\ra_article\Plugin\QueueWorker;
 
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -21,42 +22,44 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ArticleTagQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
+   * The node storage.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected $nodeEntityTypeManager, $termEntityTypeManager;
-
-  protected $logger;
+  protected EntityStorageInterface $nodeEntityTypeManager;
 
   /**
-   * ArticleTagQueue constructor.
+   * The term storage.
    *
-   * @param  array  $configuration
-   * @param $plugin_id
-   * @param $plugin_definition
-   * @param  \Drupal\Core\Entity\EntityTypeManagerInterface  $entityTypeManager
-   * @param  \Drupal\Core\Logger\LoggerChannelInterface  $logger
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager, LoggerChannelInterface $logger) {
+  protected EntityStorageInterface $termStorage;
+
+  /**
+   * The logger.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
+  protected LoggerChannelInterface $logger;
+
+  /**
+   * {@inheritDoc}
+   */
+  public function __construct(
+    array $configuration,
+    $plugin_id,
+    $plugin_definition,
+    EntityTypeManagerInterface $entityTypeManager,
+    LoggerChannelInterface $logger
+  ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->nodeEntityTypeManager = $entityTypeManager->getStorage('node');
-    $this->termEntityTypeManager = $entityTypeManager->getStorage('taxonomy_term');
+    $this->termStorage = $entityTypeManager->getStorage('taxonomy_term');
     $this->logger = $logger;
   }
 
   /**
-   * Create.
-   *
-   * @param  \Symfony\Component\DependencyInjection\ContainerInterface  $container
-   * @param  array  $configuration
-   * @param  string  $plugin_id
-   * @param  mixed  $plugin_definition
-   *
-   * @return \Drupal\ra_article\Plugin\QueueWorker\ArticleTagQueue
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
@@ -74,7 +77,7 @@ class ArticleTagQueue extends QueueWorkerBase implements ContainerFactoryPluginI
   public function processItem($data) {
     try {
       $nid = $data['nid'];
-      $node = $this->nodeEntityTypeManager->load($nid);
+      $node = $this->nodeStorage->load($nid);
       if ($node instanceof NodeInterface && $node->bundle() === 'article') {
         $labelArray = explode(' ', $node->label());
         $node->set('field_article_tags', []);
@@ -95,19 +98,22 @@ class ArticleTagQueue extends QueueWorkerBase implements ContainerFactoryPluginI
   }
 
   /**
-   * @param  string  $label
+   * Gets the term id.
+   *
+   * @param string $label
+   *   The terms name.
    *
    * @return int
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   *   The term id
    */
   protected function getTermId(string $label): int {
-    $term = $this->termEntityTypeManager->loadByProperties([
+    $term = $this->termStorage->loadByProperties([
       'name' => $label,
       'vid' => 'tags',
     ]);
 
     if (empty($term)) {
-      $term = $this->termEntityTypeManager->create([
+      $term = $this->termStorage->create([
         'name' => $label,
         'vid' => 'tags',
       ]);

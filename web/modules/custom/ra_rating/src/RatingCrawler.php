@@ -2,12 +2,9 @@
 
 namespace Drupal\ra_rating;
 
-use Drupal;
+use Drupal\node\NodeInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Queue\QueueInterface;
-use Exception;
 use Goutte\Client;
 
 /**
@@ -15,49 +12,69 @@ use Goutte\Client;
  */
 class RatingCrawler implements RatingCrawlerInterface {
 
-  const MAX_ITEM_TO_PROCESS = 2;
+  /**
+   * Max rating item to process.
+   */
+  const MAX_ITEM_TO_PROCESS = 5;
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * Drupal\Core\Config\ConfigManagerInterface definition.
    *
    * @var \Drupal\Core\Config\ConfigManagerInterface
    */
-  protected $configManager;
+  protected ConfigManagerInterface $configManager;
 
   /**
+   * The seller node object.
+   *
    * @var \Drupal\node\NodeInterface
    */
-  protected $sellerNode;
+  protected NodeInterface $sellerNode;
 
   /**
-   * @var string
-   */
-  protected $sellerId;
-
-  /**
-   * @var string
-   */
-  protected $sellerUrlApi;
-
-  protected $client;
-
-  protected $page = 1;
-
-  protected $processNextPage;
-
-
-  /**
-   * Constructs a new SellerCrawler object.
+   * The seller id.
    *
-   * @param  \Drupal\Core\Entity\EntityTypeManagerInterface  $entity_type_manager
-   * @param  \Drupal\Core\Config\ConfigManagerInterface  $config_manager
+   * @var string
+   */
+  protected string $sellerId;
+
+  /**
+   * The sellers url api.
+   *
+   * @var string
+   */
+  protected string $sellerUrlApi;
+
+  /**
+   * The http client.
+   *
+   * @var \Goutte\Client
+   */
+  protected Client $client;
+
+  /**
+   * The current rating page.
+   *
+   * @var int
+   */
+  protected int $page = 1;
+
+  /**
+   * If next rating page have to be processed.
+   *
+   * @var bool
+   */
+  protected bool $processNextPage;
+
+  /**
+   * {@inheritDoc}
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager, ConfigManagerInterface $config_manager) {
     $this->entityTypeManager = $entity_type_manager;
@@ -66,29 +83,28 @@ class RatingCrawler implements RatingCrawlerInterface {
   }
 
   /**
+   * Sets the seller and crawle ratings.
    *
-   * @param  int  $sellerNodeId
+   * @param int $sellerNodeId
    */
   public function initRatingsCrawler(int $sellerNodeId) {
     try {
       $this->setSeller($sellerNodeId);
       $this->processPage();
-      //       $entities = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'article']]);
+      // $entities = $this->entityTypeManager->getStorage('node')->loadByProperties(['type' => ['item', 'article']]);
       //       $this->entityTypeManager->getStorage('node')->delete($entities);
-
     }
-    catch (Exception $e) {
-      Drupal::logger('ra_rating')->error($e);
+    catch (\Exception $e) {
+      \Drupal::logger('ra_rating')->error($e);
       return;
     }
   }
 
   /**
-   * @param  string  $sellerNodeId
+   * Sets the seller.
    *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Exception
+   * @param string $sellerNodeId
+   *   The seller node id.
    */
   protected function setSeller(string $sellerNodeId) {
     if ($sellerNodeId) {
@@ -102,20 +118,17 @@ class RatingCrawler implements RatingCrawlerInterface {
       $this->sellerNode = reset($result);
       $this->sellerId = $this->sellerNode->field_seller_id_numeric->value;
 
-      /// The username is required for the url and not numeric id.
+      // The username is required for the url and not numeric id.
       $this->sellerUrlApi = "https://www.ricardo.ch/api/mfa/ratings?sellerName={$this->sellerNode->field_seller_id->value}&ratingValue=&page=";
 
     }
     else {
-      throw new Exception('No Seller Id is set');
+      throw new \Exception('No Seller Id is set');
     }
   }
 
   /**
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * Crawls the ratings page.
    */
   protected function processPage() {
     $this->processNextPage = TRUE;
@@ -140,12 +153,13 @@ class RatingCrawler implements RatingCrawlerInterface {
             $this->processNextPage = FALSE;
             break;
           }
-          else { //  if all ratings have to be processed, then we only continue foreach.
+          // If all ratings have to be processed, then we only continue foreach.
+          else {
             continue;
           }
         }
 
-        // Break after reached max. item (if not "init process")
+        // Break after reached max. item, if not "init process".
         if (!($this->sellerNode->field_seller_init_process->value) && $i > self::MAX_ITEM_TO_PROCESS) {
           $this->processNextPage = FALSE;
           break;
@@ -155,7 +169,7 @@ class RatingCrawler implements RatingCrawlerInterface {
         $i++;
       }
 
-      // Next page
+      // Next page.
       if ($this->processNextPage && $this->page <= $data->page) {
         $this->page++;
         $this->processPage();
@@ -166,14 +180,17 @@ class RatingCrawler implements RatingCrawlerInterface {
   }
 
   /**
-   * @param  string  $rating_id
-   * @param  string  $rating_from_id
+   * Checks if the rating already exists as node.
+   *
+   * @param string $rating_id
+   *   The rating id.
+   * @param string $rating_from_id
+   *   The buyers id.
    *
    * @return bool
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   *   True if exists, otherwise false
    */
-  protected function ratingExists(string $rating_id, string $rating_from_id) {
+  protected function ratingExists(string $rating_id, string $rating_from_id): bool {
     $rating = $this->entityTypeManager
       ->getStorage('node')
       ->getQuery()
@@ -182,19 +199,14 @@ class RatingCrawler implements RatingCrawlerInterface {
       ->condition('field_rating_buyer_id', $rating_from_id, '=')
       ->execute();
 
-    if (empty($rating)) {
-      return FALSE;
-    }
-
-    return TRUE;
+    return empty($rating) ? FALSE : TRUE;
   }
 
   /**
-   * @param $rating
+   * Creates the rating node with crawled data.
    *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @param $rating
+   *   The crawled rating data
    */
   protected function processRating($rating) {
     $articleId = $rating->entity->details->id;
@@ -214,9 +226,8 @@ class RatingCrawler implements RatingCrawlerInterface {
 
     $ratingNode->save();
 
-    //@todo remove, only for debug (prevent creating queue article)
+    // @todo remove, only for debug (prevent creating queue article)
     // return;
-
     // Old ratings are available, but the article id is not given. We don't process further.
     if (!$articleId) {
       return;
@@ -228,13 +239,15 @@ class RatingCrawler implements RatingCrawlerInterface {
   }
 
   /**
-   * @param $articleId
-   * @param $ratingNode
+   * Create or updates the article node from rating.
    *
-   * @return int|string|null
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * @param int|string $articleId
+   *   The article id.
+   * @param \Drupal\node\NodeInterface $ratingNode
+   *   The rating node.
+   *
+   * @return int|string
+   *   The created article nid
    */
   protected function updateOrCreateArticle($articleId, $ratingNode) {
     /** @var \Drupal\node\NodeInterface $article */
@@ -245,7 +258,7 @@ class RatingCrawler implements RatingCrawlerInterface {
       ->condition('field_article_id', $articleId, '=')
       ->execute();
 
-    // Create
+    // Create.
     if (empty($article)) {
       $article = $this->entityTypeManager->getStorage('node')->create([
         'type' => 'article',
@@ -257,7 +270,8 @@ class RatingCrawler implements RatingCrawlerInterface {
       ]);
       $article->save();
     }
-    else { // Edit
+    // Edit.
+    else {
       $article = reset($article);
       $article = $this->entityTypeManager->getStorage('node')->load($article);
       $article->set('field_article_rating_ref', $ratingNode->id());
@@ -265,9 +279,9 @@ class RatingCrawler implements RatingCrawlerInterface {
       $article->save();
     }
 
-    /** @var QueueFactory $queue_factory */
-    $queue_service = Drupal::service('queue');
-    /** @var QueueInterface $queue_item */
+    /** @var \Drupal\Core\Queue\QueueFactory $queue_factory */
+    $queue_service = \Drupal::service('queue');
+    /** @var \Drupal\Core\Queue\QueueInterface $queue_item */
     $queue_item = $queue_service->get('article_queue');
 
     $data['article_id'] = $articleId;

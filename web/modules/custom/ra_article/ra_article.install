@@ -4,7 +4,7 @@ use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
 
 /**
- * Update all article with new field "is tagged".
+ * Updates all article with new field "is tagged".
  */
 function ra_article_update_8001() {
   $nids = Drupal::entityQuery('node')
@@ -22,7 +22,7 @@ function ra_article_update_8001() {
 }
 
 /**
- * Remove all tags for cleanup
+ * Removes all tags for cleanup.
  */
 function ra_article_update_8002() {
   $tagsIds = Drupal::entityQuery('taxonomy_term')
@@ -47,8 +47,7 @@ function ra_article_update_8002() {
 }
 
 /**
- * Set on all article which are failed the "Has crawling error" to 1 to
- * reprocess it
+ * Sets on all article which are failed the "Has crawling error" to 1.
  */
 function ra_article_update_8003() {
   $nids = Drupal::entityQuery('node')
@@ -68,8 +67,7 @@ function ra_article_update_8003() {
 }
 
 /**
- * Set on all article which are failed the "Has crawling error" to 1 to
- * reprocess it
+ * Sets on all article which are failed the "Has crawling error" to 1.
  */
 function ra_article_update_8004() {
   $nids = Drupal::entityQuery('node')

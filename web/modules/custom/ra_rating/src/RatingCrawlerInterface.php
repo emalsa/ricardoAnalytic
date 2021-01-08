@@ -7,6 +7,12 @@ namespace Drupal\ra_rating;
  */
 interface RatingCrawlerInterface {
 
+  /**
+   * Inits the crawler.
+   *
+   * @param int $nid
+   *   The node id.
+   */
   public function initRatingsCrawler(int $nid);
 
 }

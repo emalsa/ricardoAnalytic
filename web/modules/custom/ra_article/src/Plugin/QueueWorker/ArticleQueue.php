@@ -19,17 +19,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ArticleQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
+   * The article crawler services.
+   *
    * @var \Drupal\ra_article\ArticleCrawlerInterface
    */
-  protected $articleCrawler;
+  protected ArticleCrawlerInterface $articleCrawler;
 
   /**
-   * ArticleQueue constructor.
-   *
-   * @param  array  $configuration
-   * @param $plugin_id
-   * @param $plugin_definition
-   * @param  \Drupal\ra_article\ArticleCrawlerInterface  $articleCrawler
+   * {@inheritDoc}
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ArticleCrawlerInterface $articleCrawler) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -37,12 +34,7 @@ class ArticleQueue extends QueueWorkerBase implements ContainerFactoryPluginInte
   }
 
   /**
-   * @param  \Symfony\Component\DependencyInjection\ContainerInterface  $container
-   * @param  array  $configuration
-   * @param  string  $plugin_id
-   * @param  mixed  $plugin_definition
-   *
-   * @return \Drupal\ra_article\Plugin\QueueWorker\ArticleQueue|static
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
