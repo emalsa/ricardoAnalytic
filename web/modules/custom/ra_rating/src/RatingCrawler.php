@@ -83,9 +83,10 @@ class RatingCrawler implements RatingCrawlerInterface {
   }
 
   /**
-   * Sets the seller and crawle ratings.
+   * Sets the seller and crawl ratings.
    *
    * @param int $sellerNodeId
+   *   The seller node id.
    */
   public function initRatingsCrawler(int $sellerNodeId) {
     try {
@@ -265,8 +266,7 @@ class RatingCrawler implements RatingCrawlerInterface {
         'field_article_id' => $articleId,
         'field_article_rating_ref' => $ratingNode->id(),
         'title' => "Article from rating process... ({$ratingNode->field_rating_buyer_username->value})",
-        'field_rating_article_is_processing' => 1,
-        'field_rating_article_is_sold' => 0,
+        'field_article_is_processing' => 1,
       ]);
       $article->save();
     }
@@ -275,6 +275,7 @@ class RatingCrawler implements RatingCrawlerInterface {
       $article = reset($article);
       $article = $this->entityTypeManager->getStorage('node')->load($article);
       $article->set('field_article_rating_ref', $ratingNode->id());
+      $article->set('field_article_is_processing', 1);
       $article->setNewRevision();
       $article->save();
     }
