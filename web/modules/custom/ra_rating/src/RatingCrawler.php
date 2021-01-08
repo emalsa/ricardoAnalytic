@@ -2,9 +2,9 @@
 
 namespace Drupal\ra_rating;
 
-use Drupal\node\NodeInterface;
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\node\NodeInterface;
 use Goutte\Client;
 
 /**
@@ -229,7 +229,8 @@ class RatingCrawler implements RatingCrawlerInterface {
 
     // @todo remove, only for debug (prevent creating queue article)
     // return;
-    // Old ratings are available, but the article id is not given. We don't process further.
+    // Old ratings are available, but the article id is not given.
+    // We don't process further.
     if (!$articleId) {
       return;
     }
@@ -251,7 +252,6 @@ class RatingCrawler implements RatingCrawlerInterface {
    *   The created article nid
    */
   protected function updateOrCreateArticle($articleId, $ratingNode) {
-    /** @var \Drupal\node\NodeInterface $article */
     $article = $this->entityTypeManager
       ->getStorage('node')
       ->getQuery()
@@ -260,6 +260,7 @@ class RatingCrawler implements RatingCrawlerInterface {
       ->execute();
 
     // Create.
+    /** @var \Drupal\node\NodeInterface $article */
     if (empty($article)) {
       $article = $this->entityTypeManager->getStorage('node')->create([
         'type' => 'article',
@@ -268,6 +269,7 @@ class RatingCrawler implements RatingCrawlerInterface {
         'title' => "Article from rating process... ({$ratingNode->field_rating_buyer_username->value})",
         'field_article_is_processing' => 1,
       ]);
+      $article->setRevisionLogMessage('Created because article was rated.');
       $article->save();
     }
     // Edit.
@@ -276,6 +278,7 @@ class RatingCrawler implements RatingCrawlerInterface {
       $article = $this->entityTypeManager->getStorage('node')->load($article);
       $article->set('field_article_rating_ref', $ratingNode->id());
       $article->set('field_article_is_processing', 1);
+      $article->setRevisionLogMessage('Updated because article was rated.');
       $article->setNewRevision();
       $article->save();
     }
