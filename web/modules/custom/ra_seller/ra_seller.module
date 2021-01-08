@@ -13,20 +13,24 @@ use Drupal\node\NodeInterface;
  * Implements hook_cron().
  */
 function ra_seller_cron() {
-  $nids = _ra_seller_get_nodes();
+  $seller_nids = _ra_seller_get_nodes();
+  _ra_seller_update_data($seller_nids);
+}
 
+/**
+ * Updates the seller information.
+ */
+function _ra_seller_update_data($seller_nids) {
   /** @var Drupal\Core\Queue\QueueFactory $queue_factory */
   $queue_service = Drupal::service('queue');
   /** @var Drupal\Core\Queue\QueueInterface $queue_item */
   $queue_item = $queue_service->get('seller_queue');
 
-  foreach ($nids as $nid) {
+  foreach ($seller_nids as $nid) {
     $node = Node::load($nid);
-
     if (!($node instanceof NodeInterface)) {
       continue;
     }
-
     // Process if older than 2 weeks or init.
     if ($node->field_seller_init_process->value || $node->getChangedTime() < strtotime('-2 week')) {
       $data['nid'] = $nid;
