@@ -7,6 +7,12 @@ namespace Drupal\ra_article;
  */
 interface ArticleCrawlerInterface {
 
-  public function processArticle($articleId);
+  /**
+   * Get node from given id and init the crawler.
+   *
+   * @param string $articleId
+   *   The ricardo article id.
+   */
+  public function processArticle(string $articleId);
 
 }

@@ -2,10 +2,8 @@
 
 namespace Drupal\ra_article;
 
-use Drupal;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\node\NodeInterface;
-use Exception;
 
 /**
  * Class ArticleCrawler.
@@ -13,45 +11,55 @@ use Exception;
 class ArticleCrawler implements ArticleCrawlerInterface {
 
   /**
+   * The entity type manager.
+   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * The node object.
+   *
    * @var \Drupal\node\NodeInterface
    */
-  protected $articleNode;
+  protected NodeInterface $articleNode;
 
   /**
+   * The article url.
+   *
    * @var string
    */
-  protected $articleUrl;
+  protected string $articleUrl;
 
   /**
-   * Constructs a new ArticleCrawler object.
+   * Constructor.
    *
-   * @param  \Drupal\Core\Entity\EntityTypeManagerInterface  $entity_type_manager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
-    $this->entityTypeManager = $entity_type_manager;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
-   * @param $articleId
+   * {@inheritDoc}
    */
-  public function processArticle($articleId) {
+  public function processArticle(string $articleId) {
     try {
       $this->setArticle($articleId);
       $this->processArticlePage();
     }
-    catch (Exception $exception) {
-      Drupal::logger('article_crawler')
+    catch (\Exception $exception) {
+      \Drupal::logger('article_crawler')
         ->error('articleId: - ' . $articleId . '--' . $exception->getMessage());
     }
   }
 
   /**
-   * @param  string  $articleId
+   * Queries the article from given article id.
+   *
+   * @param string $articleId
+   *   The ricardo's article id.
    */
   public function setArticle(string $articleId) {
     $result = $this->entityTypeManager->getStorage('node')
@@ -79,10 +87,10 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   *
+   * Send data to the crawler and process data.
    */
   protected function processArticlePage() {
-    //@todo: add node container health check
+    // @todo add node container health check
     // Get the data
     try {
       $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer";
@@ -102,14 +110,15 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $data = json_decode($response->getBody(), TRUE);
       $this->articleNode->field_article_has_crawling_error = 0;
 
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       $this->articleNode->field_article_has_crawling_error = 1;
       $this->articleNode->field_article_counter_crawling->value = $this->articleNode->field_article_counter_crawling->value + 1;
       $this->articleNode->save();
       throw new \Exception($e->getMessage());
     }
 
-    // @todo: add handling when accessing node container failed.
+    // @todo add handling when accessing node container failed.
     // maybe add a counter. Info:Will have a health for the node container to
     // prevent article will handled as error from ricardo when container can't
     // be accessed.
@@ -123,7 +132,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->setSoldDate($data);
     }
     else {
-      // No data
+      // No data.
       $this->articleNode->field_article_is_sold = 0;
       $this->articleNode->field_article_is_processing = 0;
       $this->articleNode->setPublished(FALSE);
@@ -134,9 +143,12 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   * @param $data
+   * Set the seller in the article.
+   *
+   * @param array $data
+   *   The articles data.
    */
-  protected function setSeller($data) {
+  protected function setSeller(array $data) {
     if (isset($data['article']['user_id'])) {
       $sellerNode = $this->entityTypeManager
         ->getStorage('node')
@@ -150,16 +162,18 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   * Status
+   * Sets the status (closed, open).
+   *
    * - 1 is closed
    * - 0 is open
    * "1" doesn't mean if the article was sold at the end.
    *
-   * @param $data
+   * @param array $data
+   *   The articles data.
    */
-  protected function setStatus($data) {
-    //@todo: Status 1 means the offer is closed, but it doesn't say
-    //  if the article was sold or not.
+  protected function setStatus(array $data) {
+    // @todo Status 1 means the offer is closed, but it doesn't say
+    // if the article was sold or not.
     // for auction we have bid counts, but what is the behavior
     // for "Sofort-Kaufen"?
     if ($data['article']['status']) {
@@ -167,16 +181,20 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->articleNode->field_article_is_processing = 0;
       $this->articleNode->field_article_has_tags = 0;
     }
-    else { // Active
+    // Active.
+    else {
       $this->articleNode->field_article_is_sold = 0;
       $this->articleNode->field_article_is_processing = 1;
     }
   }
 
   /**
-   * @param $data
+   * Sets the title.
+   *
+   * @param array $data
+   *   The articles data.
    */
-  protected function setTitle($data) {
+  protected function setTitle(array $data) {
     if (isset($data['article']['title'])) {
       $this->articleNode->setTitle($data['article']['title']);
       return;
@@ -186,9 +204,12 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   * @param $data
+   * Sets the article description.
+   *
+   * @param array $data
+   *   The articles data.
    */
-  protected function setDescription($data) {
+  protected function setDescription(array $data) {
     if (isset($data['article']['description']['html'])) {
       $this->articleNode->field_article_description->value = $data['article']['description']['html'];
       $this->articleNode->field_article_description->format = 'full_html';
@@ -200,25 +221,28 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   * @param $data
+   * Sets the price.
+   *
+   * @param array $data
+   *   The articles data.
    */
-  protected function setPrice($data) {
-    // Fixed price
+  protected function setPrice(array $data) {
+    // Fixed price.
     if ($data['article']['offer']['offer_type'] === 'fixed_price') {
       $this->articleNode->field_article_start_price = $data['article']['offer']['price'];
-      // Sold price
-      // @Todo: Handle fixed price if sold or not?
+      // Sold price.
+      // @todo Handle fixed price if sold or not?
       if ($this->articleNode->field_article_is_sold->value) {
         $this->articleNode->field_article_final_price = $data['article']['offer']['price'];
       }
     }
-    // Auction
+    // Auction.
     elseif ($data['article']['offer']['offer_type'] === 'auction') {
-      // Start price
+      // Start price.
       if (isset($data['bid']['data']['start_price'])) {
         $this->articleNode->field_article_start_price = $data['bid']['data']['start_price'];
       }
-      // Sold price
+      // Sold price.
       if ($this->articleNode->field_article_is_sold->value && isset($data['bid']['data']['last_bid'])) {
         $this->articleNode->field_article_final_price = $data['bid']['data']['last_bid'];
       }
@@ -226,9 +250,12 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   }
 
   /**
-   * @param $data
+   * Sets the sold date (end date).
+   *
+   * @param array $data
+   *   The articles data.
    */
-  protected function setSoldDate($data) {
+  protected function setSoldDate(array $data) {
     if (isset($data['article']['end_date'])) {
       $this->articleNode->field_article_sold_date->value = date('Y-m-d\TH:i:s', strtotime($data['article']['end_date']));
     }
