@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({extended: true})); // support encoded bodies
 //   res.send('Hello World');
 // });
 
-app.post('/health-check', async (req, res) => {
+app.post('/health-check', async(req, res) => {
   console.log(req.body)
   const healthy = await runHealthCheck();
   healthy && healthy === true ? res.status(200) : res.status(404);
@@ -25,7 +25,7 @@ app.post('/health-check', async (req, res) => {
   res.end();
 });
 
-app.post('/puppeteer', async (req, res) => {
+app.post('/puppeteer', async(req, res) => {
   console.log(req.body)
   const ricardoData = await run(req.body.url);
   ricardoData && ricardoData.puppeteerStatus === true ? res.status(200) : res.status(404);
@@ -33,7 +33,7 @@ app.post('/puppeteer', async (req, res) => {
   res.end();
 });
 
-app.post('/puppeteer-seller', async (req, res) => {
+app.post('/puppeteer-seller', async(req, res) => {
   console.log(req.body)
   const ricardoData = await runSeller(req.body.url);
   ricardoData && ricardoData.puppeteerStatus === true ? res.status(200) : res.status(404);
@@ -52,6 +52,7 @@ async function runHealthCheck() {
       ]
     });
     const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763');
     await page.setRequestInterception(true);
     page.on('request', (request) => {
       if (['image', 'stylesheet', 'font', 'script', 'other', 'xhr', 'text/plain', 'jpeg', 'gif'].indexOf(request.resourceType()) !== -1) {
@@ -84,6 +85,7 @@ async function runSeller(url) {
       ]
     });
     const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763');
     await page.setRequestInterception(true);
     page.on('request', (request) => {
       if (['image', 'stylesheet', 'font', 'script', 'other', 'xhr', 'text/plain', 'jpeg', 'gif'].indexOf(request.resourceType()) !== -1) {
@@ -118,6 +120,7 @@ async function run(url) {
       ]
     });
     const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763');
     await page.setRequestInterception(true);
     page.on('request', (request) => {
       if (['image', 'stylesheet', 'font', 'script', 'other', 'xhr', 'text/plain', 'jpeg', 'gif'].indexOf(request.resourceType()) !== -1) {
