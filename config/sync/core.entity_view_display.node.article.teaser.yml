@@ -27,9 +27,9 @@ mode: teaser
 content:
   links:
     weight: 100
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
 hidden:
   field_article_counter_crawling: true
   field_article_description: true
