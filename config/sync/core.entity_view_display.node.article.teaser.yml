@@ -10,13 +10,16 @@ dependencies:
     - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
     - field.field.node.article.field_article_id
+    - field.field.node.article.field_article_is_not_sold
     - field.field.node.article.field_article_is_processing
     - field.field.node.article.field_article_is_sold
+    - field.field.node.article.field_article_offer_type
     - field.field.node.article.field_article_rating_ref
     - field.field.node.article.field_article_seller_ref
     - field.field.node.article.field_article_sold_date
     - field.field.node.article.field_article_start_price
     - field.field.node.article.field_article_tags
+    - field.field.node.article.field_article_url_alias
     - node.type.article
   module:
     - user
@@ -25,8 +28,18 @@ targetEntityType: node
 bundle: article
 mode: teaser
 content:
+  field_article_is_sold:
+    type: boolean
+    weight: 1
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
   links:
-    weight: 100
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }
@@ -37,11 +50,13 @@ hidden:
   field_article_has_crawling_error: true
   field_article_has_tags: true
   field_article_id: true
+  field_article_is_not_sold: true
   field_article_is_processing: true
-  field_article_is_sold: true
+  field_article_offer_type: true
   field_article_rating_ref: true
   field_article_seller_ref: true
   field_article_sold_date: true
   field_article_start_price: true
   field_article_tags: true
+  field_article_url_alias: true
   langcode: true

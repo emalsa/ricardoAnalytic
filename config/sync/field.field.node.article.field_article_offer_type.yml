@@ -1,0 +1,21 @@
+uuid: fdff3152-27a9-479d-a2d9-f707ed843e60
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_offer_type
+    - node.type.article
+  module:
+    - options
+id: node.article.field_article_offer_type
+field_name: field_article_offer_type
+entity_type: node
+bundle: article
+label: 'Offer type'
+description: 'Auction type'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

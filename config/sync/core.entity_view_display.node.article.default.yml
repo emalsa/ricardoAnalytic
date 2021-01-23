@@ -9,16 +9,20 @@ dependencies:
     - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
     - field.field.node.article.field_article_id
+    - field.field.node.article.field_article_is_not_sold
     - field.field.node.article.field_article_is_processing
     - field.field.node.article.field_article_is_sold
+    - field.field.node.article.field_article_offer_type
     - field.field.node.article.field_article_rating_ref
     - field.field.node.article.field_article_seller_ref
     - field.field.node.article.field_article_sold_date
     - field.field.node.article.field_article_start_price
     - field.field.node.article.field_article_tags
+    - field.field.node.article.field_article_url_alias
     - node.type.article
   module:
     - datetime
+    - options
     - text
     - user
 id: node.article.default
@@ -27,7 +31,7 @@ bundle: article
 mode: default
 content:
   field_article_counter_crawling:
-    weight: 114
+    weight: 13
     label: above
     settings:
       thousand_separator: ''
@@ -36,14 +40,14 @@ content:
     type: number_integer
     region: content
   field_article_description:
-    weight: 111
+    weight: 10
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
     region: content
   field_article_final_price:
-    weight: 109
+    weight: 8
     label: above
     settings:
       thousand_separator: ''
@@ -54,7 +58,7 @@ content:
     type: number_decimal
     region: content
   field_article_has_crawling_error:
-    weight: 113
+    weight: 12
     label: above
     settings:
       format: default
@@ -64,7 +68,7 @@ content:
     type: boolean
     region: content
   field_article_has_tags:
-    weight: 104
+    weight: 3
     label: above
     settings:
       format: default
@@ -74,15 +78,25 @@ content:
     type: boolean
     region: content
   field_article_id:
-    weight: 102
+    weight: 1
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
     type: string
     region: content
+  field_article_is_not_sold:
+    type: boolean
+    weight: 14
+    region: content
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
   field_article_is_processing:
-    weight: 112
+    weight: 11
     label: above
     settings:
       format: default
@@ -92,7 +106,7 @@ content:
     type: boolean
     region: content
   field_article_is_sold:
-    weight: 107
+    weight: 6
     label: above
     settings:
       format: default
@@ -101,8 +115,15 @@ content:
     third_party_settings: {  }
     type: boolean
     region: content
+  field_article_offer_type:
+    type: list_default
+    weight: 15
+    region: content
+    label: above
+    settings: {  }
+    third_party_settings: {  }
   field_article_rating_ref:
-    weight: 108
+    weight: 7
     label: above
     settings:
       link: true
@@ -110,7 +131,7 @@ content:
     type: entity_reference_label
     region: content
   field_article_seller_ref:
-    weight: 105
+    weight: 4
     label: above
     settings:
       link: true
@@ -118,7 +139,7 @@ content:
     type: entity_reference_label
     region: content
   field_article_sold_date:
-    weight: 106
+    weight: 5
     label: above
     settings:
       format_type: medium
@@ -127,7 +148,7 @@ content:
     type: datetime_default
     region: content
   field_article_start_price:
-    weight: 110
+    weight: 9
     label: above
     settings:
       thousand_separator: ''
@@ -138,15 +159,23 @@ content:
     type: number_decimal
     region: content
   field_article_tags:
-    weight: 103
+    weight: 2
     label: above
     settings:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
     region: content
+  field_article_url_alias:
+    type: string
+    weight: 16
+    region: content
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
   links:
-    weight: 100
+    weight: 0
     region: content
     settings: {  }
     third_party_settings: {  }

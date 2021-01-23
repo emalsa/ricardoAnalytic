@@ -1,0 +1,23 @@
+uuid: 9c6ce00f-e3e8-48a8-bef2-bb272f9aa64b
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_is_not_sold
+    - node.type.article
+id: node.article.field_article_is_not_sold
+field_name: field_article_is_not_sold
+entity_type: node
+bundle: article
+label: 'Article is not sold'
+description: 'Auction ended and not sold'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean
