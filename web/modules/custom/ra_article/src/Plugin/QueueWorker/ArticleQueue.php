@@ -23,7 +23,7 @@ class ArticleQueue extends QueueWorkerBase implements ContainerFactoryPluginInte
    *
    * @var \Drupal\ra_article\ArticleCrawlerInterface
    */
-  protected ArticleCrawlerInterface $articleCrawler;
+  protected $articleCrawler;
 
   /**
    * {@inheritDoc}
