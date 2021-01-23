@@ -3,7 +3,6 @@
 namespace Drupal\ra_article;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\node\NodeInterface;
 
 /**
  * Class ArticleCrawler.
@@ -15,21 +14,21 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected EntityTypeManagerInterface $entityTypeManager;
+  protected $entityTypeManager;
 
   /**
    * The node object.
    *
    * @var \Drupal\node\NodeInterface
    */
-  protected NodeInterface $articleNode;
+  protected $articleNode;
 
   /**
    * The article url.
    *
    * @var string
    */
-  protected string $articleUrl;
+  protected $articleUrl;
 
   /**
    * Constructor.

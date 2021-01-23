@@ -23,7 +23,7 @@ class RatingQueue extends QueueWorkerBase implements ContainerFactoryPluginInter
    *
    * @var \Drupal\ra_rating\RatingCrawlerInterface
    */
-  protected RatingCrawlerInterface $ratingCrawler;
+  protected $ratingCrawler;
 
   /**
    * {@inheritDoc}

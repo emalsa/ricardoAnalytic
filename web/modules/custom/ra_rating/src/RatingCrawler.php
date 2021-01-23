@@ -4,7 +4,6 @@ namespace Drupal\ra_rating;
 
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\node\NodeInterface;
 use Goutte\Client;
 
 /**
@@ -22,56 +21,56 @@ class RatingCrawler implements RatingCrawlerInterface {
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected EntityTypeManagerInterface $entityTypeManager;
+  protected $entityTypeManager;
 
   /**
    * Drupal\Core\Config\ConfigManagerInterface definition.
    *
    * @var \Drupal\Core\Config\ConfigManagerInterface
    */
-  protected ConfigManagerInterface $configManager;
+  protected $configManager;
 
   /**
    * The seller node object.
    *
    * @var \Drupal\node\NodeInterface
    */
-  protected NodeInterface $sellerNode;
+  protected $sellerNode;
 
   /**
    * The seller id.
    *
    * @var string
    */
-  protected string $sellerId;
+  protected $sellerId;
 
   /**
    * The sellers url api.
    *
    * @var string
    */
-  protected string $sellerUrlApi;
+  protected $sellerUrlApi;
 
   /**
    * The http client.
    *
    * @var \Goutte\Client
    */
-  protected Client $client;
+  protected $client;
 
   /**
    * The current rating page.
    *
    * @var int
    */
-  protected int $page = 1;
+  protected $page = 1;
 
   /**
    * If next rating page have to be processed.
    *
    * @var bool
    */
-  protected bool $processNextPage;
+  protected $processNextPage;
 
   /**
    * {@inheritDoc}

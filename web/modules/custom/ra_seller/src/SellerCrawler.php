@@ -4,7 +4,6 @@ namespace Drupal\ra_seller;
 
 use Drupal\Core\Config\ConfigManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\node\NodeInterface;
 
 /**
  * Class SellerCrawler.
@@ -16,28 +15,28 @@ class SellerCrawler implements SellerCrawlerInterface {
    *
    * @var string
    */
-  protected string $sellerUrl;
+  protected $sellerUrl;
 
   /**
    * The node object.
    *
    * @var \Drupal\node\NodeInterface
    */
-  protected NodeInterface $node;
+  protected $node;
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected EntityTypeManagerInterface $entityTypeManager;
+  protected $entityTypeManager;
 
   /**
    * Drupal\Core\Config\ConfigManagerInterface definition.
    *
    * @var \Drupal\Core\Config\ConfigManagerInterface
    */
-  protected ConfigManagerInterface $configManager;
+  protected $configManager;
 
   /**
    * Constructs SellerCrawler object.

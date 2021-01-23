@@ -23,7 +23,7 @@ class SellerQueue extends QueueWorkerBase implements ContainerFactoryPluginInter
    *
    * @var \Drupal\ra_seller\SellerCrawlerInterface
    */
-  protected SellerCrawlerInterface $sellerCrawler;
+  protected $sellerCrawler;
 
   /**
    * {@inheritDoc}

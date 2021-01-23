@@ -2,7 +2,6 @@
 
 namespace Drupal\ra_article\Plugin\QueueWorker;
 
-use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -26,21 +25,21 @@ class ArticleTagQueue extends QueueWorkerBase implements ContainerFactoryPluginI
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected EntityStorageInterface $nodeEntityTypeManager;
+  protected $nodeEntityTypeManager;
 
   /**
    * The term storage.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected EntityStorageInterface $termStorage;
+  protected $termStorage;
 
   /**
    * The logger.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected $logger;
 
   /**
    * {@inheritDoc}
