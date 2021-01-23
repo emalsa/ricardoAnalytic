@@ -176,6 +176,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     // if the article was sold or not.
     // for auction we have bid counts, but what is the behavior
     // for "Sofort-Kaufen"?
+    // Answer status: 0 and offer->remaining_quantity is 0 (or smaller than initially)
     if ($data['article']['status']) {
       $this->articleNode->field_article_is_sold = 1;
       $this->articleNode->field_article_is_processing = 0;
@@ -229,6 +230,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
   protected function setPrice(array $data) {
     // Fixed price.
     if ($data['article']['offer']['offer_type'] === 'fixed_price') {
+      // @todo handling multiple stocks
       $this->articleNode->field_article_start_price = $data['article']['offer']['price'];
       // Sold price.
       // @todo Handle fixed price if sold or not?
@@ -246,6 +248,9 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       if ($this->articleNode->field_article_is_sold->value && isset($data['bid']['data']['last_bid'])) {
         $this->articleNode->field_article_final_price = $data['bid']['data']['last_bid'];
       }
+    }
+    elseif ($data['article']['offer']['offer_type'] === 'auction_with_buynow') {
+      // @todo handling
     }
   }
 
