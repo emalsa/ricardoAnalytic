@@ -21,11 +21,11 @@ function ra_article_cron() {
  */
 function __recrawle_failed_articles() {
   // 24h.
-  $olderThan = time() - (60 * 60 * 0.2);
+  $olderThan = time() - (60 * 60 * 48);
   $nids = Drupal::entityQuery('node')
     ->condition('type', 'article')
     ->condition('field_article_has_crawling_error', '1')
-    ->condition('field_article_counter_crawling', '30', '<=')
+    ->condition('field_article_counter_crawling', '3', '<=')
     ->condition('changed', $olderThan, '<=')
     ->accessCheck(FALSE)
     ->execute();
