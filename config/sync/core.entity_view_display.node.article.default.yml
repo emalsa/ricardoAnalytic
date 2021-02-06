@@ -3,8 +3,10 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.field.node.article.field_article_category_id
     - field.field.node.article.field_article_counter_crawling
     - field.field.node.article.field_article_description
+    - field.field.node.article.field_article_end_date
     - field.field.node.article.field_article_final_price
     - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
@@ -16,6 +18,7 @@ dependencies:
     - field.field.node.article.field_article_rating_ref
     - field.field.node.article.field_article_seller_ref
     - field.field.node.article.field_article_sold_date
+    - field.field.node.article.field_article_start_date
     - field.field.node.article.field_article_start_price
     - field.field.node.article.field_article_tags
     - field.field.node.article.field_article_url_alias
@@ -30,6 +33,15 @@ targetEntityType: node
 bundle: article
 mode: default
 content:
+  field_article_category_id:
+    weight: 19
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
   field_article_counter_crawling:
     weight: 13
     label: above
@@ -45,6 +57,15 @@ content:
     settings: {  }
     third_party_settings: {  }
     type: text_default
+    region: content
+  field_article_end_date:
+    weight: 17
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: datetime_default
     region: content
   field_article_final_price:
     weight: 8
@@ -140,6 +161,15 @@ content:
     region: content
   field_article_sold_date:
     weight: 5
+    label: above
+    settings:
+      format_type: medium
+      timezone_override: ''
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_article_start_date:
+    weight: 18
     label: above
     settings:
       format_type: medium

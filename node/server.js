@@ -42,6 +42,50 @@ app.post('/puppeteer-seller', async(req, res) => {
   res.end();
 });
 
+app.post('/seller-articles', async(req, res) => {
+  console.log(req.body)
+  const ricardoData = await runSellerArticle(req.body.url);
+  ricardoData && ricardoData.puppeteerStatus === true ? res.status(200) : res.status(404);
+  console.log(ricardoData)
+  res.send(JSON.stringify(ricardoData));
+  res.end();
+});
+
+async function runSellerArticle(url) {
+  try {
+    const browser = await puppeteer.launch({
+      executablePath: '/usr/bin/chromium-browser',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      ]
+    });
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/18.17763');
+    await page.setRequestInterception(true);
+    page.on('request', (request) => {
+      if (['image', 'stylesheet', 'font', 'script', 'other', 'xhr', 'text/plain', 'jpeg', 'gif'].indexOf(request.resourceType()) !== -1) {
+        request.abort();
+      }
+      else {
+        request.continue();
+      }
+    });
+    let ricardo;
+    let ricardoSite = await page.goto(url);
+    if (ricardoSite) {
+      ricardo = await page.evaluate(() => window.ricardo);
+      ricardo.puppeteerStatus = ricardo ? true : false;
+    }
+    await browser.close();
+    return ricardo;
+  }
+  catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
 async function runHealthCheck() {
   try {
     const browser = await puppeteer.launch({
@@ -72,6 +116,7 @@ async function runHealthCheck() {
   }
   catch (err) {
     console.error(err);
+    return [];
   }
 }
 
@@ -108,7 +153,6 @@ async function runSeller(url) {
     console.error(err);
   }
 }
-
 
 async function run(url) {
   try {

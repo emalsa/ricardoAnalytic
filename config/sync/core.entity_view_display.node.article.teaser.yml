@@ -4,8 +4,10 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.article.field_article_category_id
     - field.field.node.article.field_article_counter_crawling
     - field.field.node.article.field_article_description
+    - field.field.node.article.field_article_end_date
     - field.field.node.article.field_article_final_price
     - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
@@ -17,6 +19,7 @@ dependencies:
     - field.field.node.article.field_article_rating_ref
     - field.field.node.article.field_article_seller_ref
     - field.field.node.article.field_article_sold_date
+    - field.field.node.article.field_article_start_date
     - field.field.node.article.field_article_start_price
     - field.field.node.article.field_article_tags
     - field.field.node.article.field_article_url_alias
@@ -44,8 +47,10 @@ content:
     settings: {  }
     third_party_settings: {  }
 hidden:
+  field_article_category_id: true
   field_article_counter_crawling: true
   field_article_description: true
+  field_article_end_date: true
   field_article_final_price: true
   field_article_has_crawling_error: true
   field_article_has_tags: true
@@ -56,6 +61,7 @@ hidden:
   field_article_rating_ref: true
   field_article_seller_ref: true
   field_article_sold_date: true
+  field_article_start_date: true
   field_article_start_price: true
   field_article_tags: true
   field_article_url_alias: true

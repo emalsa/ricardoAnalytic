@@ -34,7 +34,6 @@ module:
   queue_throttle: 0
   quickedit: 0
   ra_article: 0
-  ra_rating: 0
   ra_seller: 0
   shortcut: 0
   system: 0

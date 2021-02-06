@@ -20,7 +20,7 @@ function ra_article_cron() {
  * Recrawle items which has an error after 24h.
  */
 function __recrawle_failed_articles() {
-  // 24h.
+  // 48h.
   $olderThan = time() - (60 * 60 * 48);
   $nids = Drupal::entityQuery('node')
     ->condition('type', 'article')
@@ -37,7 +37,7 @@ function __recrawle_failed_articles() {
 
   foreach ($nids as $nid) {
     $node = Node::load($nid);
-    // Prevent re-add to queue.
+    // Prevent re-add to the queue.
     $node->field_article_has_crawling_error = 0;
     $node->save();
     $data['article_id'] = $node->field_article_id->value;

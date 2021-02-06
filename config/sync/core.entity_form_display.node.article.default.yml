@@ -3,8 +3,10 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.field.node.article.field_article_category_id
     - field.field.node.article.field_article_counter_crawling
     - field.field.node.article.field_article_description
+    - field.field.node.article.field_article_end_date
     - field.field.node.article.field_article_final_price
     - field.field.node.article.field_article_has_crawling_error
     - field.field.node.article.field_article_has_tags
@@ -16,6 +18,7 @@ dependencies:
     - field.field.node.article.field_article_rating_ref
     - field.field.node.article.field_article_seller_ref
     - field.field.node.article.field_article_sold_date
+    - field.field.node.article.field_article_start_date
     - field.field.node.article.field_article_start_price
     - field.field.node.article.field_article_tags
     - field.field.node.article.field_article_url_alias
@@ -35,37 +38,50 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_article_category_id:
+    weight: 26
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
   field_article_counter_crawling:
-    weight: 20
+    weight: 18
     settings:
       placeholder: ''
     third_party_settings: {  }
     type: number
     region: content
   field_article_description:
-    weight: 17
+    weight: 23
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
     region: content
+  field_article_end_date:
+    weight: 11
+    settings: {  }
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
   field_article_final_price:
-    weight: 15
+    weight: 22
     settings:
       placeholder: ''
     third_party_settings: {  }
     type: number
     region: content
   field_article_has_crawling_error:
-    weight: 19
+    weight: 17
     settings:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
   field_article_has_tags:
-    weight: 10
+    weight: 20
     settings:
       display_label: true
     third_party_settings: {  }
@@ -81,20 +97,20 @@ content:
     region: content
   field_article_is_not_sold:
     type: boolean_checkbox
-    weight: 21
+    weight: 15
     region: content
     settings:
       display_label: true
     third_party_settings: {  }
   field_article_is_processing:
-    weight: 18
+    weight: 16
     settings:
       display_label: true
     third_party_settings: {  }
     type: boolean_checkbox
     region: content
   field_article_is_sold:
-    weight: 13
+    weight: 14
     settings:
       display_label: true
     third_party_settings: {  }
@@ -102,12 +118,12 @@ content:
     region: content
   field_article_offer_type:
     type: options_select
-    weight: 23
+    weight: 10
     region: content
     settings: {  }
     third_party_settings: {  }
   field_article_rating_ref:
-    weight: 14
+    weight: 25
     settings:
       match_operator: CONTAINS
       match_limit: 10
@@ -117,7 +133,7 @@ content:
     type: entity_reference_autocomplete
     region: content
   field_article_seller_ref:
-    weight: 11
+    weight: 9
     settings:
       match_operator: CONTAINS
       match_limit: 10
@@ -127,20 +143,26 @@ content:
     type: entity_reference_autocomplete
     region: content
   field_article_sold_date:
+    weight: 13
+    settings: {  }
+    third_party_settings: {  }
+    type: datetime_default
+    region: content
+  field_article_start_date:
     weight: 12
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
     region: content
   field_article_start_price:
-    weight: 16
+    weight: 21
     settings:
       placeholder: ''
     third_party_settings: {  }
     type: number
     region: content
   field_article_tags:
-    weight: 9
+    weight: 24
     settings:
       match_operator: CONTAINS
       match_limit: 10
@@ -151,7 +173,7 @@ content:
     region: content
   field_article_url_alias:
     type: string_textfield
-    weight: 22
+    weight: 19
     region: content
     settings:
       size: 60
