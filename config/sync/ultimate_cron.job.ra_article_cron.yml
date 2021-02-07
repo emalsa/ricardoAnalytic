@@ -6,14 +6,14 @@ dependencies:
     - ra_article
 title: 'Default cron handler'
 id: ra_article_cron
-weight: 0
+weight: -8
 module: ra_article
 callback: ra_article_cron
 scheduler:
   id: simple
   configuration:
     rules:
-      - '0+@ */12 * * *'
+      - '0+@ */6 * * *'
 launcher:
   id: serial
   configuration:

@@ -19,11 +19,18 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SellerQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
+   * Time when we want to recrawle the seller.
+   *
+   * @var string
+   */
+  public const SELLER_RECRAWLE_THRESHOLD = '-3 week';
+
+  /**
    * The seller crawler service.
    *
    * @var \Drupal\ra_seller\SellerCrawlerInterface
    */
-  protected $sellerCrawler;
+  protected SellerCrawlerInterface $sellerCrawler;
 
   /**
    * {@inheritDoc}

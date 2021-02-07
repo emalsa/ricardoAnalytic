@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\Queue\QueueWorkerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeStorageInterface;
@@ -21,7 +22,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   cron = {"time" = 60}
  * )
  */
-class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface, QueueWorkerInterface {
 
   /**
    * The puppeteer service url.
@@ -81,6 +82,11 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
    */
   protected NodeInterface $sellerNode;
 
+  /**
+   * The logger.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelInterface
+   */
   protected LoggerChannelInterface $logger;
 
   /**
@@ -114,29 +120,10 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
   public function processItem($data): void {
     // Get the seller node.
     $this->sellerNode = $this->nodeStorage->load($data['nid']);
-    if (!$this->isToRecrawle()) {
-      return;
-    }
-
     $this->url = "https://www.ricardo.ch/de/shop/{$this->sellerNode->label()}/offers/?sort=newest&page=";
     if ($this->process()) {
       $this->state->set('seller_article_last_process__' . $this->sellerNode->id(), time());
     }
-  }
-
-  /**
-   * Determines if we should crawl this seller.
-   *
-   * @return bool
-   *   True if to crawl.
-   */
-  protected function isToRecrawle(): bool {
-    $last = $this->state->get('seller_article_last_process__' . $this->sellerNode->id());
-    if ($last > strtotime(self::ARTICLE_RECRAWLE_THRESHOLD)) {
-      return FALSE;
-    }
-
-    return TRUE;
   }
 
   /**
@@ -167,7 +154,7 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
     foreach ($data->results as $item) {
       if ($this->articleExists($item->id)) {
         $articleExistCount++;
-        continue;
+        // continue;.
       }
       $articleExistCount = 0;
       $this->createArticle($item);
@@ -189,8 +176,8 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
     if (!$totalArticlesCount) {
       $totalArticlesCount = $data->totalArticlesCount;
     }
-    $nextSearchOffset = $data->nextSearchOffset;
-    if ($nextSearchOffset < $totalArticlesCount) {
+
+    if ($data->nextSearchOffset < $totalArticlesCount) {
       $page++;
       $this->process($page, $totalArticlesCount);
     }

@@ -8,45 +8,49 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\node\Entity\Node;
 use Drupal\ra_seller\Plugin\QueueWorker\SellerArticleQueue;
+use Drupal\ra_seller\Plugin\QueueWorker\SellerQueue;
+
+/**
+ * Seller article cronjob.
+ */
+function ra_seller_article_cron() {
+  $seller_nids = _ra_seller_get_nodes();
+
+  /** @var Drupal\Core\Queue\QueueFactory $queue_factory */
+  $queue_service = Drupal::service('queue');
+  /** @var Drupal\Core\Queue\QueueInterface $seller_article_queue */
+  $seller_article_queue = $queue_service->get('seller_article_queue');
+
+  foreach ($seller_nids as $nid) {
+    $sellerNode = Node::load($nid);
+    // Seller's articles.
+    $last = \Drupal::state()->get('seller_article_last_process__' . $sellerNode->id());
+    if ($last < strtotime(SellerArticleQueue::ARTICLE_RECRAWLE_THRESHOLD)) {
+      $data['nid'] = $nid;
+      $seller_article_queue->createItem($data);
+    }
+  }
+}
 
 /**
  * Implements hook_cron().
  */
 function ra_seller_cron() {
   $seller_nids = _ra_seller_get_nodes();
-  _ra_seller_update_data($seller_nids);
-}
 
-/**
- * Updates the seller information.
- */
-function _ra_seller_update_data($seller_nids) {
   /** @var Drupal\Core\Queue\QueueFactory $queue_factory */
   $queue_service = Drupal::service('queue');
-
   /** @var Drupal\Core\Queue\QueueInterface $seller_queue */
   $seller_queue = $queue_service->get('seller_queue');
 
-  /** @var Drupal\Core\Queue\QueueInterface $seller_article_queue */
-  $seller_article_queue = $queue_service->get('seller_article_queue');
-
   foreach ($seller_nids as $nid) {
     $sellerNode = Node::load($nid);
-    $data['nid'] = $nid;
-
-    // Seller's articles.
-    $last = \Drupal::state()->get('seller_article_last_process__' . $sellerNode->id());
-    if ($last < strtotime(SellerArticleQueue::ARTICLE_RECRAWLE_THRESHOLD)) {
-      $seller_article_queue->createItem($data);
-    }
-
     // Seller information.
-    // Process if older than 2 weeks or init.
-    if ($sellerNode->field_seller_init_process->value || $sellerNode->getChangedTime() < strtotime('-2 week')) {
+    if ($sellerNode->field_seller_init_process->value || $sellerNode->getChangedTime() < strtotime(SellerQueue::SELLER_RECRAWLE_THRESHOLD)) {
+      $data['nid'] = $nid;
       $seller_queue->createItem($data);
     }
   }
-
 }
 
 /**

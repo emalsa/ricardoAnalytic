@@ -1,14 +1,13 @@
-uuid: 980977cb-1022-4adb-8d37-bc3e6383c280
 langcode: de
 status: true
 dependencies:
   module:
-    - history
-title: 'Deletes history'
-id: history_cron
-weight: -5
-module: history
-callback: history_cron
+    - ra_seller
+title: 'Fetch new article from seller'
+id: ra_seller_article_cron
+weight: 0
+module: ra_seller
+callback: ra_seller_article_cron
 scheduler:
   id: simple
   configuration:

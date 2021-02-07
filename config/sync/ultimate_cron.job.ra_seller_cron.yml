@@ -4,16 +4,16 @@ status: true
 dependencies:
   module:
     - ra_seller
-title: 'Default cron handler'
+title: 'Update seller information'
 id: ra_seller_cron
-weight: 0
+weight: -9
 module: ra_seller
 callback: ra_seller_cron
 scheduler:
   id: simple
   configuration:
     rules:
-      - '* * * * *'
+      - '0+@ 0 * * 0'
 launcher:
   id: serial
   configuration:

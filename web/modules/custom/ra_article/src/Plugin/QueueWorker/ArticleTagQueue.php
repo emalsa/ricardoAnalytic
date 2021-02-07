@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Drupal\Core\Queue\QueueWorkerInterface;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -18,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   cron = {"time" = 30}
  * )
  */
-class ArticleTagQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+class ArticleTagQueue extends QueueWorkerBase implements ContainerFactoryPluginInterface, QueueWorkerInterface {
 
   /**
    * The node storage.

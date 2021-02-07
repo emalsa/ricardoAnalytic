@@ -28,3 +28,8 @@ rating_queue:
   time: 60
   items: 0
   unit: microsecond
+seller_article_queue:
+  enabled: true
+  time: 130
+  items: 1
+  unit: minute
