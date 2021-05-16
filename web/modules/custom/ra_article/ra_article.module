@@ -13,11 +13,10 @@ use Drupal\node\Entity\Node;
 function ra_article_cron() {
   __recrawle_failed_articles();
   // __tagging_articles();
-  // __fix_articles();
 }
 
 /**
- * Recrawle items which has an error after 24h.
+ * Recrawle items which has an error after 48h.
  */
 function __recrawle_failed_articles() {
   // 48h.

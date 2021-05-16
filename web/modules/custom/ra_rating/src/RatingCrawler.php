@@ -264,9 +264,10 @@ class RatingCrawler implements RatingCrawlerInterface {
       $article = $this->entityTypeManager->getStorage('node')->load($article);
       $article->set('field_article_rating_ref', $ratingNode->id());
       $article->set('field_article_is_processing', 1);
-      $article->setRevisionLogMessage('Updated because article was rated.');
+      $article->setRevisionLogMessage('Updated because article was rated now.');
       $article->setNewRevision();
     }
+
     $article->save();
     $data['article_id'] = $articleId;
     $this->queueArticle->createItem($data);

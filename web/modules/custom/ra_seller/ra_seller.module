@@ -14,7 +14,7 @@ use Drupal\ra_seller\Plugin\QueueWorker\SellerQueue;
  * Seller article cronjob.
  */
 function ra_seller_article_cron() {
-  $seller_nids = _ra_seller_get_nodes();
+  $seller_nids = _ra_seller_get_seller_nids();
 
   /** @var Drupal\Core\Queue\QueueFactory $queue_factory */
   $queue_service = Drupal::service('queue');
@@ -23,9 +23,8 @@ function ra_seller_article_cron() {
 
   foreach ($seller_nids as $nid) {
     $sellerNode = Node::load($nid);
-    // Seller's articles.
     $last = \Drupal::state()->get('seller_article_last_process__' . $sellerNode->id());
-    if ($last < strtotime(SellerArticleQueue::ARTICLE_RECRAWLE_THRESHOLD)) {
+    if ($last < strtotime(SellerArticleQueue::SELLER_ARTICLE_RECRAWLE_THRESHOLD)) {
       $data['nid'] = $nid;
       $seller_article_queue->createItem($data);
     }
@@ -36,7 +35,7 @@ function ra_seller_article_cron() {
  * Implements hook_cron().
  */
 function ra_seller_cron() {
-  $seller_nids = _ra_seller_get_nodes();
+  $seller_nids = _ra_seller_get_seller_nids();
 
   /** @var Drupal\Core\Queue\QueueFactory $queue_factory */
   $queue_service = Drupal::service('queue');
@@ -45,8 +44,13 @@ function ra_seller_cron() {
 
   foreach ($seller_nids as $nid) {
     $sellerNode = Node::load($nid);
-    // Seller information.
-    if ($sellerNode->field_seller_init_process->value || $sellerNode->getChangedTime() < strtotime(SellerQueue::SELLER_RECRAWLE_THRESHOLD)) {
+    if (!$sellerNode) {
+      continue;
+    }
+    if (
+      $sellerNode->get('field_seller_init_process')->value == 1 ||
+      $sellerNode->getChangedTime() < strtotime(SellerQueue::SELLER_RECRAWLE_THRESHOLD)
+    ) {
       $data['nid'] = $nid;
       $seller_queue->createItem($data);
     }
@@ -54,9 +58,9 @@ function ra_seller_cron() {
 }
 
 /**
- * Add seller to to given queue.
+ * Return Seller nids.
  */
-function _ra_seller_get_nodes() {
+function _ra_seller_get_seller_nids() {
   return Drupal::entityQuery('node')
     ->condition('type', 'seller')
     ->condition('status', 1)

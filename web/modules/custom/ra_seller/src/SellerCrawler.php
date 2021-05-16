@@ -63,15 +63,15 @@ class SellerCrawler implements SellerCrawlerInterface {
         $puppeteerUrl = "https://node-puppeteer-vimooyk3pq-uc.a.run.app/puppeteer-seller";
         $response = \Drupal::httpClient()->post($puppeteerUrl, [
           "json" => [
-            'timeout' => 9000,
+            'timeout' => 20000,
             "token" => "data-explorer",
             "url" => $this->sellerUrl,
           ],
           "headers" => ["Content-Type" => "application/json"],
         ]);
 
-        if (!$response || !$response->getStatusCode() === 200) {
-          throw new \Exception('Status code node is not 200');
+        if (!$response || $response->getStatusCode() !== 200) {
+          throw new \Exception('Status code node is not 200 (or not set)');
         }
 
         $data = json_decode($response->getBody(), TRUE);
@@ -83,7 +83,7 @@ class SellerCrawler implements SellerCrawlerInterface {
 
       if (isset($data['initialState']['userProfile'])) {
         $this->setSellerInformation($data['initialState']['userProfile']);
-        $this->node->field_seller_init_process = 0;
+        // $this->node->set('field_seller_init_process', 0);
         $this->node->setNewRevision();
         $this->node->save();
       }

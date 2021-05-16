@@ -10,11 +10,11 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class ArticleCrawler implements ArticleCrawlerInterface {
 
   /**
-   * The entity type manager.
+   * The node storage.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected $nodeStorage;
 
   /**
    * The node object.
@@ -37,7 +37,8 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    *   The entity type manager.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
-    $this->entityTypeManager = $entityTypeManager;
+    $this->nodeStorage = $entityTypeManager->getStorage('node');
+
   }
 
   /**
@@ -49,8 +50,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->processArticlePage();
     }
     catch (\Exception $exception) {
-      \Drupal::logger('article_crawler')
-        ->error('articleId: - ' . $articleId . '--' . $exception->getMessage());
+      \Drupal::logger('article_crawler')->error('articleId: - ' . $articleId . '--' . $exception->getMessage());
     }
   }
 
@@ -61,19 +61,17 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    *   The ricardo's article id.
    */
   public function setArticle(string $articleId) {
-    $result = $this->entityTypeManager->getStorage('node')
-      ->loadByProperties([
-        'type' => 'article',
-        'field_article_id' => $articleId,
-      ]);
+    $result = $this->nodeStorage->loadByProperties([
+      'type' => 'article',
+      'field_article_id' => $articleId,
+    ]);
 
     if (empty($result)) {
-      $this->articleNode = $this->entityTypeManager->getStorage('node')
-        ->create([
-          'type' => 'article',
-          'field_article_id' => $articleId,
-          'title' => 'Article title not set. Will be changed when processing article self',
-        ]);
+      $this->articleNode = $this->nodeStorage->create([
+        'type' => 'article',
+        'field_article_id' => $articleId,
+        'title' => 'Article title not set. Will be changed when processing article self',
+      ]);
 
       $this->articleNode->save();
     }
@@ -81,7 +79,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
       $this->articleNode = reset($result);
     }
 
-    $this->articleUrl = 'http://ricardo.ch/de/s/';
+    $this->articleUrl = 'https://ricardo.ch/de/s/';
     $this->articleUrl = $this->articleUrl . $articleId;
   }
 
@@ -102,7 +100,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
         "headers" => ["Content-Type" => "application/json"],
       ]);
 
-      if (!$response || !$response->getStatusCode() === 200) {
+      if (!$response || $response->getStatusCode() !== 200) {
         throw new \Exception('Status code node is not 200');
       }
 
@@ -118,7 +116,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
     }
 
     // @todo add handling when accessing node container failed.
-    // maybe add a counter. Info:Will have a health for the node container to
+    // maybe add a counter. Info: Will have a health for the node container to
     // prevent article will handled as error from ricardo when container can't
     // be accessed.
     if (isset($data['initialState']['pdp'])) {
@@ -149,9 +147,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    */
   protected function setSeller(array $data) {
     if (isset($data['article']['user_id'])) {
-      $sellerNode = $this->entityTypeManager
-        ->getStorage('node')
-        ->loadByProperties(['field_seller_id_numeric' => $data['article']['user_id']]);
+      $sellerNode = $this->nodeStorage->loadByProperties(['field_seller_id_numeric' => $data['article']['user_id']]);
 
       if ($sellerNode) {
         $sellerNode = reset($sellerNode);
@@ -165,7 +161,7 @@ class ArticleCrawler implements ArticleCrawlerInterface {
    *
    * - 1 is closed
    * - 0 is open
-   * "1" doesn't mean if the article was sold at the end.
+   * "1" doesn't mean the article was sold at the end.
    *
    * @param array $data
    *   The articles data.

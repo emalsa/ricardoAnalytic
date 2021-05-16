@@ -8,9 +8,6 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Queue\QueueWorkerInterface;
 use Drupal\Core\State\StateInterface;
-use Drupal\node\NodeInterface;
-use Drupal\node\NodeStorageInterface;
-use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,16 +26,15 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
    *
    * @var string
    */
-  // Protected const PUPPETEER_URL = 'https://node-puppeteer-vimooyk3pq-uc.a.run.app/seller-articles';
-  protected const PUPPETEER_URL = 'http://ricardoanalytic_node_server:8080/seller-articles';
-
+  // Protected const CRAWLER_UR = 'https://node-puppeteer-vimooyk3pq-uc.a.run.app/seller-articles';
+  protected const CRAWLER_UR = 'https://ricardoanalytic_node_server:8080/seller-articles';
 
   /**
    * Time when we want to recrawle.
    *
    * @var string
    */
-  public const ARTICLE_RECRAWLE_THRESHOLD = '-10 hours';
+  public const SELLER_ARTICLE_RECRAWLE_THRESHOLD = '-10 hours';
 
   /**
    * After reaching this count of existing article, we abort.
@@ -52,21 +48,21 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
    *
    * @var \Drupal\node\NodeStorageInterface
    */
-  protected NodeStorageInterface $nodeStorage;
+  protected $nodeStorage;
 
   /**
    * The guzzle http client.
    *
    * @var \GuzzleHttp\Client
    */
-  protected Client $httpClient;
+  protected $httpClient;
 
   /**
    * The state.
    *
    * @var \Drupal\Core\State\StateInterface
    */
-  protected StateInterface $state;
+  protected $state;
 
   /**
    * The url of the seller.
@@ -80,14 +76,14 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
    *
    * @var \Drupal\node\NodeInterface
    */
-  protected NodeInterface $sellerNode;
+  protected $sellerNode;
 
   /**
    * The logger.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
-  protected LoggerChannelInterface $logger;
+  protected $logger;
 
   /**
    * {@inheritDoc}
@@ -130,18 +126,18 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
    * Processes each page of the seller and creates the article node.
    *
    * Until
-   * - there are some amount of existing articles
+   * - there is already a specific count of existing articles in our DB found.
    * - we reached the end of the pages.
    *
    * @param int $page
    *   The current page.
    * @param null|int $totalArticlesCount
-   *   Total articles of this seller.
+   *   The total articles of this seller.
    *
    * @return bool
-   *   False if we have to reprocess it again soon.
+   *   FALSE if we have to reprocess it again soon. True if everything was fine.
    */
-  protected function process(int $page = 1, ?int $totalArticlesCount = NULL): bool {
+  protected function process(int $page = 1, ?int $totalArticlesCount = NULL) {
     $data = $this->fetchArticles($page);
     if (!$data) {
       $this->logger->warning($this->sellerNode->label() . ' || ' . 'returned empty data for page: ' . $page);
@@ -149,8 +145,8 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
     }
 
     $articleExistCount = 0;
-    // Iterate through results of current page and
-    // determine if article have to be created.
+    // Iterate through results of the current page and determine if
+    // the article have to be created.
     foreach ($data->results as $item) {
       if ($this->articleExists($item->id)) {
         $articleExistCount++;
@@ -166,17 +162,17 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
       return TRUE;
     }
 
-    // We reached the end of all articles if the value of
-    // $nextSearchOffset is the same as $totalArticlesCount.
-    // If $nextSearchOffset is smaller than $totalArticlesCount,
-    // there are more articles on the next page.
-    // We passing check only once for $totalArticlesCount, since during the
-    // iteration a new article can be introduced.
-    // So we would end in an endless loop.
+    // We set $totalArticlesCount at the begin of the sellers article crawling,
+    // since during the iteration a new article can be introduced.
+    // The we would end in an endless loop.
     if (!$totalArticlesCount) {
       $totalArticlesCount = $data->totalArticlesCount;
     }
 
+    // We reached the end of all articles if the value of
+    // $nextSearchOffset === $totalArticlesCount.
+    // If $nextSearchOffset is smaller than $totalArticlesCount, there are more
+    // articles on the next page.
     if ($data->nextSearchOffset < $totalArticlesCount) {
       $page++;
       $this->process($page, $totalArticlesCount);
@@ -186,7 +182,7 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
   }
 
   /**
-   * Triggers the puppeteer service to fetch the seller articles of given page.
+   * Triggers the crawler service to fetch the seller articles of given page.
    *
    * @param int $page
    *   The current page to fetch.
@@ -194,9 +190,9 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
    * @return null|object
    *   The fetched results
    */
-  protected function fetchArticles(int $page): ?object {
+  protected function fetchArticles(int $page) {
     try {
-      $response = $this->httpClient->post(self::PUPPETEER_URL, [
+      $response = $this->httpClient->post(self::CRAWLER_UR, [
         'json' => [
           'timeout' => 6000,
           'token' => 'data-explorer',
@@ -257,7 +253,7 @@ class SellerArticleQueue extends QueueWorkerBase implements ContainerFactoryPlug
       'field_article_url_alias' => $item->url,
       'field_article_category_id' => $item->categoryId,
     ]);
-    $article->setRevisionLogMessage('Create');
+    $article->setRevisionLogMessage('Created the Article from seller page');
     $article->save();
   }
 
