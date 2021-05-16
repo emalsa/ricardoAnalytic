@@ -19,3 +19,4 @@ node_modules
 .docker-sync
 
 .DS_Store
+ricardoAnalytic.iml
