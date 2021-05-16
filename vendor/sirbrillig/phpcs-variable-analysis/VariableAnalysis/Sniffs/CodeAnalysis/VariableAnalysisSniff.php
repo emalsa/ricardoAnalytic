@@ -89,6 +89,14 @@ class VariableAnalysisSniff implements Sniff {
   public $allowUndefinedVariablesInFileScope = false;
 
   /**
+   *  If set, ignores unused variables in the file scope (the top-level
+   *  scope of a file).
+   *
+   *  @var bool
+   */
+  public $allowUnusedVariablesInFileScope = false;
+
+  /**
    *  A space-separated list of names of placeholder variables that you want to
    *  ignore from unused variable warnings. For example, to ignore the variables
    *  `$junk` and `$unused`, this could be set to `'junk unused'`.
@@ -418,6 +426,7 @@ class VariableAnalysisSniff implements Sniff {
       return;
     }
     $varInfo->firstInitialized = $stackPtr;
+    Helpers::debug('markVariableAssignment: marked as initialized', $varName);
   }
 
   /**
@@ -944,6 +953,14 @@ class VariableAnalysisSniff implements Sniff {
 
     Helpers::debug('processVariableAsAssignment: marking as assignment in scope', $currScope);
     $this->markVariableAssignment($varName, $stackPtr, $currScope);
+
+    // If the left-hand-side of the assignment (the variable we are examining)
+    // is itself a reference, then that counts as a read as well as a write.
+    $varInfo = $this->getOrCreateVariableInfo($varName, $currScope);
+    if ($varInfo->isDynamicReference) {
+      Helpers::debug('processVariableAsAssignment: also marking as a use because variable is a reference');
+      $this->markVariableRead($varName, $stackPtr, $currScope);
+    }
   }
 
   /**
@@ -1162,6 +1179,13 @@ class VariableAnalysisSniff implements Sniff {
     // Is this the value of a key => value foreach?
     if ($phpcsFile->findPrevious(T_DOUBLE_ARROW, $stackPtr - 1, $openParenPtr) !== false) {
       $varInfo->isForeachLoopAssociativeValue = true;
+    }
+
+    // Are we pass-by-reference?
+    $referencePtr = $phpcsFile->findPrevious(Tokens::$emptyTokens, $stackPtr - 1, null, true, null, true);
+    if (($referencePtr !== false) && ($tokens[$referencePtr]['code'] === T_BITWISE_AND)) {
+      Helpers::debug("processVariableAsForeachLoopVar: found foreach loop variable assigned by reference");
+      $varInfo->isDynamicReference = true;
     }
 
     return true;
@@ -1463,19 +1487,21 @@ class VariableAnalysisSniff implements Sniff {
     foreach ($allAssignmentIndices as $index) {
       foreach ($blockIndices as $blockIndex) {
         $blockToken = $tokens[$blockIndex];
-        Helpers::debug('looking at assignment', $index, 'at block index', $blockIndex, 'which is token', $blockToken);
+        Helpers::debug('for variable inside else, looking at assignment', $index, 'at block index', $blockIndex, 'which is token', $blockToken);
         if (isset($blockToken['scope_opener']) && isset($blockToken['scope_closer'])) {
           $scopeOpener = $blockToken['scope_opener'];
           $scopeCloser = $blockToken['scope_closer'];
         } else {
-          // If the `if` statement has no scope, it is probably inline, which means its scope is up until the next semicolon
-          $scopeOpener = $blockIndex + 1;
+          // If the `if` statement has no scope, it is probably inline, which
+          // means its scope is from the end of the condition up until the next
+          // semicolon
+          $scopeOpener = isset($blockToken['parenthesis_closer']) ? $blockToken['parenthesis_closer'] : $blockIndex + 1;
           $scopeCloser = $phpcsFile->findNext([T_SEMICOLON], $scopeOpener);
           if (! $scopeCloser) {
             throw new \Exception("Cannot find scope for if condition block at index {$stackPtr} while examining variable {$varName}");
           }
         }
-        Helpers::debug('looking at scope', $index, 'between', $scopeOpener, 'and', $scopeCloser);
+        Helpers::debug('for variable inside else, looking at scope', $index, 'between', $scopeOpener, 'and', $scopeCloser);
         if (Helpers::isIndexInsideScope($index, $scopeOpener, $scopeCloser)) {
           $assignmentsInsideAttachedBlocks[] = $index;
         }
@@ -1512,12 +1538,9 @@ class VariableAnalysisSniff implements Sniff {
     }
     Helpers::debug("examining token for variable in string", $token);
 
-    $currScope = Helpers::findVariableScope($phpcsFile, $stackPtr);
-    if ($currScope === null) {
-      return;
-    }
     foreach ($matches[1] as $varName) {
       $varName = Helpers::normalizeVarName($varName);
+
       // Are we $this within a class?
       if ($this->processVariableAsThisWithinClass($phpcsFile, $stackPtr, $varName)) {
         continue;
@@ -1529,6 +1552,11 @@ class VariableAnalysisSniff implements Sniff {
 
       // Are we a numeric variable used for constructs like preg_replace?
       if (Helpers::isVariableANumericVariable($varName)) {
+        continue;
+      }
+
+      $currScope = Helpers::findVariableScope($phpcsFile, $stackPtr, $varName);
+      if ($currScope === null) {
         continue;
       }
 
@@ -1667,6 +1695,9 @@ class VariableAnalysisSniff implements Sniff {
       return;
     }
     if ($this->allowUnusedVariablesBeforeRequire && Helpers::isRequireInScopeAfter($phpcsFile, $varInfo, $scopeInfo)) {
+      return;
+    }
+    if ($scopeInfo->scopeStartIndex === 0 && $this->allowUnusedVariablesInFileScope) {
       return;
     }
 

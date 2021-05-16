@@ -53,17 +53,6 @@ services:
     ports:
       - "33061:3306"
 
-#  node:
-#    container_name: ricardoanalytic_node_server
-#    build:
-#      context: .
-#      dockerfile: .docker/node.dockerfile
-#    ports:
-#      - "8080:8080"
-#    volumes_from:
-#      - app
-#    networks:
-#      - default
 
   redis:
     image: redis
@@ -76,3 +65,8 @@ volumes:
   dbdata:
   dbconf:
   redis:
+
+networks:
+  default:
+    external:
+      name: whatis

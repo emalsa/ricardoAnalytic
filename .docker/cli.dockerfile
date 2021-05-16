@@ -14,6 +14,9 @@ RUN apt update \
     && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include \
     && docker-php-ext-install -j$(nproc) intl pdo_mysql bcmath mbstring exif gd
 
+RUN apt update \
+    && apt-get install -y iputils-ping
+
 RUN pecl install imagick && docker-php-ext-enable imagick
 
 # Composer
