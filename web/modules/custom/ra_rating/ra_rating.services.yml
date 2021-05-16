@@ -4,4 +4,4 @@ services:
     arguments: ['ra_rating']
   ra_rating.rating_crawler:
     class: Drupal\ra_rating\RatingCrawler
-    arguments: ['@entity_type.manager', '@config.manager']
+    arguments: ['@entity_type.manager', '@queue']

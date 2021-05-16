@@ -10,9 +10,9 @@ interface RatingCrawlerInterface {
   /**
    * Inits the crawler.
    *
-   * @param int $nid
+   * @param int $sellerNodeId
    *   The node id.
    */
-  public function initRatingsCrawler(int $nid);
+  public function initRatingsCrawler(int $sellerNodeId);
 
 }
