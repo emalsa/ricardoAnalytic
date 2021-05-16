@@ -17,3 +17,5 @@ web/sites/simpletest
 node_modules
 
 .docker-sync
+
+.DS_Store
