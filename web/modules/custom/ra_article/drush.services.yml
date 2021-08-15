@@ -1,5 +1,0 @@
-services:
-  ra_article.commands:
-    class: Drupal\ra_article\Commands\Commands
-    tags:
-      - { name: drush.command }

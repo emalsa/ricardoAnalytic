@@ -27,9 +27,7 @@ final class BuilderHelpers
     public static function normalizeNode($node) : Node {
         if ($node instanceof Builder) {
             return $node->getNode();
-        }
-
-        if ($node instanceof Node) {
+        } elseif ($node instanceof Node) {
             return $node;
         }
 
@@ -129,22 +127,18 @@ final class BuilderHelpers
     private static function normalizeNameCommon($name, bool $allowExpr) {
         if ($name instanceof Name) {
             return $name;
-        }
-
-        if (is_string($name)) {
+        } elseif (is_string($name)) {
             if (!$name) {
                 throw new \LogicException('Name cannot be empty');
             }
 
             if ($name[0] === '\\') {
                 return new Name\FullyQualified(substr($name, 1));
-            }
-
-            if (0 === strpos($name, 'namespace\\')) {
+            } elseif (0 === strpos($name, 'namespace\\')) {
                 return new Name\Relative(substr($name, strlen('namespace\\')));
+            } else {
+                return new Name($name);
             }
-
-            return new Name($name);
         }
 
         if ($allowExpr) {
@@ -154,9 +148,9 @@ final class BuilderHelpers
             throw new \LogicException(
                 'Name must be a string or an instance of Node\Name or Node\Expr'
             );
+        } else {
+            throw new \LogicException('Name must be a string or an instance of Node\Name');
         }
-
-        throw new \LogicException('Name must be a string or an instance of Node\Name');
     }
 
     /**
@@ -189,7 +183,7 @@ final class BuilderHelpers
         }
 
         $builtinTypes = [
-            'array', 'callable', 'string', 'int', 'float', 'bool', 'iterable', 'void', 'object', 'mixed', 'never',
+            'array', 'callable', 'string', 'int', 'float', 'bool', 'iterable', 'void', 'object', 'mixed'
         ];
 
         $lowerType = strtolower($type);
@@ -199,11 +193,12 @@ final class BuilderHelpers
             $type = self::normalizeName($type);
         }
 
-        $notNullableTypes = [
-            'void', 'mixed', 'never',
-        ];
-        if ($nullable && in_array((string) $type, $notNullableTypes)) {
-            throw new \LogicException(sprintf('%s type cannot be nullable', $type));
+        if ($nullable && (string) $type === 'void') {
+            throw new \LogicException('void type cannot be nullable');
+        }
+
+        if ($nullable && (string) $type === 'mixed') {
+            throw new \LogicException('mixed type cannot be nullable');
         }
 
         return $nullable ? new NullableType($type) : $type;
@@ -220,33 +215,21 @@ final class BuilderHelpers
     public static function normalizeValue($value) : Expr {
         if ($value instanceof Node\Expr) {
             return $value;
-        }
-
-        if (is_null($value)) {
+        } elseif (is_null($value)) {
             return new Expr\ConstFetch(
                 new Name('null')
             );
-        }
-
-        if (is_bool($value)) {
+        } elseif (is_bool($value)) {
             return new Expr\ConstFetch(
                 new Name($value ? 'true' : 'false')
             );
-        }
-
-        if (is_int($value)) {
+        } elseif (is_int($value)) {
             return new Scalar\LNumber($value);
-        }
-
-        if (is_float($value)) {
+        } elseif (is_float($value)) {
             return new Scalar\DNumber($value);
-        }
-
-        if (is_string($value)) {
+        } elseif (is_string($value)) {
             return new Scalar\String_($value);
-        }
-
-        if (is_array($value)) {
+        } elseif (is_array($value)) {
             $items = [];
             $lastKey = -1;
             foreach ($value as $itemKey => $itemValue) {
@@ -265,9 +248,9 @@ final class BuilderHelpers
             }
 
             return new Expr\Array_($items);
+        } else {
+            throw new \LogicException('Invalid value');
         }
-
-        throw new \LogicException('Invalid value');
     }
 
     /**
@@ -280,33 +263,11 @@ final class BuilderHelpers
     public static function normalizeDocComment($docComment) : Comment\Doc {
         if ($docComment instanceof Comment\Doc) {
             return $docComment;
-        }
-
-        if (is_string($docComment)) {
+        } elseif (is_string($docComment)) {
             return new Comment\Doc($docComment);
+        } else {
+            throw new \LogicException('Doc comment must be a string or an instance of PhpParser\Comment\Doc');
         }
-
-        throw new \LogicException('Doc comment must be a string or an instance of PhpParser\Comment\Doc');
-    }
-
-    /**
-     * Normalizes a attribute: Converts attribute to the Attribute Group if needed.
-     *
-     * @param Node\Attribute|Node\AttributeGroup $attribute
-     *
-     * @return Node\AttributeGroup The Attribute Group
-     */
-    public static function normalizeAttribute($attribute) : Node\AttributeGroup
-    {
-        if ($attribute instanceof Node\AttributeGroup) {
-            return $attribute;
-        }
-
-        if (!($attribute instanceof Node\Attribute)) {
-            throw new \LogicException('Attribute must be an instance of PhpParser\Node\Attribute or PhpParser\Node\AttributeGroup');
-        }
-
-        return new Node\AttributeGroup([$attribute]);
     }
 
     /**

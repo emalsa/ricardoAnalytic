@@ -23,7 +23,7 @@
         "drupal/adminimal_admin_toolbar": "^1.10",
         "drupal/adminimal_theme": "^1.5",
         "drupal/config_installer": "1.x-dev",
-        "drupal/console": "^1.9",
+        "drupal/console": "~1.0",
         "drupal/core": "^8.7",
         "drupal/purge": "^3.0",
         "drupal/queue_throttle": "^1.1",
@@ -32,10 +32,10 @@
         "drupal/search_api_solr": "^1.2",
         "drupal/ultimate_cron": "^2.0@alpha",
         "drupal/varnish_purge": "^1.10",
+        "drush/drush": "~8.0",
         "zaporylie/composer-drupal-optimizations": "^1.1",
         "drupal/coder": "^8.3",
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
-        "drush/drush": "^10"
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1"
     },
     "require-dev": {
         "behat/mink": "~1.7",

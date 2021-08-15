@@ -15,7 +15,7 @@ services:
       - "DB_HOST=database"
       - "PHP_IDE_CONFIG=serverName=dock"
 
-  # The cli
+  # The Application
   cli:
     build:
       context: ./.docker
@@ -52,6 +52,7 @@ services:
       MARIADB_ROOT_PASSWORD: drupal
     ports:
       - "33061:3306"
+
 
   redis:
     image: redis
