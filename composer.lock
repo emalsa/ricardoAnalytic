@@ -2550,8 +2550,7 @@
             "homepage": "https://www.drupal.org/project/config_installer",
             "support": {
                 "source": "https://git.drupalcode.org/project/config_installer"
-            },
-            "time": "2018-09-08T08:27:14+00:00"
+            }
         },
         {
             "name": "drupal/console",
