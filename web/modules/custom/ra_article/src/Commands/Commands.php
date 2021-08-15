@@ -28,12 +28,12 @@ class Commands extends DrushCommands {
       $node = $entityTypeManager->getStorage('node')->load($nid);
       $node->delete();
       $count++;
-      if ($count % 200 === 0) {
+      if ($count % 100 === 0) {
         $this->logger()->notice('Deleted now: ' . $count . ' nodes');
       }
     }
 
-    $this->logger()->notice('Deleted now: ' . $count . ' nodes');
+    $this->logger()->notice('Deletion finished of: ' . $count . ' nodes');
 
   }
 
