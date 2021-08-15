@@ -16,11 +16,9 @@ class Commands extends DrushCommands {
    * @aliases ra_article:delete-all
    */
   public function deleteAll() {
-    /**
-     * @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-     */
+    /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager */
     $entityTypeManager = \Drupal::service('entity_type.manager');
-
+    $this->logger()->notice('Start deleting nodes');
     $query = $entityTypeManager->getStorage('node')->getQuery();
     $allNodes = $query->execute();
     $count = 0;
@@ -32,9 +30,22 @@ class Commands extends DrushCommands {
         $this->logger()->notice('Deleted now: ' . $count . ' nodes');
       }
     }
+    $this->logger()->notice('Deletion nodes finished');
+    $this->logger()->notice('------');
+    $this->logger()->notice('------');
 
-    $this->logger()->notice('Deletion finished of: ' . $count . ' nodes');
-
+    $this->logger()->notice('Start deleting taxonomies');
+    $query = $entityTypeManager->getStorage('taxonomy_term')->getQuery();
+    $allTerms = $query->execute();
+    $count = 0;
+    foreach ($allTerms as $nid) {
+      $term = $entityTypeManager->getStorage('taxonomy_term')->load($nid);
+      $term->delete();
+      $count++;
+      if ($count % 100 === 0) {
+        $this->logger()->notice('Deleted now: ' . $count . ' terms');
+      }
+    }
   }
 
 }

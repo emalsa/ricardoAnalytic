@@ -9,13 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Filesystem\Exception;
+namespace Symfony\Component\Finder\Exception;
 
 /**
- * Exception interface for all exceptions thrown by the component.
- *
- * @author Romain Neutron <imprec@gmail.com>
+ * @author Andreas Erhard <andreas.erhard@i-med.ac.at>
  */
-interface ExceptionInterface extends \Throwable
+class DirectoryNotFoundException extends \InvalidArgumentException
 {
 }

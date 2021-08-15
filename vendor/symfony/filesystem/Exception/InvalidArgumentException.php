@@ -12,10 +12,8 @@
 namespace Symfony\Component\Filesystem\Exception;
 
 /**
- * Exception interface for all exceptions thrown by the component.
- *
- * @author Romain Neutron <imprec@gmail.com>
+ * @author Christian Flothmann <christian.flothmann@sensiolabs.de>
  */
-interface ExceptionInterface extends \Throwable
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
 }
