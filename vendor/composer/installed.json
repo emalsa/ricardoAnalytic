@@ -448,7 +448,7 @@
                 "dev-main": "1.x-dev"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Composer\\Installers\\": "src/Composer/Installers"
@@ -870,7 +870,7 @@
         "extra": {
             "class": "cweagans\\Composer\\Patches"
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "cweagans\\Composer\\": "src"
@@ -2208,6 +2208,7 @@
         "require": {
             "drupal/core": "~8.0"
         },
+        "time": "2018-09-08T08:27:14+00:00",
         "type": "drupal-profile",
         "extra": {
             "branch-alias": {
@@ -7320,7 +7321,7 @@
                 "url": "https://github.com/symfony/polyfill"
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Symfony\\Polyfill\\Ctype\\": ""
@@ -8877,7 +8878,7 @@
         "extra": {
             "class": "zaporylie\\ComposerDrupalOptimizations\\Plugin"
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "zaporylie\\ComposerDrupalOptimizations\\": "src/"
