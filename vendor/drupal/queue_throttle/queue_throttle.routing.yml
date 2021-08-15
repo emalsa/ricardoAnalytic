@@ -1,7 +1,0 @@
-queue_throttle.queue_settings:
-  path: '/admin/config/system/queue'
-  defaults:
-    _form: 'Drupal\queue_throttle\Form\SettingsForm'
-    _title: 'Queue Throttle'
-  requirements:
-    _permission: 'administer queue throttle configuration'
