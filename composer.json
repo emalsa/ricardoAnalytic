@@ -23,6 +23,7 @@
         "drupal/adminimal_admin_toolbar": "^1.10",
         "drupal/adminimal_theme": "^1.5",
         "drupal/config_installer": "1.x-dev",
+        "drupal/console": "^1.9",
         "drupal/core": "^8.7",
         "drupal/purge": "^3.0",
         "drupal/queue_throttle": "^1.1",
