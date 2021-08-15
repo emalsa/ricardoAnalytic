@@ -1,5 +1,0 @@
-name: 'ra_seller'
-type: module
-description: 'Seller crawler'
-core: 8.x
-package: 'Crawler'

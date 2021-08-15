@@ -30,16 +30,12 @@
         "drupal/search_api": "^1.6",
         "drupal/search_api_solr": "^1.2",
         "drupal/ultimate_cron": "^2.0@alpha",
-        "drupal/varnish_purge": "^1.10",
         "drush/drush": "~8.0",
         "zaporylie/composer-drupal-optimizations": "^1.1",
         "drupal/coder": "^8.3",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "friendsofphp/php-cs-fixer": "^2.16",
-        "drupal/google_tag": "^1.4",
-        "drupal/xmlsitemap": "^1.0",
-        "drupal/pathauto": "^1.8",
-        "drupal/metatag": "^1.13"
+        "drupal/pathauto": "^1.8"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "3.*",

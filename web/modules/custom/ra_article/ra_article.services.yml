@@ -1,7 +1,0 @@
-services:
-  logger.channel.ra_article:
-    parent: logger.channel_base
-    arguments: ['ra_article']
-  ra_article.article_crawler:
-    class: Drupal\ra_article\ArticleCrawler
-    arguments: ['@entity_type.manager']

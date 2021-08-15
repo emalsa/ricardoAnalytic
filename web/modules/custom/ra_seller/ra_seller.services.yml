@@ -1,7 +1,0 @@
-services:
-  logger.channel.ra_seller:
-    parent: logger.channel_base
-    arguments: ['ra_seller']
-  ra_seller.seller_crawler:
-    class: Drupal\ra_seller\SellerCrawler
-    arguments: ['@entity_type.manager', '@config.manager']
