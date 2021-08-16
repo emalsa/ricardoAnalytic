@@ -1,0 +1,17 @@
+uuid: ee2d2395-901e-4e37-8c04-3664683e7bbf
+langcode: de
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Article
+type: article
+description: ''
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false

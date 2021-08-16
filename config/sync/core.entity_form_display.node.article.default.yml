@@ -1,0 +1,79 @@
+uuid: 08b85dd7-afb1-4f6a-bee9-e3caa7a38a46
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.article.field_article_raw_json
+    - field.field.node.article.field_article_seller_ref
+    - node.type.article
+  module:
+    - field_group
+third_party_settings:
+  field_group:
+    group_article_acc_item_raw_json:
+      children:
+        - field_article_raw_json
+      parent_name: group_acc_raw_json
+      weight: 3
+      format_type: accordion_item
+      region: content
+      format_settings:
+        show_empty_fields: false
+        id: ''
+        classes: ''
+        formatter: closed
+        required_fields: true
+        description: ''
+      label: 'Raw JSON'
+    group_acc_raw_json:
+      children:
+        - group_article_acc_item_raw_json
+      parent_name: ''
+      weight: 2
+      format_type: accordion
+      region: content
+      format_settings:
+        effect: bounceslide
+        id: ''
+        classes: ''
+        show_empty_fields: false
+      label: 'Raw JSON'
+id: node.article.default
+targetEntityType: node
+bundle: article
+mode: default
+content:
+  field_article_raw_json:
+    weight: 3
+    settings:
+      rows: 25
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_article_seller_ref:
+    weight: 1
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  title:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  path: true
+  promote: true
+  status: true
+  sticky: true
+  uid: true

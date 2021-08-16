@@ -1,0 +1,19 @@
+uuid: 0ac19384-60b4-48c2-9437-c9aba55a9365
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_raw_json
+    - node.type.article
+id: node.article.field_article_raw_json
+field_name: field_article_raw_json
+entity_type: node
+bundle: article
+label: 'Raw JSON'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

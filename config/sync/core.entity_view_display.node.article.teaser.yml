@@ -1,0 +1,25 @@
+uuid: bcc78d8e-d237-4924-8255-e228ac88fe68
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.article.field_article_raw_json
+    - field.field.node.article.field_article_seller_ref
+    - node.type.article
+  module:
+    - user
+id: node.article.teaser
+targetEntityType: node
+bundle: article
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_article_raw_json: true
+  field_article_seller_ref: true
+  langcode: true
