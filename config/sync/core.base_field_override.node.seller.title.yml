@@ -1,0 +1,18 @@
+uuid: a1c00749-9c17-43b6-ae10-0327805a3fba
+langcode: de
+status: true
+dependencies:
+  config:
+    - node.type.seller
+id: node.seller.title
+field_name: title
+entity_type: node
+bundle: seller
+label: nickname
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

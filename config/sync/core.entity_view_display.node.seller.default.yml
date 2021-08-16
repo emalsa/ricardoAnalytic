@@ -1,0 +1,99 @@
+uuid: dcc63332-188b-48ce-8c91-67d99e9ab189
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.seller.field_id_savesellerid
+    - field.field.node.seller.field_seller_articles_sold
+    - field.field.node.seller.field_seller_is_initial_create
+    - field.field.node.seller.field_seller_is_pro
+    - field.field.node.seller.field_seller_location
+    - field.field.node.seller.field_seller_member_since
+    - field.field.node.seller.field_seller_postalcode
+    - field.field.node.seller.field_seller_sellerid
+    - node.type.seller
+  module:
+    - user
+id: node.seller.default
+targetEntityType: node
+bundle: seller
+mode: default
+content:
+  field_id_savesellerid:
+    weight: 107
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_seller_articles_sold:
+    weight: 106
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_seller_is_initial_create:
+    weight: 108
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_seller_is_pro:
+    weight: 104
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_seller_location:
+    weight: 103
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_seller_member_since:
+    weight: 105
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_seller_postalcode:
+    weight: 102
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_seller_sellerid:
+    weight: 101
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

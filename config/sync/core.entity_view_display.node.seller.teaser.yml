@@ -1,0 +1,37 @@
+uuid: 9b44dbed-dcab-4f68-b4c4-81c32f93b7bd
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.seller.field_id_savesellerid
+    - field.field.node.seller.field_seller_articles_sold
+    - field.field.node.seller.field_seller_is_initial_create
+    - field.field.node.seller.field_seller_is_pro
+    - field.field.node.seller.field_seller_location
+    - field.field.node.seller.field_seller_member_since
+    - field.field.node.seller.field_seller_postalcode
+    - field.field.node.seller.field_seller_sellerid
+    - node.type.seller
+  module:
+    - user
+id: node.seller.teaser
+targetEntityType: node
+bundle: seller
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_id_savesellerid: true
+  field_seller_articles_sold: true
+  field_seller_is_initial_create: true
+  field_seller_is_pro: true
+  field_seller_location: true
+  field_seller_member_since: true
+  field_seller_postalcode: true
+  field_seller_sellerid: true
+  langcode: true

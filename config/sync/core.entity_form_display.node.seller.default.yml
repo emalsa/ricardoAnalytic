@@ -1,0 +1,138 @@
+uuid: 3c54417a-184b-4576-8fef-ee9739b1d848
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.seller.field_id_savesellerid
+    - field.field.node.seller.field_seller_articles_sold
+    - field.field.node.seller.field_seller_is_initial_create
+    - field.field.node.seller.field_seller_is_pro
+    - field.field.node.seller.field_seller_location
+    - field.field.node.seller.field_seller_member_since
+    - field.field.node.seller.field_seller_postalcode
+    - field.field.node.seller.field_seller_sellerid
+    - node.type.seller
+  module:
+    - field_group
+    - path
+third_party_settings:
+  field_group:
+    group_seller_basic_information:
+      children:
+        - title
+        - field_seller_sellerid
+        - field_seller_articles_sold
+      parent_name: ''
+      weight: 0
+      format_type: fieldset
+      region: content
+      format_settings:
+        show_empty_fields: true
+        id: ''
+        classes: ''
+        description: ''
+        required_fields: true
+      label: 'Basic information'
+    group_additional_information:
+      children:
+        - field_seller_member_since
+        - field_seller_is_pro
+        - field_id_savesellerid
+        - field_seller_location
+        - field_seller_postalcode
+      parent_name: ''
+      weight: 2
+      format_type: fieldset
+      region: content
+      format_settings:
+        description: ''
+        show_empty_fields: true
+        required_fields: true
+        id: ''
+        classes: ''
+      label: 'Additional information'
+id: node.seller.default
+targetEntityType: node
+bundle: seller
+mode: default
+content:
+  field_id_savesellerid:
+    weight: 7
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_seller_articles_sold:
+    weight: 3
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_seller_is_initial_create:
+    weight: 1
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_seller_is_pro:
+    weight: 6
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  field_seller_location:
+    weight: 8
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_seller_member_since:
+    weight: 5
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_seller_postalcode:
+    weight: 9
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_seller_sellerid:
+    weight: 2
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  path:
+    type: path
+    weight: 9
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  promote: true
+  status: true
+  sticky: true
+  uid: true

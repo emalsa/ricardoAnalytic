@@ -1,0 +1,23 @@
+uuid: bd0dae0e-52c6-4780-b865-35ec3208a440
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_articles_sold
+    - node.type.seller
+id: node.seller.field_seller_articles_sold
+field_name: field_seller_articles_sold
+entity_type: node
+bundle: seller
+label: articlesSold
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

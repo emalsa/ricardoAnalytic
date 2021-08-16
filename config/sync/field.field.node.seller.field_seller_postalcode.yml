@@ -1,0 +1,23 @@
+uuid: 7fe25425-7ffa-4642-ad77-5edf53f93b8e
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_postalcode
+    - node.type.seller
+id: node.seller.field_seller_postalcode
+field_name: field_seller_postalcode
+entity_type: node
+bundle: seller
+label: Postalcode
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

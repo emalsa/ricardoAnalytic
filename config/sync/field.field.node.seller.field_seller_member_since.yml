@@ -1,0 +1,23 @@
+uuid: 6b934285-db38-4935-9540-47773071610a
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_member_since
+    - node.type.seller
+id: node.seller.field_seller_member_since
+field_name: field_seller_member_since
+entity_type: node
+bundle: seller
+label: 'Member since'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

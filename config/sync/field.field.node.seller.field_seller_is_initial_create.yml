@@ -1,0 +1,23 @@
+uuid: c0adc4a3-880f-469c-b79d-b786c7814306
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_is_initial_create
+    - node.type.seller
+id: node.seller.field_seller_is_initial_create
+field_name: field_seller_is_initial_create
+entity_type: node
+bundle: seller
+label: 'Is initial create (the ratings)'
+description: 'If true, the ratings will be crawled to create articles.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,22 @@
+uuid: d48fb01b-1d5c-45a1-8bc7-0c5ee4302745
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: seller
+label: Seller
+type: 'canonical_entities:node'
+pattern: '[node:content-type:name]/[node:title]'
+selection_criteria:
+  149cc40d-5597-4f20-a0f2-c137a3abfa2c:
+    id: node_type
+    bundles:
+      seller: seller
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 149cc40d-5597-4f20-a0f2-c137a3abfa2c
+selection_logic: and
+weight: -5
+relationships: {  }

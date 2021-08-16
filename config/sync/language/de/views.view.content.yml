@@ -23,8 +23,6 @@ display:
         type:
           label: Inhaltstyp
           separator: ', '
-        name:
-          label: Autor
         status:
           label: Status
           settings:
@@ -41,19 +39,6 @@ display:
         type:
           expose:
             label: Inhaltstyp
-        status:
-          expose:
-            label: Status
-          group_info:
-            label: 'Status veröffentlicht'
-            group_items:
-              1:
-                title: Veröffentlicht
-              2:
-                title: 'Nicht veröffentlicht'
-        langcode:
-          expose:
-            label: Sprache
       title: Inhalt
       empty:
         area_text_custom:

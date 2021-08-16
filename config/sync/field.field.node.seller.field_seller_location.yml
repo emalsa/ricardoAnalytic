@@ -1,0 +1,19 @@
+uuid: 3241c23c-e4e5-45c1-8ed8-f2ea247f4a95
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_location
+    - node.type.seller
+id: node.seller.field_seller_location
+field_name: field_seller_location
+entity_type: node
+bundle: seller
+label: Location
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

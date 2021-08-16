@@ -1,0 +1,19 @@
+uuid: 73223ef5-5bad-4be3-bc6b-63abfd45be3e
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_id_savesellerid
+    - node.type.seller
+id: node.seller.field_id_savesellerid
+field_name: field_id_savesellerid
+entity_type: node
+bundle: seller
+label: saveSellerId
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

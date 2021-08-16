@@ -1,0 +1,17 @@
+uuid: eb02e020-0cc0-4720-b6b7-8405019ae395
+langcode: de
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Seller
+type: seller
+description: ''
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false
