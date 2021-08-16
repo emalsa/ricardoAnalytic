@@ -1,0 +1,72 @@
+uuid: edbb330b-6aeb-42e5-9641-52afd22a2d8b
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.scrapingdog_com_account.field_scrapingdog_api_key
+    - field.field.node.scrapingdog_com_account.field_scrapingdog_email
+    - node.type.scrapingdog_com_account
+  module:
+    - field_group
+third_party_settings:
+  field_group:
+    group_scrapingdog_information:
+      children:
+        - title
+        - field_scrapingdog_api_key
+        - status
+        - field_scrapingdog_email
+      parent_name: ''
+      weight: 0
+      format_type: fieldset
+      region: content
+      format_settings:
+        show_empty_fields: false
+        id: ''
+        classes: ''
+        description: ''
+        required_fields: true
+      label: Information
+id: node.scrapingdog_com_account.default
+targetEntityType: node
+bundle: scrapingdog_com_account
+mode: default
+content:
+  field_scrapingdog_api_key:
+    weight: 2
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_scrapingdog_email:
+    weight: 4
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  status:
+    type: boolean_checkbox
+    settings:
+      display_label: true
+    weight: 3
+    region: content
+    third_party_settings: {  }
+  title:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  created: true
+  langcode: true
+  path: true
+  promote: true
+  sticky: true
+  uid: true

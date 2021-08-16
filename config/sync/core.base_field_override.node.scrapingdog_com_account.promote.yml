@@ -1,0 +1,22 @@
+uuid: 8b6c1362-69d7-40d8-b453-c800a4e446c0
+langcode: de
+status: true
+dependencies:
+  config:
+    - node.type.scrapingdog_com_account
+id: node.scrapingdog_com_account.promote
+field_name: promote
+entity_type: node
+bundle: scrapingdog_com_account
+label: 'Promoted to front page'
+description: ''
+required: false
+translatable: true
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

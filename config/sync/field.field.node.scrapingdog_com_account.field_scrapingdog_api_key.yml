@@ -1,0 +1,19 @@
+uuid: e51be7a2-056d-4398-90b8-c7a97d0ebedd
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_scrapingdog_api_key
+    - node.type.scrapingdog_com_account
+id: node.scrapingdog_com_account.field_scrapingdog_api_key
+field_name: field_scrapingdog_api_key
+entity_type: node
+bundle: scrapingdog_com_account
+label: 'API Key'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

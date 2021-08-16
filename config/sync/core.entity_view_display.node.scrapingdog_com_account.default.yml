@@ -1,0 +1,38 @@
+uuid: 0f049e22-1865-4aec-ad62-56bbb6392859
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.scrapingdog_com_account.field_scrapingdog_api_key
+    - field.field.node.scrapingdog_com_account.field_scrapingdog_email
+    - node.type.scrapingdog_com_account
+  module:
+    - user
+id: node.scrapingdog_com_account.default
+targetEntityType: node
+bundle: scrapingdog_com_account
+mode: default
+content:
+  field_scrapingdog_api_key:
+    weight: 102
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_scrapingdog_email:
+    weight: 101
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  langcode: true

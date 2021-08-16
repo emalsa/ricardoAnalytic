@@ -1,0 +1,22 @@
+uuid: 49815ce1-a6b8-4f3a-8af5-cac436034f36
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: scrapingdog_com
+label: Scrapingdog.com
+type: 'canonical_entities:node'
+pattern: 'scrapingdog/[node:title]'
+selection_criteria:
+  05b83637-3bdb-4b28-90fe-28047290a222:
+    id: node_type
+    bundles:
+      scrapingdog_com_account: scrapingdog_com_account
+    negate: false
+    context_mapping:
+      node: node
+    uuid: 05b83637-3bdb-4b28-90fe-28047290a222
+selection_logic: and
+weight: -5
+relationships: {  }

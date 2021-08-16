@@ -1,0 +1,25 @@
+uuid: 77b08dd3-0fc7-4414-ab7e-2a9cfdd7f13e
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.scrapingdog_com_account.field_scrapingdog_api_key
+    - field.field.node.scrapingdog_com_account.field_scrapingdog_email
+    - node.type.scrapingdog_com_account
+  module:
+    - user
+id: node.scrapingdog_com_account.teaser
+targetEntityType: node
+bundle: scrapingdog_com_account
+mode: teaser
+content:
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_scrapingdog_api_key: true
+  field_scrapingdog_email: true
+  langcode: true
