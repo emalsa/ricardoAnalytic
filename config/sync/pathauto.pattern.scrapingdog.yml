@@ -12,7 +12,7 @@ selection_criteria:
   05b83637-3bdb-4b28-90fe-28047290a222:
     id: node_type
     bundles:
-      scrapingdog_com_account: scrapingdog_com_account
+      scrapingdog: scrapingdog
     negate: false
     context_mapping:
       node: node

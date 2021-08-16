@@ -3,9 +3,9 @@ langcode: de
 status: true
 dependencies:
   config:
-    - node.type.scrapingdog_com_account
-id: node.scrapingdog_com_account
+    - node.type.scrapingdog
+id: node.scrapingdog
 target_entity_type_id: node
-target_bundle: scrapingdog_com_account
+target_bundle: scrapingdog
 default_langcode: site_default
 language_alterable: false

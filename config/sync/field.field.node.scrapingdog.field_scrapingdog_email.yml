@@ -4,11 +4,11 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_scrapingdog_email
-    - node.type.scrapingdog_com_account
-id: node.scrapingdog_com_account.field_scrapingdog_email
+    - node.type.scrapingdog
+id: node.scrapingdog.field_scrapingdog_email
 field_name: field_scrapingdog_email
 entity_type: node
-bundle: scrapingdog_com_account
+bundle: scrapingdog
 label: Email
 description: ''
 required: true

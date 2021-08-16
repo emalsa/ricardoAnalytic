@@ -3,14 +3,14 @@ langcode: de
 status: true
 dependencies:
   config:
-    - field.field.node.scrapingdog_com_account.field_scrapingdog_api_key
-    - field.field.node.scrapingdog_com_account.field_scrapingdog_email
-    - node.type.scrapingdog_com_account
+    - field.field.node.scrapingdog.field_scrapingdog_api_key
+    - field.field.node.scrapingdog.field_scrapingdog_email
+    - node.type.scrapingdog
   module:
     - user
-id: node.scrapingdog_com_account.default
+id: node.scrapingdog.default
 targetEntityType: node
-bundle: scrapingdog_com_account
+bundle: scrapingdog
 mode: default
 content:
   field_scrapingdog_api_key:

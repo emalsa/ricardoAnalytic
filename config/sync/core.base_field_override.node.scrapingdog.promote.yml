@@ -3,11 +3,11 @@ langcode: de
 status: true
 dependencies:
   config:
-    - node.type.scrapingdog_com_account
-id: node.scrapingdog_com_account.promote
+    - node.type.scrapingdog
+id: node.scrapingdog.promote
 field_name: promote
 entity_type: node
-bundle: scrapingdog_com_account
+bundle: scrapingdog
 label: 'Promoted to front page'
 description: ''
 required: false

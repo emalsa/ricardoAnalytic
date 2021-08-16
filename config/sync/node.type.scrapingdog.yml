@@ -9,7 +9,7 @@ third_party_settings:
     available_menus: {  }
     parent: ''
 name: Scrapingdog.com
-type: scrapingdog_com_account
+type: scrapingdog
 description: 'Scrapingdog.com Account'
 help: ''
 new_revision: true
