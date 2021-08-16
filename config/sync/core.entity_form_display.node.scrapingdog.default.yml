@@ -41,12 +41,12 @@ content:
     type: string_textfield
     region: content
   field_scrapingdog_email:
-    weight: 4
+    weight: 26
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
+    type: email_default
     region: content
   status:
     type: boolean_checkbox

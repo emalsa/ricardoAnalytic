@@ -1,4 +1,4 @@
-uuid: 104c7eb9-1dbc-47ad-bcf0-3458a65e5b2a
+uuid: a0d162fa-e7be-4135-8f70-0175112aa505
 langcode: de
 status: true
 dependencies:
@@ -16,4 +16,4 @@ translatable: false
 default_value: {  }
 default_value_callback: ''
 settings: {  }
-field_type: string
+field_type: email

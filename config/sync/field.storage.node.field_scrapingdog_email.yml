@@ -1,4 +1,4 @@
-uuid: 0fb36390-b7ae-4f04-8789-8fa720d526ac
+uuid: 2b290867-866c-4926-92dc-485aee0771c6
 langcode: de
 status: true
 dependencies:
@@ -7,11 +7,8 @@ dependencies:
 id: node.field_scrapingdog_email
 field_name: field_scrapingdog_email
 entity_type: node
-type: string
-settings:
-  max_length: 255
-  is_ascii: false
-  case_sensitive: false
+type: email
+settings: {  }
 module: core
 locked: false
 cardinality: 1
@@ -19,4 +16,3 @@ translatable: true
 indexes: {  }
 persist_with_no_fields: false
 custom_storage: false
-
