@@ -3,9 +3,6 @@ description: 'Inhalt, der auf der Startseite veröffentlicht ist.'
 display:
   default:
     display_options:
-      empty:
-        area_text_custom:
-          content: 'Es wurde noch kein Inhalt für die Startseite erstellt.<br>Lesen Sie das <a target="_blank" href="https://www.drupal.org/de/docs/user_guide/de/index.html"> Benutzerhandbuch</a>, um mehr über das Erstellen von Websites mit Drupal zu erfahren.'
       exposed_form:
         options:
           submit_button: Anwenden

@@ -1,0 +1,28 @@
+uuid: 041a419e-6c63-4ab8-b20c-0f6574791e12
+langcode: de
+status: true
+dependencies:
+  module:
+    - ra_admin
+    - system
+  theme:
+    - adminimal_theme
+id: article_to_scrape
+theme: adminimal_theme
+region: content
+weight: 0
+provider: null
+plugin: status_block
+settings:
+  id: status_block
+  label: 'Article To Scrape'
+  provider: ra_admin
+  label_display: '0'
+  show_of_bundle: article
+  show_of_type_revision: to_scrape
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }
