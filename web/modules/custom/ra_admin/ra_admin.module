@@ -32,23 +32,20 @@ function _ra_admin_update_scrapedog_entities_cron() {
     ->condition('status', NodeInterface::PUBLISHED);
   $entitiesToUpdate = $entityQuery->execute();
 
+  /** @var \GuzzleHttp\Client $httpClient */
   $httpClient = \Drupal::service('http_client');
   foreach ($entitiesToUpdate as $entityId) {
+    $client = NULL;
     /** @var NodeInterface $node */
     $node = \Drupal::service('entity_type.manager')->getStorage('node')->load($entityId);
-    $apiKey = $node->get('field_scrapingdog_api_key')->value;
-    if (!$apiKey) {
+    if ($node->get('field_scrapingdog_api_key')->isEmpty()) {
       continue;
     }
-    /** @var \GuzzleHttp\Client $httpClient */
-    $url = "https://api.scrapingdog.com/account?api_key=$apiKey";
-    $client = NULL;
-    $client = $httpClient->get($url);
+    $apiKey = $node->get('field_scrapingdog_api_key')->value;
+
+    $client = $httpClient->get("https://api.scrapingdog.com/account?api_key=$apiKey");
     $content = json_decode($client->getBody()->getContents(), TRUE);
-    $a = 1;
-    // @todo Request scrapingdog.com
     $remainingCredits = $content['requestLimit'] - $content['requestUsed'];
-    // @todo update credits
     $node->set('field_scrapingdog_credits', $remainingCredits);
     $node->save();
   }
@@ -61,7 +58,7 @@ function _ra_admin_update_scrapedog_entities_cron() {
     ->condition('field_scrapingdog_credits', '5', '<');
   $entitiesLowCredits = $entityQuery->execute();
 
-  // Unpublish scrapingdog nodes which are expired
+  // Unpublish scrapingdog nodes which are expired.
   $today = date('Y-m-d', time());
   $entityQuery = \Drupal::service('entity_type.manager')->getStorage('node')->getQuery();
   $entityQuery
