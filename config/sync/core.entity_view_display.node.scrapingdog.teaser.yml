@@ -5,7 +5,9 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.scrapingdog.field_scrapingdog_api_key
+    - field.field.node.scrapingdog.field_scrapingdog_credits
     - field.field.node.scrapingdog.field_scrapingdog_email
+    - field.field.node.scrapingdog.field_scrapingdog_expires
     - node.type.scrapingdog
   module:
     - user
@@ -21,5 +23,8 @@ content:
     region: content
 hidden:
   field_scrapingdog_api_key: true
+  field_scrapingdog_credits: true
   field_scrapingdog_email: true
+  field_scrapingdog_expires: true
   langcode: true
+  search_api_excerpt: true

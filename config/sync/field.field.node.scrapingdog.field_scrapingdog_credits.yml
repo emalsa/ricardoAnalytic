@@ -1,0 +1,23 @@
+uuid: e9fcbeda-bde9-4ca1-a971-069032e6d989
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_scrapingdog_credits
+    - node.type.scrapingdog
+id: node.scrapingdog.field_scrapingdog_credits
+field_name: field_scrapingdog_credits
+entity_type: node
+bundle: scrapingdog
+label: 'Remaining credits'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

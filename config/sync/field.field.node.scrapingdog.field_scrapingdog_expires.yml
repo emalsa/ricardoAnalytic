@@ -1,0 +1,21 @@
+uuid: f1d8d545-e7a9-409d-b384-bc1454ab1c5a
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_scrapingdog_expires
+    - node.type.scrapingdog
+  module:
+    - datetime
+id: node.scrapingdog.field_scrapingdog_expires
+field_name: field_scrapingdog_expires
+entity_type: node
+bundle: scrapingdog
+label: Expires
+description: 'Expires at'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

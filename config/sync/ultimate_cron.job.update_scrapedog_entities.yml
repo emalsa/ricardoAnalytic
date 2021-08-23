@@ -1,0 +1,29 @@
+uuid: 0209beb2-3a1a-4972-8149-bbbfb5b96eed
+langcode: en
+status: true
+dependencies:
+  module:
+    - ra_admin
+title: 'Update scrapedog.com entities'
+id: update_scrapedog_entities
+weight: 0
+module: ra_admin
+callback: _ra_admin_update_scrapedog_entities_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '0+@ * * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
