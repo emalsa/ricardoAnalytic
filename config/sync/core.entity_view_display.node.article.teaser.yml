@@ -4,6 +4,8 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
+    - field.field.node.article.field_article_end_date
+    - field.field.node.article.field_article_id
     - field.field.node.article.field_article_raw_json
     - field.field.node.article.field_article_seller_ref
     - node.type.article
@@ -14,12 +16,20 @@ targetEntityType: node
 bundle: article
 mode: teaser
 content:
+  content_moderation_control:
+    weight: -20
+    settings: {  }
+    third_party_settings: {  }
+    region: content
   links:
     weight: 100
     settings: {  }
     third_party_settings: {  }
     region: content
 hidden:
+  field_article_end_date: true
+  field_article_id: true
   field_article_raw_json: true
   field_article_seller_ref: true
   langcode: true
+  search_api_excerpt: true

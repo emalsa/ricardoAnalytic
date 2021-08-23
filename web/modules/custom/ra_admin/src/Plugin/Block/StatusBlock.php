@@ -2,11 +2,8 @@
 
 namespace Drupal\ra_admin\Plugin\Block;
 
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\ReplaceCommand;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Form\SubformStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -19,6 +16,26 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * Mapping bundle with workflow id.
+   *
+   * @var array
+   */
+  protected const WORKFLOW_ID_MAPPING = [
+    'article' => 'editorial',
+  ];
+
+  /**
+   * To ignore.
+   *
+   * @var array
+   */
+  protected const IGNORED_MODERATION_STATES = [
+    'draft',
+    'archived',
+    'published',
+  ];
 
   /**
    * Drupal\Core\Entity\EntityTypeManagerInterface definition.
@@ -57,8 +74,6 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
 
-    $ajaxValues = $form_state instanceof SubformStateInterface ? $form_state->getCompleteFormState()->getValues() : $form_state->getValues();
-
     $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
@@ -82,62 +97,10 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
       '#description' => $this->t('Which bundle should be displayed'),
       '#options' => $bundleOptions,
       '#default_value' => $this->configuration['show_of_bundle'],
-      '#ajax' => [
-        'callback' => [$this, 'myAjaxCallback'],
-        'method' => 'html',
-        'disable-refocus' => FALSE,
-        'event' => 'change',
-        'wrapper' => 'states-to-update',
-        'progress' => [
-          'type' => 'throbber',
-          'message' => $this->t('Load states...'),
-        ],
-      ],
-    ];
-
-    $selectedBundle = $ajaxValues['settings']['show_of_bundle'] ?? '';
-    $workflowsStates = [];
-    $workflowId = NULL;
-    if ($form_state->getTriggeringElement() && $selectedBundle && $bundles[$selectedBundle]['workflow']) {
-      $workflowId = $bundles[$selectedBundle]['workflow'];
-    }
-    elseif (!$form_state->getTriggeringElement() && $this->configuration['show_of_type_revision'] && $this->configuration['show_of_bundle']) {
-      $workflowId = $bundles[$this->configuration['show_of_bundle']]['workflow'];
-
-    }
-
-    if ($workflowId) {
-      /** @var \Drupal\workflows\Entity\Workflow $workflow */
-      $workflow = $this->entityTypeManager->getStorage('workflow')->load($workflowId);
-      $allStates = $workflow->get('type_settings')['states'];
-      foreach ($allStates as $key => $allState) {
-        $workflowsStates[$key] = $allState['label'];
-      }
-    }
-
-    $form['show_of_type_revision'] = [
-      '#empty_option' => '- Select a value -',
-      '#empty_value' => '',
-      '#type' => 'select',
-      '#title' => $this->t('Show of type revision:'),
-      '#description' => $this->t('Which article should be displayed'),
-      '#default_value' => $this->configuration['show_of_type_revision'],
-      '#options' => $workflowsStates,
-      '#prefix' => '<div id="states-to-update">',
-      '#suffix' => '</div>',
     ];
 
     return $form;
 
-  }
-
-  /**
-   *
-   */
-  public function myAjaxCallback(array &$form, FormStateInterface $form_state) {
-    $response = new AjaxResponse();
-    $response->addCommand(new ReplaceCommand('#states-to-update', $form['settings']['show_of_type_revision']));
-    return $response;
   }
 
   /**
@@ -146,7 +109,6 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->configuration['label'] = $form_state->getValue('label');
     $this->configuration['show_of_bundle'] = $form_state->getValue('show_of_bundle');
-    $this->configuration['show_of_type_revision'] = $form_state->getValue('show_of_type_revision');
   }
 
   /**
@@ -154,21 +116,49 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
    */
   public function build() {
     $build = [];
+    $moderationStates = [];
+    $bundle = $this->configuration['show_of_bundle'];
+    $workflow = $this->entityTypeManager->getStorage('workflow')->load(self::WORKFLOW_ID_MAPPING[$bundle]);
+    $allStates = $workflow->get('type_settings')['states'];
+
+    foreach ($allStates as $key => $allState) {
+      if (in_array($key, self::IGNORED_MODERATION_STATES)) {
+        continue;
+      }
+      $moderationStates[$allState['weight']] = $key;
+    }
+    ksort($moderationStates);
 
     $query = $this->connection
       ->select('node', 'n')
-      ->fields('n', ['n.nid']);
+      ->fields('n', ['nid']);
+
     $query
       ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
     $query
+      ->fields('cm', ['moderation_state'])
       ->condition('n.type', $this->configuration['show_of_bundle'])
-      ->condition('cm.moderation_state', $this->configuration['show_of_type_revision']);
-    $total = $query->countQuery()->execute()->fetchField();
+      ->condition('cm.moderation_state', $moderationStates, 'IN');
+    $results = $query->execute()->fetchAllKeyed(0, 1);
 
+    // Sort.
+    $sortedResults = [];
+    foreach ($results as $key => $item) {
+      $sortedResults[$item][] = $key;
+    }
+
+    // Count.
+    foreach ($sortedResults as $state => $value) {
+      $sortedResults[$state] = count($value);
+    }
+
+    foreach ($moderationStates as $state) {
+      $build['#content'][$state]['count'] = $sortedResults[$state] ?? '0';
+      $build['#content'][$state]['label'] = $state;
+
+    }
     $build['#theme'] = 'status_block';
-    $build['#content']['bundle'] = $this->configuration['show_of_bundle'];
-    $build['#content']['moderation_state'] = $this->configuration['show_of_type_revision'];
-    $build['#content']['total'] = $total;
+
     return $build;
   }
 

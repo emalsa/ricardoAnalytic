@@ -1,0 +1,21 @@
+uuid: 00f8c345-7c30-48da-be71-e2647ba94b15
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_end_date
+    - node.type.article
+  module:
+    - datetime
+id: node.article.field_article_end_date
+field_name: field_article_end_date
+entity_type: node
+bundle: article
+label: 'End date'
+description: 'End date of the auction.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: datetime

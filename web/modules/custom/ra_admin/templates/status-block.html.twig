@@ -10,9 +10,25 @@
 #}
 {% set classes = [
   'clear-both',
+  'item'
 ] %}
 <div{{ attributes.addClass(classes) }}>
-  <p>{{ content['moderation_state']|replace({'_':' '})|capitalize }}: <b>{{ content['total'] }}</b></p>
+
+  <table>
+    <tr>
+      <th>State</th>
+      <th>Count</th>
+    </tr>
+
+    {% for key1, state in content %}
+      <tr>
+        <td> {{ content[key1]['label']|replace({'_':' '})|capitalize }}</td>
+        <td> {{ content[key1]['count'] }}</td>
+      </tr>
+
+    {% endfor %}
+  </table>
+  {# <p>{{ content['moderation_state']|replace({'_':' '})|capitalize }}: <b>{{ content['total'] }}</b></p> #}
 </div>
 
 <style>
@@ -21,5 +37,13 @@
     box-shadow: 0 0 7px 1px rgba(0, 0, 0, 0.72);
     margin: 10px;
     padding: 10px;
+  }
+
+  .path-frontpage .region-content .block-status-block {
+    max-width: 250px;
+  }
+  .path-frontpage .region-content .block-status-block .item {
+    -webkit-box-shadow: 0 0 2px 0px rgba(0, 0, 0, 0.72);
+    box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.72);
   }
 </style>

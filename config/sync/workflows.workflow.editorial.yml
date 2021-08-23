@@ -33,6 +33,11 @@ type_settings:
       published: true
       default_revision: true
       weight: 0
+    to_process:
+      published: true
+      default_revision: true
+      label: 'To process'
+      weight: 8
     to_scrape:
       published: true
       default_revision: true
@@ -46,10 +51,17 @@ type_settings:
         - to_scrape
       to: open
       weight: 6
+    to_process:
+      label: 'To process'
+      from:
+        - to_scrape
+      to: to_process
+      weight: 7
     to_scrape:
       label: 'To scrape'
       from:
         - open
+        - to_process
         - to_scrape
       to: to_scrape
       weight: 5
