@@ -173,7 +173,6 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       ->condition('id', $result->id)
       ->condition('nid', $result->nid)
       ->execute();
-
   }
 
 }
