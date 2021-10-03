@@ -5,6 +5,14 @@
  * Contains ra_article.module.
  */
 
-use Drupal\Core\Routing\RouteMatchInterface;
+function _get_seller_articles_cron() {
+  /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
+  $sellerArticleService = \Drupal::service('ra_article.seller_articles');
+  $sellerArticleService->fetchSellerArticles();
+}
 
-
+function _init_seller_articles_cron() {
+  /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
+  $sellerArticleService = \Drupal::service('ra_article.seller_articles');
+  $sellerArticleService->createFetchUrls();
+}

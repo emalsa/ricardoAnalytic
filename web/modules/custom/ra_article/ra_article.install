@@ -1,0 +1,46 @@
+<?php
+
+use Drupal\Core\Database\Database;
+
+/**
+ * Implements hook_update_8000().
+ * Create custom "queue" table to process items without cron and adding some
+ * bad modules
+ */
+function ra_article_update_8000(&$sandbox) {
+  $spec = [
+    'description' => 'Custom queue table for no-auto processing',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'length' => 255,
+      ],
+      'nid' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'length' => 255,
+      ],
+      'type' => [
+        'type' => 'varchar',
+        'not null' => TRUE,
+        'length' => 255,
+      ],
+      'data' => [
+        'type' => 'blob',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'length' => 20,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+  $schema = Database::getConnection()->schema();
+  if (!$schema->tableExists('queue_ricardoanalytic')) {
+    $schema->createTable('queue_ricardoanalytic', $spec);
+  }
+}

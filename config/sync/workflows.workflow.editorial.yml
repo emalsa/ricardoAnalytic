@@ -36,7 +36,7 @@ type_settings:
     to_process:
       published: true
       default_revision: true
-      label: 'To process'
+      label: 'To process (internal)'
       weight: 8
     to_scrape:
       published: true

@@ -1,0 +1,27 @@
+services:
+  # Loggers
+  logger.channel.ra_article_detail:
+    parent: logger.channel_base
+    arguments: ['ra_article_detail']
+  logger.channel.ra_seller_articles:
+    parent: logger.channel_base
+    arguments: ['ra_seller_articles']
+
+  # Services
+  ra_article.article_detail_fetch:
+    class: Drupal\ra_article\ArticleDetailFetchService
+    arguments:
+      - '@entity_type.manager'
+      - '@http_client'
+      - '@database'
+      - '@logger.channel.ra_seller_articles'
+      - '@ra_admin.scrapedog'
+
+  ra_article.seller_articles:
+    class: Drupal\ra_article\SellerArticlesService
+    arguments:
+      - '@http_client'
+      - '@entity_type.manager'
+      - '@entity.query'
+      - '@logger.channel.ra_seller_articles'
+      - '@ra_admin.scrapedog'

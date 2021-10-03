@@ -9,6 +9,7 @@ dependencies:
     - field.field.node.seller.field_seller_is_pro
     - field.field.node.seller.field_seller_location
     - field.field.node.seller.field_seller_member_since
+    - field.field.node.seller.field_seller_open_articles_count
     - field.field.node.seller.field_seller_postalcode
     - field.field.node.seller.field_seller_sellerid
     - node.type.seller
@@ -73,6 +74,15 @@ content:
     third_party_settings: {  }
     type: number_integer
     region: content
+  field_seller_open_articles_count:
+    weight: 109
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
   field_seller_postalcode:
     weight: 102
     label: above
@@ -97,3 +107,4 @@ content:
     region: content
 hidden:
   langcode: true
+  search_api_excerpt: true

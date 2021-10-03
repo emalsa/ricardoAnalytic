@@ -1,0 +1,32 @@
+uuid: 23c4fc33-6540-4054-a7f5-762d26a88978
+langcode: de
+status: true
+dependencies:
+  module:
+    - ra_article
+_core:
+  default_config_hash: cDdzra4iSXRXyuSSZ7v8zQmLev6rTwcDptwquoPYz7k
+title: 'Init seller articles fetch'
+id: init_seller_articles
+weight: -1
+module: ra_article
+callback: _init_seller_articles_cron
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '0 23 * * *'
+    catch_up: 0
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

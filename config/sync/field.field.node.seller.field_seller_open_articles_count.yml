@@ -1,0 +1,25 @@
+uuid: 2142677d-2fa5-4701-b5a8-0f2d222ee22c
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_seller_open_articles_count
+    - node.type.seller
+id: node.seller.field_seller_open_articles_count
+field_name: field_seller_open_articles_count
+entity_type: node
+bundle: seller
+label: 'Open articles'
+description: "Total open articles.\r\n<br />Used to know how many pages should be fetched"
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

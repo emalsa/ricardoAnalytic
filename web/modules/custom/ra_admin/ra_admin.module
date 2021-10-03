@@ -22,56 +22,37 @@ function ra_admin_theme() {
 }
 
 function _ra_admin_update_scrapedog_entities_cron() {
-  /** @var \Drupal\Core\Entity\Query\QueryInterface $entityQuery */
-  $entityQuery = \Drupal::service('entity_type.manager')->getStorage('node')->getQuery();
-
   // Update all scrapingdog entities and get current credits.
-  $entityQuery
+  /** @var \Drupal\Core\Entity\EntityStorageInterface $nodeStorage */
+  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+
+  $entityQuery = $nodeStorage->getQuery()
     ->accessCheck(FALSE)
     ->condition('type', 'scrapingdog')
     ->condition('status', NodeInterface::PUBLISHED);
-  $entitiesToUpdate = $entityQuery->execute();
-
+  $entitiesToCheck = $entityQuery->execute();
   /** @var \GuzzleHttp\Client $httpClient */
-  $httpClient = \Drupal::service('http_client');
-  foreach ($entitiesToUpdate as $entityId) {
-    $client = NULL;
-    /** @var NodeInterface $node */
-    $node = \Drupal::service('entity_type.manager')->getStorage('node')->load($entityId);
-    if ($node->get('field_scrapingdog_api_key')->isEmpty()) {
-      continue;
-    }
-    $apiKey = $node->get('field_scrapingdog_api_key')->value;
-
-    $client = $httpClient->get("https://api.scrapingdog.com/account?api_key=$apiKey");
-    $content = json_decode($client->getBody()->getContents(), TRUE);
-    $remainingCredits = $content['requestLimit'] - $content['requestUsed'];
-    $node->set('field_scrapingdog_credits', $remainingCredits);
-    $node->save();
+  $scrapedogService = \Drupal::service('ra_admin.scrapedog');
+  foreach ($entitiesToCheck as $nid) {
+    /** @var \Drupal\ra_admin\ScrapedogServiceInterface $scrapedogService */
+    $scrapedogService->updateScrapedogRemainingCredit($nid);
   }
 
-  // Unpublish scrapingdog nodes which have not enough credits.
-  $entityQuery = \Drupal::service('entity_type.manager')->getStorage('node')->getQuery();
+  // Unpublish scrapingdog nodes which have not enough credits or are expired.
+  $today = date('Y-m-d', time());
+  $entityQuery = $nodeStorage->getQuery();
   $entityQuery->accessCheck(FALSE)
     ->condition('type', 'scrapingdog')
-    ->condition('status', NodeInterface::PUBLISHED)
-    ->condition('field_scrapingdog_credits', '5', '<');
-  $entitiesLowCredits = $entityQuery->execute();
-
-  // Unpublish scrapingdog nodes which are expired.
-  $today = date('Y-m-d', time());
-  $entityQuery = \Drupal::service('entity_type.manager')->getStorage('node')->getQuery();
-  $entityQuery
-    ->accessCheck(FALSE)
-    ->condition('type', 'scrapingdog')
-    ->condition('status', NodeInterface::PUBLISHED)
+    ->condition('status', NodeInterface::PUBLISHED);
+  $group = $entityQuery->orConditionGroup()
+    ->condition('field_scrapingdog_credits', '5', '<')
     ->condition('field_scrapingdog_expires', $today, '<=');
-  $entitiesExpired = $entityQuery->execute();
+  $entityQuery->condition($group);
+  $entitiesToDisable = $entityQuery->execute();
 
-  $entitiesToDisable = $entitiesLowCredits + $entitiesExpired;
   foreach ($entitiesToDisable as $entityId) {
     /** @var NodeInterface $node */
-    $node = \Drupal::service('entity_type.manager')->getStorage('node')->load($entityId);
+    $node = $nodeStorage->load($entityId);
     $node->setUnpublished();
     $node->save();
   }

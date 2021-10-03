@@ -1,21 +1,21 @@
-uuid: 0062d126-f2e9-4ec3-9b1f-740b092a3689
+uuid: 95fa3e17-40af-4e98-bfe5-ea8ca9b9a0f2
 langcode: de
 status: true
 dependencies:
   module:
-    - ra_admin
+    - ra_article
 _core:
-  default_config_hash: Ma9p918t1-oUt8-QRLUDR8gPBYbWRk6YoXhF9RMef1w
-title: 'Update scrapedog.com entities'
-id: update_scrapedog_entities
-weight: -2
-module: ra_admin
-callback: _ra_admin_update_scrapedog_entities_cron
+  default_config_hash: '-wdJWOegUMWOJUGOlDCW5OGZikeadlb9vYBFXzW85Fs'
+title: 'Get seller articles'
+id: get_seller_articles
+weight: 0
+module: ra_article
+callback: _get_seller_articles_cron
 scheduler:
   id: simple
   configuration:
     rules:
-      - '0+@ * * * *'
+      - '*/5+@ * * * *'
 launcher:
   id: serial
   configuration:
