@@ -139,7 +139,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
         'body' => unserialize($result->data),
       ]);
     if ($response->getStatusCode() != 200) {
-      $this->loggerChannelRaSellerArticles->error($response->getBody()->getContents(),);
+      // $this->loggerChannelRaSellerArticles->error($response->getBody()->getContents(),);
       return;
     }
 
