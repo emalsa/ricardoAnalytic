@@ -140,18 +140,21 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     }
 
     $data = json_decode($response->getBody()->getContents(), TRUE);
+    if (empty($data)) {
+      return;
+    }
+
     foreach ($data['initialState']['srp']['results'] as $item) {
       $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
-      if (empty($articleNode)) {
+      $sellerNode = $this->getSellerNode($item);
+      if (!empty($articleNode)) {
         $this->deleteQueueItem($result);
         continue;
       }
-
-      $sellerNode = $this->getSellerNode($item);
-      $this->updateSellerTotalCount($sellerNode, $data);
       $this->createNode($sellerNode, $item);
     }
 
+    $this->updateSellerTotalCount($sellerNode, $data);
     $this->deleteQueueItem($result);
   }
 
