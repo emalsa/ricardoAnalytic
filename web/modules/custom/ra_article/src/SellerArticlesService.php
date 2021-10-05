@@ -89,7 +89,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       }
       else {
         $pages = ceil($totalArticlesCount / 60);
-        $pages = $pages > self::LIMIT_PAGES ? $pages : self::LIMIT_PAGES;
+        $pages = $pages > self::LIMIT_PAGES ? self::LIMIT_PAGES : $pages;
       }
 
       $connection = \Drupal::database();
