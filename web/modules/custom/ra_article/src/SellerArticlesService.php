@@ -215,3 +215,4 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
   }
 
 }
+
