@@ -148,9 +148,9 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
       $sellerNode = $this->getSellerNode($item);
       if (!empty($articleNode)) {
-        $this->deleteQueueItem($result);
         continue;
       }
+
       $this->createNode($sellerNode, $item);
     }
 
