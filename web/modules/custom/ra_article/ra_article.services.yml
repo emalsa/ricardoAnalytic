@@ -22,6 +22,5 @@ services:
     arguments:
       - '@http_client'
       - '@entity_type.manager'
-      - '@entity.query'
       - '@logger.channel.ra_seller_articles'
       - '@ra_admin.scrapedog'

@@ -8,7 +8,6 @@ use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use Drupal\ra_admin\ScrapedogServiceInterface;
 use GuzzleHttp\ClientInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Class SellerArticlesService.
@@ -32,13 +31,6 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
   protected $entityTypeManager;
 
   /**
-   * Symfony\Component\DependencyInjection\ContainerAwareInterface definition.
-   *
-   * @var \Symfony\Component\DependencyInjection\ContainerAwareInterface
-   */
-  protected $entityQuery;
-
-  /**
    * Drupal\Core\Logger\LoggerChannelInterface definition.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
@@ -52,21 +44,25 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
    */
   protected $scrapedogService;
 
+  /**
+   * The entity storage.
+   *
+   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * The entity storage
+   */
   protected $nodeStorage;
 
   /**
    * Constructs a new SellerArticlesService object.
    */
   public function __construct(
-    ClientInterface $http_client,
-    EntityTypeManagerInterface $entity_type_manager,
-    ContainerAwareInterface $entity_query,
+    ClientInterface $httpClient,
+    EntityTypeManagerInterface $entityTypeManager,
     LoggerChannelInterface $loggerChannelRaSellerArticles,
     ScrapedogServiceInterface $scrapedogService) {
-    $this->httpClient = $http_client;
-    $this->entityTypeManager = $entity_type_manager;
+    $this->httpClient = $httpClient;
+    $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
-    $this->entityQuery = $entity_query;
     $this->loggerChannelRaSellerArticles = $loggerChannelRaSellerArticles;
     $this->scrapedogService = $scrapedogService;
   }
@@ -83,10 +79,10 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     $sellerNids = $entityQuery->execute();
 
     foreach ($sellerNids as $nid) {
-      $node = $this->nodeStorage->load($nid);
-      $username = $node->label();
-      $totalArticlesCount = $node->get('field_seller_open_articles_count')->value;
-      // New seller added. We fetch the first 10 pages initial.
+      $sellerEntity = $this->nodeStorage->load($nid);
+      $username = $sellerEntity->label();
+      $totalArticlesCount = $sellerEntity->get('field_seller_open_articles_count')->value;
+      // New seller added. We fetch the first "self::LIMIT_PAGES" initial.
       // The total articles count will be updated.
       if (!$totalArticlesCount || $totalArticlesCount == 0) {
         $pages = 10;
@@ -145,32 +141,77 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
     $data = json_decode($response->getBody()->getContents(), TRUE);
     foreach ($data['initialState']['srp']['results'] as $item) {
-      $node = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
-      if (empty($node)) {
-        $sellerEntity = $this->nodeStorage
-          ->loadByProperties([
-            'type' => 'seller',
-            'field_seller_sellerid' => $item['sellerId'],
-          ]);
-        $sellerEntity = reset($sellerEntity);
-        Node::create([
-          'type' => 'article',
-          'title' => $item['title'],
-          'field_article_id' => $item['id'],
-          'field_article_seller_ref' => $sellerEntity,
-          'field_article_raw_json' => [
-            'value' => serialize($item),
-          ],
-          // This is very cheap here....
-          'field_article_end_date' => str_replace('Z', '', $item['endDate']),
-        ])->save();
+      $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
+      if (empty($articleNode)) {
+        $this->deleteQueueItem($result);
+        continue;
       }
+
+      $sellerNode = $this->getSellerNode($item);
+      $this->updateSellerTotalCount($sellerNode, $data);
+      $this->createNode($sellerNode, $item);
     }
 
+    $this->deleteQueueItem($result);
+  }
+
+  /**
+   * @param $item
+   *   The result item from response
+   * @param $sellerEntity
+   *   The seller node.
+   */
+  protected function createNode($sellerEntity, $item) {
+    Node::create([
+      'type' => 'article',
+      'title' => $item['title'],
+      'field_article_id' => $item['id'],
+      'field_article_seller_ref' => $sellerEntity,
+      'field_article_raw_json' => [
+        'value' => serialize($item),
+      ],
+      // This is very cheap here....
+      'field_article_end_date' => str_replace('Z', '', $item['endDate']),
+    ])->save();
+  }
+
+  /**
+   * Update total count offers of the seller.
+   *
+   * @param \Drupal\node\NodeInterface $sellerEntity
+   *   The seller entity.
+   * @param $data
+   *   The response data.
+   */
+  protected function updateSellerTotalCount(NodeInterface $sellerEntity, $data) {
+    $sellerEntity->set('field_seller_open_articles_count', $data['initialState']['srp']['totalArticlesCount']);
+    $sellerEntity->save();
+  }
+
+  /**
+   * @param $result
+   *   The query result
+   */
+  protected function deleteQueueItem($result) {
+    $connection = \Drupal::database();
     $connection->delete('queue_ricardoanalytic')
       ->condition('id', $result->id)
       ->condition('nid', $result->nid)
       ->execute();
+  }
+
+  /**
+   * @param $item
+   *
+   * @return array|false|mixed
+   */
+  protected function getSellerNode($item) {
+    $sellerNode = $this->nodeStorage->loadByProperties([
+      'type' => 'seller',
+      'field_seller_sellerid' => $item['sellerId'],
+    ]);
+
+    return empty($sellerNode) ? [] : reset($sellerNode);
   }
 
 }
