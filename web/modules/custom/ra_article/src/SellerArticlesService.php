@@ -143,11 +143,12 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     if (empty($data)) {
       return;
     }
-
+    $articleExistsCount = 0;
     foreach ($data['initialState']['srp']['results'] as $item) {
       $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
       $sellerNode = $this->getSellerNode($item);
       if (!empty($articleNode)) {
+        $articleExistsCount++;
         continue;
       }
 
@@ -155,7 +156,9 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       $this->updateSellerTotalCount($sellerNode, $data);
     }
 
-    $this->deleteQueueItem($result);
+    // Delete all seller article pages from the queue if we have reached a page with articles we have already.
+    $mode = $articleExistsCount > 55 ? 'all' : 'singleItem';
+    $this->deleteQueueItem($result, $mode);
   }
 
   /**
@@ -194,13 +197,17 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
   /**
    * @param $result
    *   The query result
+   * @param  string $mode
+   *   The mode.
    */
-  protected function deleteQueueItem($result) {
+  protected function deleteQueueItem($result, string $mode = 'singleItem') {
     $connection = \Drupal::database();
-    $connection->delete('queue_ricardoanalytic')
-      ->condition('id', $result->id)
-      ->condition('nid', $result->nid)
-      ->execute();
+    $query = $connection->delete('queue_ricardoanalytic');
+    if ($mode === 'singleItem') {
+      $query->condition('id', $result->id);
+    }
+    $query->condition('nid', $result->nid);
+    $query->execute();
   }
 
   /**
