@@ -145,8 +145,13 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     }
     $articleExistsCount = 0;
     foreach ($data['initialState']['srp']['results'] as $item) {
-      $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
       $sellerNode = $this->getSellerNode($item);
+      if (empty($sellerNode)) {
+        $this->deleteQueueItem($result, 'all');
+        return;
+      }
+
+      $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
       if (!empty($articleNode)) {
         $articleExistsCount++;
         continue;
@@ -221,7 +226,13 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       'field_seller_sellerid' => $item['sellerId'],
     ]);
 
-    return empty($sellerNode) ? [] : reset($sellerNode);
+    if (empty($sellerNode)) {
+      $sellerId = $item['sellerId'];
+      \Drupal::logger('article')->error("No seller entity with sellerID:$sellerId found");
+      return [];
+    }
+
+    return reset($sellerNode);
   }
 
 }
