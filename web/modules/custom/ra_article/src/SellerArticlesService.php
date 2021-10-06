@@ -152,9 +152,9 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       }
 
       $this->createNode($sellerNode, $item);
+      $this->updateSellerTotalCount($sellerNode, $data);
     }
 
-    $this->updateSellerTotalCount($sellerNode, $data);
     $this->deleteQueueItem($result);
   }
 
