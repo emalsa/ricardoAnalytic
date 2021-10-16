@@ -43,6 +43,7 @@ function _change_article_status_cron() {
     $newState = 'to_scrape';
     $article->set('moderation_state', $newState);
     if ($article instanceof RevisionLogInterface) {
+      $article->setRevisionUserId(1);
       $article->setRevisionLogMessage('Changed to to_scrape');
     }
     $article->setChangedTime(time());
