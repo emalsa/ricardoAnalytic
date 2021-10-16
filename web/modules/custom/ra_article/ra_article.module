@@ -45,6 +45,7 @@ function _change_article_status_cron() {
     if ($article instanceof RevisionLogInterface) {
       $article->setRevisionLogMessage('Changed to to_scrape');
     }
+    $article->setChangedTime(time());
     $article->save();
   }
 }
