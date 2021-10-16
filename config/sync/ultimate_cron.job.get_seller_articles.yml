@@ -12,10 +12,11 @@ weight: 0
 module: ra_article
 callback: _get_seller_articles_cron
 scheduler:
-  id: simple
+  id: crontab
   configuration:
     rules:
-      - '*/5+@ * * * *'
+      - '*/2+@ * * * *'
+    catch_up: 0
 launcher:
   id: serial
   configuration:

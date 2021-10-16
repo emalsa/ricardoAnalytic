@@ -22,8 +22,12 @@ display:
         options:
           perm: 'access content overview'
       cache:
-        type: none
-        options: {  }
+        type: time
+        options:
+          results_lifespan: 60
+          results_lifespan_custom: 0
+          output_lifespan: 60
+          output_lifespan_custom: 0
       query:
         type: views_query
       exposed_form:
@@ -434,6 +438,47 @@ display:
           expose:
             operator_limit_selection: false
             operator_list: {  }
+        field_article_id_value:
+          id: field_article_id_value
+          table: node__field_article_id
+          field: field_article_id_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_article_id_value_op
+            label: 'Article ID (field_article_id)'
+            description: ''
+            use_operator: false
+            operator: field_article_id_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: field_article_id_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: string
       sorts: {  }
       title: Content
       empty:
