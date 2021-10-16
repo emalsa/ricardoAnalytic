@@ -1,5 +1,8 @@
 <?php
 
+use Drupal\Core\Entity\RevisionLogInterface;
+use Drupal\node\Entity\Node;
+
 /**
  * @file
  * Contains ra_article.module.
@@ -15,4 +18,37 @@ function _init_seller_articles_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
   $sellerArticleService = \Drupal::service('ra_article.seller_articles');
   $sellerArticleService->createFetchUrls();
+}
+
+
+function _change_article_status_cron() {
+  $timestamp = strtotime('-3 days', time());
+  $datetime = date('Y-m-d\Th:m:s', $timestamp);
+
+  $database = \Drupal::database();
+  $query = $database->select('node__field_article_end_date', 'ed');
+  $query->fields('ed', ['entity_id'])
+    ->condition('ed.field_article_end_date_value', $datetime, '<=')
+    ->condition('cm.moderation_state', 'open')
+    ->range(0, 10)
+    ->join('content_moderation_state_field_data','cm', 'ed.entity_id=cm.content_entity_id');
+
+  $articleNids = $query->execute()->fetchAll();
+  if (empty($articleNids)) {
+    return;
+  }
+
+  foreach ($articleNids as $nid) {
+    $article = Node::load($nid->entity_id);
+    $newState = 'to_scrape';
+    $article->set('moderation_state', $newState);
+    if ($article instanceof RevisionLogInterface) {
+      $article->setRevisionLogMessage('Changed to to_scrape');
+    }
+    $article->save();
+  }
+}
+
+function _scrape_article_cron() {
+
 }
