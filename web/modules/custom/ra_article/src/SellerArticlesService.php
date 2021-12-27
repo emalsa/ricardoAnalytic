@@ -127,7 +127,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
     $result = reset($result);
     $response = $this->httpClient->post(
-      'https://ricardo-crawler-vimooyk3pq-rj.a.run.app/ricardo-crawler',
+      'https://scrapingdog-ricardo-vimooyk3pq-uc.a.run.app/ricardo-crawler',
       [
         'headers' => [
           'Accept' => 'application/json',
