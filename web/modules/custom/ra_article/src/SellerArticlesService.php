@@ -122,6 +122,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       ->range(0, 1);
     $result = $query->execute()->fetchAll();
     if (empty($result)) {
+      \Drupal::logger('SellerArticles')->error('No result to fetch');
       return;
     }
 
