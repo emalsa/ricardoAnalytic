@@ -94,7 +94,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
       $connection = \Drupal::database();
       for ($i = 1; $i <= $pages; $i++) {
-        $apiKey = '61c98374cb62a15881659b0d';
+        $apiKey = '62135d2e0e67d72a03109419';
         $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.ricardo.ch/de/shop/$username/offers/?sort=newest&page=$i&dynamic=false";
         $connection->insert('queue_ricardoanalytic')->fields([
           'nid',
@@ -127,7 +127,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
     $result = reset($result);
     $response = $this->httpClient->post(
-      'https://scrapingdog-ricardo-vimooyk3pq-uc.a.run.app/ricardo-crawler',
+      'https://ricardo-crawler-vimooyk3pq-oa.a.run.app/ricardo-crawler',
       [
         'headers' => [
           'Accept' => 'application/json',
