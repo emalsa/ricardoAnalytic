@@ -45,3 +45,21 @@ function ra_article_update_8000(&$sandbox) {
   }
 }
 
+/**
+ * Update all articles with new shop.
+ */
+function ra_article_update_8001(&$sandbox) {
+  /** @var \Drupal\node\NodeStorage $nodeStorage */
+  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+  $sellerEntity = $nodeStorage->loadByProperties([
+    'type' => 'seller',
+    'title' => 'myeasyshop_buchs',
+  ]);
+  $sellerEntity = reset($sellerEntity);
+  $allArticles = $nodeStorage->loadByProperties(['field_article_seller_ref' => '106595']);
+  foreach ($allArticles as $article) {
+    $article->set('field_article_seller_ref', $sellerEntity);
+    $article->save();
+  }
+
+}
