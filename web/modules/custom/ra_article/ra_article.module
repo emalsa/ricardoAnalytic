@@ -9,7 +9,9 @@ use Drupal\node\Entity\Node;
  */
 
 function ra_article_scrape_article_cron() {
-  echo 's';
+  /** @var \Drupal\ra_article\ArticleDetailFetchService $articleDetailFetch */
+  $articleDetailFetch = \Drupal::service('ra_article.article_detail_fetch');
+  $articleDetailFetch->getArticleToFetch();
 }
 
 function ra_article_scrape_seller_articles_cron() {

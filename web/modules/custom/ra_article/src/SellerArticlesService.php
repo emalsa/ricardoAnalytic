@@ -19,7 +19,6 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
   protected const ITEMS_PER_PAGE = 60;
 
-  protected const FETCHER_SERVICE_BASE_URL = 'https://ricardo-crawler-vimooyk3pq-wl.a.run.app/article';
 
   /**
    * GuzzleHttp\ClientInterface definition.
@@ -91,7 +90,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     $result = reset($result);
     try {
       $response = $this->httpClient->post(
-        self::FETCHER_SERVICE_BASE_URL,
+        ArticleDetailFetchService::FETCHER_SERVICE_BASE_URL,
         [
           'headers' => [
             'Accept' => 'application/json',
@@ -101,6 +100,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     }
     catch (\Exception $e) {
       $this->loggerChannelRaSellerArticles->error($e->getMessage());
+      return;
     }
 
 
@@ -190,13 +190,15 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
 
   /**
+   * Creates the article node
+   *
    * @param $item
    *   The result item from response
    * @param $sellerEntity
    *   The seller node.
    */
   protected function createNode($sellerEntity, $item) {
-    Node::create([
+    $node = Node::create([
       'type' => 'article',
       'title' => $item['title'],
       'field_article_id' => $item['id'],
@@ -204,15 +206,18 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       'field_article_raw_json' => [
         'value' => serialize($item),
       ],
-      // This is very cheap here....
+      // This is very cheap here...
       'field_article_end_date' => str_replace('Z', '', $item['endDate']),
-    ])->save();
+    ]);
+    $node->setRevisionUserId(1);
+    $node->setRevisionLogMessage('Created');
+    $node->save();
   }
 
   /**
-   * Update total count offers of the seller.
+   * Updates the total count offers of the given seller.
    *
-   * @param \Drupal\node\NodeInterface $sellerEntity
+   * @param  \Drupal\node\NodeInterface  $sellerEntity
    *   The seller entity.
    * @param $data
    *   The response data.
@@ -223,9 +228,11 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
   }
 
   /**
+   * Deletes the queue item.
+   *
    * @param $result
    *   The query result
-   * @param  string $mode
+   * @param  string  $mode
    *   The mode.
    */
   protected function deleteQueueItem($result, string $mode = 'singleItem') {
@@ -238,6 +245,8 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
   }
 
   /**
+   * Gets seller entity.
+   *
    * @param $item
    *
    * @return array|false|mixed
@@ -250,7 +259,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
     if (empty($sellerNode)) {
       $sellerId = $item['sellerId'];
-      $this->loggerChannelRaSellerArticles->error('No seller entity with seller-Id: $sellerId found');
+      $this->loggerChannelRaSellerArticles->error("No seller entity with seller-Id: $sellerId found");
       return [];
     }
 

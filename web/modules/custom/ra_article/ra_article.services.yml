@@ -11,10 +11,10 @@ services:
   ra_article.article_detail_fetch:
     class: Drupal\ra_article\ArticleDetailFetchService
     arguments:
-      - '@entity_type.manager'
       - '@http_client'
-      - '@database'
+      - '@entity_type.manager'
       - '@logger.channel.ra_seller_articles'
+      - '@database'
 
   ra_article.seller_articles:
     class: Drupal\ra_article\SellerArticlesService

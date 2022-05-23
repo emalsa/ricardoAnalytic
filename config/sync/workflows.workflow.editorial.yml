@@ -23,6 +23,11 @@ type_settings:
       published: false
       default_revision: false
       weight: -5
+    failed:
+      published: true
+      default_revision: false
+      label: Failed
+      weight: 9
     open:
       published: true
       default_revision: true
@@ -44,6 +49,18 @@ type_settings:
       label: 'To scrape'
       weight: 7
   transitions:
+    failed:
+      label: Failed
+      from:
+        - archived
+        - draft
+        - failed
+        - open
+        - published
+        - to_process
+        - to_scrape
+      to: failed
+      weight: 1
     open:
       label: Open
       from:
