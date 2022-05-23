@@ -143,7 +143,8 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       ->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', 'seller')
-      ->condition('status', NodeInterface::PUBLISHED);
+      ->condition('status', NodeInterface::PUBLISHED)
+    ->range(0,1);
     $sellerNids = $entityQuery->execute();
 
     if (empty($sellerNids)) {
