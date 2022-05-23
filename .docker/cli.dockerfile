@@ -45,5 +45,5 @@ RUN ln -s /usr/local/bin/php /usr/bin/php
 #RUN chmod -R 755 /var/www/
 
 # Start cron and php-fpm
-RUN service cron start
+#RUN service cron start
 CMD cron -f

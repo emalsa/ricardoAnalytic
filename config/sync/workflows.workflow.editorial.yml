@@ -71,6 +71,12 @@ type_settings:
     to_process:
       label: 'To process'
       from:
+        - archived
+        - draft
+        - failed
+        - open
+        - published
+        - to_process
         - to_scrape
       to: to_process
       weight: 0

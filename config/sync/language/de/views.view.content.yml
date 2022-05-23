@@ -15,8 +15,6 @@ display:
           tags:
             previous: '‹ Vorherige Seite'
             next: 'Nächste Seite ›'
-            first: '« Anfang'
-            last: 'Ende »'
       fields:
         title:
           label: Titel
