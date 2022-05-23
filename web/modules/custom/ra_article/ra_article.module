@@ -8,17 +8,17 @@ use Drupal\node\Entity\Node;
  * Contains ra_article.module.
  */
 
-function _article_cron() {
-
+function ra_article_scrape_article_cron() {
+  echo 's';
 }
 
-function _seller_articles_cron() {
+function ra_article_scrape_seller_articles_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
   $sellerArticleService = \Drupal::service("ra_article.seller_articles");
   $sellerArticleService->fetchSellerArticles();
 }
 
-function _seller_articles_init_cron() {
+function ra_article_scrape_seller_articles_init_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
   $sellerArticleService = \Drupal::service('ra_article.seller_articles');
   $sellerArticleService->createSellerArticleQueue();

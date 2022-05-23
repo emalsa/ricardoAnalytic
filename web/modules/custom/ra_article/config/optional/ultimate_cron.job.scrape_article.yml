@@ -3,10 +3,10 @@ status: true
 dependencies:
   module:
     - ra_article
-title: '[Scrape] Seller articles'
-id: seller_articles
+title: '[Scrape] Article'
+id: scrape_article
 module: ra_article
-callback: _seller_articles_cron
+callback: ra_article_scrape_article_cron
 scheduler:
   id: simple
   configuration:

@@ -1,12 +1,14 @@
-langcode: en
+uuid: 6d9ce642-6bca-4691-827c-addfe086262d
+langcode: de
 status: true
 dependencies:
   module:
     - ra_article
-title: '[Scrape] Init seller articles'
-id: seller_articles_init
+title: '[Scrape] Article'
+id: scrape_article
+weight: 0
 module: ra_article
-callback: _seller_articles_init_cron
+callback: ra_article_scrape_article_cron
 scheduler:
   id: simple
   configuration:

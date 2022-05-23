@@ -32,9 +32,9 @@ COPY ./xdebug.ini ../../../usr/local/etc/php/conf.d/xdebug.ini
 
 
 # Configure cron
-RUN crontab -l | { cat; echo "*/4 * * * * /var/www/bin/drush --root=/var/www/web/ queue-throttle-run article_queue --time-limit=90 --items=30 --unit=minute >> /var/log/cron-article-queue.log 2>&1"; } | crontab -
+#RUN crontab -l | { cat; echo "*/4 * * * * /var/www/bin/drush --root=/var/www/web/ queue-throttle-run article_queue --time-limit=90 --items=30 --unit=minute >> /var/log/cron-article-queue.log 2>&1"; } | crontab -
 #RUN crontab -l | { cat; echo "*/5 * * * * /var/www/bin/drush --root=/var/www/web/ queue-throttle-run article_tag_queue --time-limit=60 --items=400 --unit=minute >> /var/log/cron-article-tag.log 2>&1"; } | crontab -
-RUN crontab -l | { cat; echo "*/10 * * * * /var/www/bin/drush --root=/var/www/web/ cron >> /var/log/cron.log 2>&1"; } | crontab -
+#RUN crontab -l | { cat; echo "*/10 * * * * /var/www/bin/drush --root=/var/www/web/ cron >> /var/log/cron.log 2>&1"; } | crontab -
 
 # Configure supervisor
 COPY ./supervisord.conf /etc/supervisor/supervisord.conf

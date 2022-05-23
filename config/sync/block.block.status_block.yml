@@ -1,0 +1,27 @@
+uuid: d83a3d04-13db-4195-9603-bb0cda254bc6
+langcode: de
+status: true
+dependencies:
+  module:
+    - ra_admin
+    - system
+  theme:
+    - adminimal_theme
+id: status_block
+theme: adminimal_theme
+region: content
+weight: 0
+provider: null
+plugin: status_block
+settings:
+  id: status_block
+  label: 'Status block'
+  provider: ra_admin
+  label_display: visible
+  show_of_bundle: article
+visibility:
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }

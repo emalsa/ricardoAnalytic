@@ -8,6 +8,7 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\RequestOptions;
 
 /**
  * Class SellerArticlesService.
@@ -18,7 +19,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
   protected const ITEMS_PER_PAGE = 60;
 
-  protected const FETCHER_SERVICE_BASE_URL = '';
+  protected const FETCHER_SERVICE_BASE_URL = 'https://ricardo-crawler-vimooyk3pq-wl.a.run.app/article';
 
   /**
    * GuzzleHttp\ClientInterface definition.
@@ -88,14 +89,20 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     }
 
     $result = reset($result);
-    $response = $this->httpClient->post(
-      'https://ricardo-crawler-vimooyk3pq-oa.a.run.app/ricardo-crawler',
-      [
-        'headers' => [
-          'Accept' => 'application/json',
-        ],
-        'url' => unserialize($result->data),
-      ]);
+    try {
+      $response = $this->httpClient->post(
+        self::FETCHER_SERVICE_BASE_URL,
+        [
+          'headers' => [
+            'Accept' => 'application/json',
+          ],
+          RequestOptions::JSON => json_decode(unserialize($result->data), TRUE),
+        ]);
+    }
+    catch (\Exception $e) {
+      $this->loggerChannelRaSellerArticles->error($e->getMessage());
+    }
+
 
     if ($response->getStatusCode() != 200) {
       // $this->loggerChannelRaSellerArticles->error($response->getBody()->getContents(),);
@@ -143,8 +150,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       ->getQuery()
       ->accessCheck(FALSE)
       ->condition('type', 'seller')
-      ->condition('status', NodeInterface::PUBLISHED)
-    ->range(0,1);
+      ->condition('status', NodeInterface::PUBLISHED);
     $sellerNids = $entityQuery->execute();
 
     if (empty($sellerNids)) {
@@ -175,7 +181,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
         ])->values([
           'nid' => $nid,
           'type' => 'seller-articles',
-          'data' => serialize("{'type':'seller-articles','url':'$url'}"),
+          'data' => serialize('{"type":"seller-articles","url":"' . $url . '"}'),
           'created' => time(),
         ])->execute();
       }

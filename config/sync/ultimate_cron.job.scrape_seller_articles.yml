@@ -1,0 +1,30 @@
+uuid: fec35a2e-1fef-4d3f-a67a-78c0f7774c1c
+langcode: de
+status: true
+dependencies:
+  module:
+    - ra_article
+title: '[Scrape] Seller articles'
+id: scrape_seller_articles
+weight: 0
+module: ra_article
+callback: ra_article_scrape_seller_articles_cron
+scheduler:
+  id: simple
+  configuration:
+    rules:
+      - '*/5+@ * * * *'
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+      max_execution_time: 3600
+    launcher:
+      max_threads: 1
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

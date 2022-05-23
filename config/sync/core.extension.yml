@@ -35,6 +35,8 @@ module:
   path: 0
   path_alias: 0
   quickedit: 0
+  ra_admin: 0
+  ra_article: 0
   search_api: 0
   search_api_db: 0
   shortcut: 0

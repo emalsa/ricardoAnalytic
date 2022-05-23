@@ -1,0 +1,35 @@
+uuid: 26a69da7-bbc7-4919-aea9-b0cccf196cb6
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+    - ra_admin
+    - system
+  theme:
+    - adminimal_theme
+id: statusblock
+theme: adminimal_theme
+region: content
+weight: -2
+provider: null
+plugin: status_block
+settings:
+  id: status_block
+  label: 'Status block'
+  provider: ra_admin
+  label_display: visible
+  show_of_bundle: article
+visibility:
+  node_type:
+    id: node_type
+    bundles:
+      article: article
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+  request_path:
+    id: request_path
+    pages: '<front>'
+    negate: false
+    context_mapping: {  }
