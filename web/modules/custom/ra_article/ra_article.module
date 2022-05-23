@@ -8,18 +8,21 @@ use Drupal\node\Entity\Node;
  * Contains ra_article.module.
  */
 
-function _get_seller_articles_cron() {
+function _article_cron() {
+
+}
+
+function _seller_articles_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
-  $sellerArticleService = \Drupal::service('ra_article.seller_articles');
+  $sellerArticleService = \Drupal::service("ra_article.seller_articles");
   $sellerArticleService->fetchSellerArticles();
 }
 
-function _init_seller_articles_cron() {
+function _seller_articles_init_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
   $sellerArticleService = \Drupal::service('ra_article.seller_articles');
-  $sellerArticleService->createFetchUrls();
+  $sellerArticleService->createSellerArticleQueue();
 }
-
 
 function _change_article_status_cron() {
   $timestamp = strtotime('-3 days', time());
@@ -51,6 +54,3 @@ function _change_article_status_cron() {
   }
 }
 
-function _scrape_article_cron() {
-
-}

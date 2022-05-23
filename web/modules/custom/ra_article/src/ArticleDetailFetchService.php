@@ -2,10 +2,9 @@
 
 namespace Drupal\ra_article;
 
-use Drupal\Core\Database\Driver\mysql\Connection;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\ra_admin\ScrapedogServiceInterface;
 use GuzzleHttp\ClientInterface;
 
 /**
@@ -44,24 +43,17 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
   protected $logger;
 
   /**
-   * @var \Drupal\ra_admin\ScrapedogServiceInterface
-   */
-  protected $scrapedogService;
-
-  /**
    * Constructs a new ArticleDetailFetchService object.
    */
   public function __construct(
     EntityTypeManagerInterface $entityTypeManager,
     ClientInterface $httpClient,
     Connection $database,
-    LoggerChannelInterface $logger,
-    ScrapedogServiceInterface $scrapedogService) {
+    LoggerChannelInterface $logger) {
     $this->entityTypeManager = $entityTypeManager;
     $this->httpClient = $httpClient;
     $this->database = $database;
     $this->logger = $logger;
-    $this->scrapedogService = $scrapedogService;
   }
 
   /**
@@ -76,7 +68,7 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
    *
    */
   public function fetchArticleData($nid) {
-    $this->scrapedogService;
+    $this->database;
   }
 
 }

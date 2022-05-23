@@ -1,12 +1,14 @@
+uuid: 8d3c0eef-5649-4587-8c24-8e32890ed112
 langcode: en
 status: true
 dependencies:
   module:
-    - ra_admin
-title: 'Update scrapedog.com entities'
-id: update_scrapedog_entities
-module: ra_admin
-callback: _ra_admin_update_scrapedog_entities_cron
+    - ra_article
+title: '[Scrape] Article'
+id: article
+weight: 0
+module: ra_article
+callback: _article_cron
 scheduler:
   id: simple
   configuration:

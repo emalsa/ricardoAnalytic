@@ -15,7 +15,6 @@ services:
       - '@http_client'
       - '@database'
       - '@logger.channel.ra_seller_articles'
-      - '@ra_admin.scrapedog'
 
   ra_article.seller_articles:
     class: Drupal\ra_article\SellerArticlesService
@@ -23,4 +22,4 @@ services:
       - '@http_client'
       - '@entity_type.manager'
       - '@logger.channel.ra_seller_articles'
-      - '@ra_admin.scrapedog'
+      - '@database'

@@ -1,14 +1,12 @@
-uuid: eba5bb75-1441-4707-846b-ed0b2f604f70
 langcode: en
 status: true
 dependencies:
   module:
     - ra_article
-title: 'Scrape article'
-id: scrape_articles
-weight: 2
+title: '[Scrape] Article'
+id: article
 module: ra_article
-callback: _scrape_article_cron
+callback: _article_cron
 scheduler:
   id: simple
   configuration:

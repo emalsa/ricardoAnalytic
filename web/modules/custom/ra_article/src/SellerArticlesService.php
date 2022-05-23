@@ -2,11 +2,11 @@
 
 namespace Drupal\ra_article;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\Entity\Node;
 use Drupal\node\NodeInterface;
-use Drupal\ra_admin\ScrapedogServiceInterface;
 use GuzzleHttp\ClientInterface;
 
 /**
@@ -15,6 +15,10 @@ use GuzzleHttp\ClientInterface;
 class SellerArticlesService implements SellerArticlesServiceInterface {
 
   protected const LIMIT_PAGES = 15;
+
+  protected const ITEMS_PER_PAGE = 60;
+
+  protected const FETCHER_SERVICE_BASE_URL = '';
 
   /**
    * GuzzleHttp\ClientInterface definition.
@@ -38,13 +42,6 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
   protected $loggerChannelRaSellerArticles;
 
   /**
-   * The scrapedog service.
-   *
-   * @var \Drupal\ra_admin\ScrapedogServiceInterface
-   */
-  protected $scrapedogService;
-
-  /**
    * The entity storage.
    *
    * @var \Drupal\Core\Entity\EntityStorageInterface
@@ -53,76 +50,40 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
   protected $nodeStorage;
 
   /**
+   * The database
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $database;
+
+  /**
    * Constructs a new SellerArticlesService object.
    */
   public function __construct(
     ClientInterface $httpClient,
     EntityTypeManagerInterface $entityTypeManager,
     LoggerChannelInterface $loggerChannelRaSellerArticles,
-    ScrapedogServiceInterface $scrapedogService) {
+    Connection $database) {
     $this->httpClient = $httpClient;
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
     $this->loggerChannelRaSellerArticles = $loggerChannelRaSellerArticles;
-    $this->scrapedogService = $scrapedogService;
+    $this->database = $database;
   }
 
   /**
+   * Fetch open articles from seller
    *
+   * @return void
    */
-  public function createFetchUrls() {
-    $entityQuery = $this->nodeStorage
-      ->getQuery()
-      ->accessCheck(FALSE)
-      ->condition('type', 'seller')
-      ->condition('status', NodeInterface::PUBLISHED);
-    $sellerNids = $entityQuery->execute();
-
-    foreach ($sellerNids as $nid) {
-      $sellerEntity = $this->nodeStorage->load($nid);
-      $username = $sellerEntity->label();
-      $totalArticlesCount = $sellerEntity->get('field_seller_open_articles_count')->value;
-      // New seller added. We fetch the first "self::LIMIT_PAGES" initial.
-      // The total articles count will be updated.
-      if (!$totalArticlesCount || $totalArticlesCount == 0) {
-        $pages = 10;
-      }
-      else {
-        $pages = ceil($totalArticlesCount / 60);
-        $pages = $pages > self::LIMIT_PAGES ? self::LIMIT_PAGES : $pages;
-      }
-
-      $connection = \Drupal::database();
-      for ($i = 1; $i <= $pages; $i++) {
-        $apiKey = '62135d2e0e67d72a03109419';
-        $url = "https://api.scrapingdog.com/scrape?api_key=$apiKey&url=https://www.ricardo.ch/de/shop/$username/offers/?sort=newest&page=$i&dynamic=false";
-        $connection->insert('queue_ricardoanalytic')->fields([
-          'nid',
-          'type',
-          'data',
-          'created',
-        ])->values([
-          'nid' => $nid,
-          'type' => 'seller-articles',
-          'data' => serialize('{"url":"' . $url . '","pagetype":"seller-articles"}'),
-          'created' => time(),
-        ])->execute();
-      }
-    }
-  }
-
-  /**
-   *
-   */
-  public function fetchSellerArticles() {
-    $connection = \Drupal::database();
-    $query = $connection
+  public function fetchSellerArticles(): void {
+    $query = $this->database
       ->select('queue_ricardoanalytic', 'q')
       ->fields('q')
       ->range(0, 1);
     $result = $query->execute()->fetchAll();
     if (empty($result)) {
-      \Drupal::logger('SellerArticles')->error('No result to fetch');
+      $this->loggerChannelRaSellerArticles->notice('No seller articles to fetch.');
       return;
     }
 
@@ -133,8 +94,9 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
         'headers' => [
           'Accept' => 'application/json',
         ],
-        'body' => unserialize($result->data),
+        'url' => unserialize($result->data),
       ]);
+
     if ($response->getStatusCode() != 200) {
       // $this->loggerChannelRaSellerArticles->error($response->getBody()->getContents(),);
       return;
@@ -144,17 +106,20 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     if (empty($data)) {
       return;
     }
-    $articleExistsCount = 0;
+
+    $existingArticlesCount = 0;
     foreach ($data['initialState']['srp']['results'] as $item) {
-      $sellerNode = $this->getSellerNode($item);
+      // Get Seller entity
+      $sellerNode = $this->getSellerEntity($item);
       if (empty($sellerNode)) {
         $this->deleteQueueItem($result, 'all');
         return;
       }
 
+      // Check if article already exist.
       $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
       if (!empty($articleNode)) {
-        $articleExistsCount++;
+        $existingArticlesCount++;
         continue;
       }
 
@@ -162,10 +127,60 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       $this->updateSellerTotalCount($sellerNode, $data);
     }
 
-    // Delete all seller article pages from the queue if we have reached a page with articles we have already.
-    $mode = $articleExistsCount > 55 ? 'all' : 'singleItem';
+    // Delete all seller article pages from the queue
+    // if we have reached a page with articles we have already.
+    $mode = $existingArticlesCount > 55 ? 'all' : 'singleItem';
     $this->deleteQueueItem($result, $mode);
   }
+
+  /**
+   * Fill queue with seller page urls to fetch after.
+   *
+   * @return void
+   */
+  public function createSellerArticleQueue(): void {
+    $entityQuery = $this->nodeStorage
+      ->getQuery()
+      ->accessCheck(FALSE)
+      ->condition('type', 'seller')
+      ->condition('status', NodeInterface::PUBLISHED);
+    $sellerNids = $entityQuery->execute();
+
+    if (empty($sellerNids)) {
+      return;
+    }
+
+    foreach ($sellerNids as $nid) {
+      $sellerEntity = $this->nodeStorage->load($nid);
+      $totalArticlesCount = $sellerEntity->get('field_seller_open_articles_count')->value;
+
+      // New seller added: Fetch the first 'self::LIMIT_PAGES' initial.
+      // The total articles count will be updated after first run.
+      if (!$totalArticlesCount || $totalArticlesCount == 0) {
+        $pages = 10;
+      }
+      else {
+        $pages = ceil($totalArticlesCount / self::ITEMS_PER_PAGE);
+        $pages = $pages > self::LIMIT_PAGES ? self::LIMIT_PAGES : $pages;
+      }
+
+      for ($i = 1; $i <= $pages; $i++) {
+        $url = "https://www.ricardo.ch/de/shop/{$sellerEntity->label()}/offers/?sort=newest&page=$i&dynamic=false";
+        $this->database->insert('queue_ricardoanalytic')->fields([
+          'nid',
+          'type',
+          'data',
+          'created',
+        ])->values([
+          'nid' => $nid,
+          'type' => 'seller-articles',
+          'data' => serialize("{'type':'seller-articles','url':'$url'}"),
+          'created' => time(),
+        ])->execute();
+      }
+    }
+  }
+
 
   /**
    * @param $item
@@ -207,8 +222,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
    *   The mode.
    */
   protected function deleteQueueItem($result, string $mode = 'singleItem') {
-    $connection = \Drupal::database();
-    $query = $connection->delete('queue_ricardoanalytic');
+    $query = $this->database->delete('queue_ricardoanalytic');
     if ($mode === 'singleItem') {
       $query->condition('id', $result->id);
     }
@@ -221,7 +235,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
    *
    * @return array|false|mixed
    */
-  protected function getSellerNode($item) {
+  protected function getSellerEntity($item) {
     $sellerNode = $this->nodeStorage->loadByProperties([
       'type' => 'seller',
       'field_seller_sellerid' => $item['sellerId'],
@@ -229,7 +243,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
     if (empty($sellerNode)) {
       $sellerId = $item['sellerId'];
-      \Drupal::logger('article')->error("No seller entity with sellerID:$sellerId found");
+      $this->loggerChannelRaSellerArticles->error('No seller entity with seller-Id: $sellerId found');
       return [];
     }
 

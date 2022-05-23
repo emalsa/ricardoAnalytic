@@ -3,10 +3,10 @@ status: true
 dependencies:
   module:
     - ra_article
-title: 'Init seller articles fetch'
-id: init_seller_articles
+title: '[Scrape] Seller articles'
+id: seller_articles
 module: ra_article
-callback: _init_seller_articles_cron
+callback: _seller_articles_cron
 scheduler:
   id: simple
   configuration:

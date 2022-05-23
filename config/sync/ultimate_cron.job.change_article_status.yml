@@ -6,21 +6,22 @@ dependencies:
     - ra_article
 title: 'Change article status to to_scrape'
 id: change_article_status
-weight: 1
+weight: 0
 module: ra_article
 callback: _change_article_status_cron
 scheduler:
   id: simple
   configuration:
     rules:
-      - '*/15+@ * * * *'
+      - '*/5+@ * * * *'
 launcher:
   id: serial
   configuration:
     timeouts:
       lock_timeout: 3600
+      max_execution_time: 3600
     launcher:
-      thread: 0
+      max_threads: 1
 logger:
   id: database
   configuration:

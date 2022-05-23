@@ -1,12 +1,14 @@
+uuid: df08403d-5d32-4b44-b35c-8cbf413cbf0d
 langcode: en
 status: true
 dependencies:
   module:
     - ra_article
-title: 'Get seller articles'
-id: get_seller_articles
+title: '[Scrape] Seller articles'
+id: seller_articles
+weight: 0
 module: ra_article
-callback: _get_seller_articles_cron
+callback: _seller_articles_cron
 scheduler:
   id: simple
   configuration:

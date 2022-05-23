@@ -1,29 +1,27 @@
-uuid: 95fa3e17-40af-4e98-bfe5-ea8ca9b9a0f2
-langcode: de
+uuid: 66a8dd12-dfbc-4fc1-9c1a-43f20f8cbfcf
+langcode: en
 status: true
 dependencies:
   module:
     - ra_article
-_core:
-  default_config_hash: '-wdJWOegUMWOJUGOlDCW5OGZikeadlb9vYBFXzW85Fs'
-title: 'Get seller articles'
-id: get_seller_articles
+title: '[Scrape] Init seller articles'
+id: seller_articles_init
 weight: 0
 module: ra_article
-callback: _get_seller_articles_cron
+callback: _seller_articles_init_cron
 scheduler:
-  id: crontab
+  id: simple
   configuration:
     rules:
-      - '*/2+@ * * * *'
-    catch_up: 0
+      - '*/5+@ * * * *'
 launcher:
   id: serial
   configuration:
     timeouts:
       lock_timeout: 3600
+      max_execution_time: 3600
     launcher:
-      thread: 0
+      max_threads: 1
 logger:
   id: database
   configuration:
