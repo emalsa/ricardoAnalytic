@@ -44,3 +44,4 @@ function ra_article_update_8000(&$sandbox) {
     $schema->createTable('queue_ricardoanalytic', $spec);
   }
 }
+
