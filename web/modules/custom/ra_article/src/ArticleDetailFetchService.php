@@ -15,17 +15,32 @@ use GuzzleHttp\RequestOptions;
 class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
 
   /**
-   * Google Cloud service url
+   * Google Cloud service url.
    *
    * @var string
    */
   public const FETCHER_SERVICE_BASE_URL = 'https://ricardo-crawler-vimooyk3pq-wl.a.run.app/article';
 
-  protected const STATE_FOR_FETCH = '';
+  /**
+   * State to be fetched.
+   *
+   * @var string
+   */
+  public const STATE_FOR_SCRAPE = 'to_scrape';
 
-  protected const STATE_SUCCESSFUL_FETCH = '';
+  /**
+   * State after successful fetch.
+   *
+   * @var string
+   */
+  public const STATE_SUCCESSFUL_FETCH = 'to_process';
 
-  protected const STATE_ERROR_FETCH = '';
+  /**
+   * State after failed fetch.
+   *
+   * @var string
+   */
+  public const STATE_ERROR_FETCH = 'failed';
 
 
   /**
@@ -89,7 +104,7 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
     $query->fields('n', ['nid'])
       ->condition('n.type', 'article')
       ->condition('n.status', NodeInterface::PUBLISHED)
-      ->condition('cm.moderation_state', 'to_scrape')
+      ->condition('cm.moderation_state', self::STATE_FOR_SCRAPE)
       ->orderBy('n.changed','ASC')
       ->range(0, 2)
       ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
@@ -119,31 +134,31 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       }
       catch (\Exception $e) {
         $this->loggerChannelRaArticleDetail->error($e->getMessage());
-        $article->setRevisionLogMessage('Scraped, changed to to_process');
-        $article->set('moderation_state', 'failed')->save();
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
+        $article->set('moderation_state', self::STATE_ERROR_FETCH)->save();
         continue;
       }
 
       if ($response->getStatusCode() != 200) {
         $this->loggerChannelRaArticleDetail->error('Returned a non 200 status code');
-        $article->setRevisionLogMessage('Scraped, changed to to_process');
-        $article->set('moderation_state', 'failed')->save();
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
+        $article->set('moderation_state', self::STATE_ERROR_FETCH)->save();
         continue;
       }
 
       $data = json_decode($response->getBody()->getContents(), TRUE);
       if (empty($data)) {
         $this->loggerChannelRaArticleDetail->error('Empty data from response');
-        $article->setRevisionLogMessage('Scraped, changed to to_process');
-        $article->set('moderation_state', 'failed')->save();
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
+        $article->set('moderation_state', self::STATE_ERROR_FETCH)->save();
         continue;
       }
 
       $article->set('field_article_raw_json', [
         'value' => serialize($data),
       ]);
-      $article->set('moderation_state', 'to_process');
-      $article->setRevisionLogMessage('Scraped, changed to to_process');
+      $article->set('moderation_state', self::STATE_SUCCESSFUL_FETCH);
+      $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
       $article->save();
     }
   }

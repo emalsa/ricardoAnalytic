@@ -2,6 +2,7 @@
 
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\node\Entity\Node;
+use Drupal\ra_article\ArticleDetailFetchService;
 
 /**
  * @file
@@ -45,11 +46,10 @@ function _change_article_status_cron() {
 
   foreach ($articleNids as $nid) {
     $article = Node::load($nid->entity_id);
-    $newState = 'to_scrape';
-    $article->set('moderation_state', $newState);
+    $article->set('moderation_state', ArticleDetailFetchService::STATE_FOR_SCRAPE);
     if ($article instanceof RevisionLogInterface) {
       $article->setRevisionUserId(1);
-      $article->setRevisionLogMessage('Changed to to_scrape');
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FOR_SCRAPE);
     }
     $article->setChangedTime(time());
     $article->save();
