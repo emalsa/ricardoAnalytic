@@ -90,6 +90,7 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       ->condition('n.type', 'article')
       ->condition('n.status', NodeInterface::PUBLISHED)
       ->condition('cm.moderation_state', 'to_scrape')
+      ->orderBy('n.changed','ASC')
       ->range(0, 2)
       ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
     $articleNids = $query->execute()->fetchAll();
