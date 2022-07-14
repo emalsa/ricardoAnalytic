@@ -105,12 +105,13 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
 
     if ($response->getStatusCode() != 200) {
-      // $this->loggerChannelRaSellerArticles->error($response->getBody()->getContents(),);
+      $this->loggerChannelRaSellerArticles->error($response->getBody()->getContents());
       return;
     }
 
     $data = json_decode($response->getBody()->getContents(), TRUE);
     if (empty($data)) {
+          $this->loggerChannelRaSellerArticles->error('Empty data from response.');
       return;
     }
 
