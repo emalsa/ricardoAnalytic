@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'c3e9acc7fc8ae7a050595cff3c3fe1249cf419c6',
+        'reference' => '8ba597aa311b0bc2984045d310e1063cc04081ec',
         'name' => 'ra/drupal-project',
         'dev' => true,
     ),
@@ -1557,8 +1557,8 @@
         'psr/container-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0',
-                1 => '^1.0',
+                0 => '^1.0',
+                1 => '1.0',
             ),
         ),
         'psr/event-dispatcher' => array(
@@ -1633,7 +1633,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'c3e9acc7fc8ae7a050595cff3c3fe1249cf419c6',
+            'reference' => '8ba597aa311b0bc2984045d310e1063cc04081ec',
             'dev_requirement' => false,
         ),
         'ralouphie/getallheaders' => array(
