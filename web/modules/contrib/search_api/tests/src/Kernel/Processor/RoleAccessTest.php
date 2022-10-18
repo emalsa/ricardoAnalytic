@@ -39,7 +39,7 @@ class RoleAccessTest extends ProcessorTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp($processor = NULL) {
+  public function setUp($processor = NULL): void {
     parent::setUp('role_access');
 
     $this->installSchema('system', ['sequences']);
@@ -54,7 +54,7 @@ class RoleAccessTest extends ProcessorTestBase {
     // access content. Since the test adds its own test access hook for each
     // role, we do not want to test existing core access mechanisms.
     foreach (['foo', 'bar', 'baz', 'anonymous', 'authenticated'] as $role_id) {
-      Role::create(['id' => $role_id, 'name' => $role_id])
+      Role::create(['id' => $role_id, 'label' => $role_id])
         ->grantPermission('access content')
         ->save();
     }

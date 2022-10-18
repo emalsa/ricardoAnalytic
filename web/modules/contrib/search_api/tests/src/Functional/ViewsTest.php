@@ -31,7 +31,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
    *
    * @var string[]
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
     'language',
     'search_api_test_views',
@@ -46,7 +46,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     // Add a second language.
@@ -64,6 +64,8 @@ class ViewsTest extends SearchApiBrowserTestBase {
     if (!Utility::isRunningInCli()) {
       \Drupal::state()->set('search_api_use_tracking_batch', FALSE);
     }
+
+    $this->rebuildContainer();
   }
 
   /**
@@ -382,6 +384,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
     $this->regressionTest2869121();
     $this->regressionTest3031991();
     $this->regressionTest3136277();
+    $this->regressionTest3029582();
   }
 
   /**
@@ -488,6 +491,147 @@ class ViewsTest extends SearchApiBrowserTestBase {
 
     $index->removeProcessor('ignorecase')->save();
     $block->delete();
+  }
+
+  /**
+   * Tests that arguments play well with multiple filter groups combined by OR.
+   *
+   * @see https://www.drupal.org/node/3029582
+   */
+  protected function regressionTest3029582() {
+    $yesterday = date('Y-m-d', strtotime('-1DAY'));
+
+    // Should result in these filters:
+    // [
+    //   keywords = 'orange'
+    // AND
+    //   [
+    //     [
+    //       id = 5
+    //     AND
+    //       created > $yesterday
+    //     ]
+    //   OR
+    //     [
+    //       type = 'item'
+    //     AND
+    //       name = 'foo'
+    //     ]
+    //   ]
+    // ]
+    // Therefore, results 1, 2 and 5 should be returned.
+    $this->checkResults(
+      [
+        'id[value]' => '5',
+        'created[value]' => $yesterday,
+        'created_op' => '>',
+        'type[value]' => 'item',
+        'name[value]' => 'foo',
+      ],
+      [1, 2, 5],
+      'Regression Test #3029582 - Search 1',
+      'orange',
+      'search-api-test-3029582',
+    );
+
+    // Should result in these filters:
+    // [
+    //   keywords = 'orange'
+    // AND
+    //   [
+    //     [
+    //       id = 5
+    //     AND
+    //       created < $yesterday
+    //     ]
+    //   OR
+    //     [
+    //       type = 'item'
+    //     AND
+    //       name = 'foo'
+    //     ]
+    //   ]
+    // ]
+    // Therefore, results 1 and 2 should be returned.
+    $this->checkResults(
+      [
+        'id[value]' => '5',
+        'created[value]' => $yesterday,
+        'created_op' => '<',
+        'type[value]' => 'item',
+        'name[value]' => 'foo',
+      ],
+      [1, 2],
+      'Regression Test #3029582 - Search 2',
+      'orange',
+      'search-api-test-3029582',
+    );
+
+    // Should result in these filters:
+    // [
+    //   keywords = 'strawberry'
+    // AND
+    //   [
+    //     [
+    //       id = 5
+    //     AND
+    //       created < $yesterday
+    //     ]
+    //   OR
+    //     [
+    //       type = 'item'
+    //     AND
+    //       name = 'foo'
+    //     ]
+    //   ]
+    // ]
+    // Therefore, no results should be returned.
+    $this->checkResults(
+      [
+        'id[value]' => '5',
+        'created[value]' => $yesterday,
+        'created_op' => '<',
+        'type[value]' => 'item',
+        'name[value]' => 'foo',
+      ],
+      [],
+      'Regression Test #3029582 - Search 3',
+      'strawberry',
+      'search-api-test-3029582',
+    );
+
+    // Should result in these filters:
+    // [
+    //   keywords = 'strawberry'
+    // AND
+    //   [
+    //     [
+    //       id = 5
+    //     AND
+    //       created < $yesterday
+    //     ]
+    //   OR
+    //     [
+    //       type = 'article'
+    //     AND
+    //       name = 'foo'
+    //     ]
+    //   ]
+    // ]
+    // Therefore, result 4 should be returned.
+    $this->checkResults(
+      [
+        'id[value]' => '5',
+        'created[value]' => $yesterday,
+        'created_op' => '<',
+        'type[value]' => 'article',
+        'name[value]' => 'foo',
+      ],
+      [4],
+      'Regression Test #3029582 - Search 3',
+      'strawberry',
+      'search-api-test-3029582',
+    );
   }
 
   /**
@@ -608,8 +752,8 @@ class ViewsTest extends SearchApiBrowserTestBase {
    * @param string $arguments
    *   (optional) A string to append to the search path.
    */
-  protected function checkResults(array $query, array $expected_results = NULL, $label = 'Search', $arguments = '') {
-    $this->drupalGet('search-api-test/' . $arguments, ['query' => $query]);
+  protected function checkResults(array $query, array $expected_results = NULL, string $label = 'Search', string $arguments = '', string $path = 'search-api-test'): void {
+    $this->drupalGet($path . '/' . $arguments, ['query' => $query]);
 
     if (isset($expected_results)) {
       $count = count($expected_results);
@@ -781,6 +925,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
     $this->assertSession()->pageTextContains('Language code');
     $this->assertSession()->pageTextContains('The user language code.');
     $this->assertSession()->pageTextContains('(No description available)');
+    $this->assertSession()->pageTextContains('Item URL');
     $this->assertSession()->pageTextNotContains('Error: missing help');
 
     // Then add some fields.
@@ -797,6 +942,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
       'search_api_entity_user.roles',
       'search_api_index_database_search_index.rendered_item',
       'search_api_index_database_search_index.search_api_rendered_item',
+      'search_api_index_database_search_index.search_api_url',
     ];
     $edit = [];
     foreach ($fields as $field) {
@@ -879,6 +1025,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
       'user_id:roles',
       'rendered_item',
       'search_api_rendered_item',
+      'search_api_url',
     ];
     $rendered_item_fields = ['rendered_item', 'search_api_rendered_item'];
     foreach ($this->entities as $id => $entity) {
@@ -900,6 +1047,9 @@ class ViewsTest extends SearchApiBrowserTestBase {
         foreach ($entities as $i => $field_entity) {
           if ($field === 'search_api_datasource') {
             $data = [$datasource_id];
+          }
+          elseif ($field === 'search_api_url') {
+            $data = [$field_entity->toUrl()->toString()];
           }
           elseif (in_array($field, $rendered_item_fields)) {
             $view_mode = $field === 'rendered_item' ? 'full' : 'teaser';
@@ -990,6 +1140,19 @@ class ViewsTest extends SearchApiBrowserTestBase {
     $this->submitForm([], 'Save');
     $this->assertSession()->statusCodeEquals(200);
 
+    // Set query tags.
+    $this->drupalGet('admin/structure/views/nojs/display/search_api_test_view/page_1/query');
+    $this->submitForm(['query[options][query_tags]' => 'weather'], 'Apply');
+    $this->submitForm([], 'Save');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->drupalGet('search-api-test');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->pageTextContains('Sunshine');
+    $this->drupalGet('admin/structure/views/nojs/display/search_api_test_view/page_1/query');
+    $this->submitForm(['query[options][query_tags]' => 'weather'], 'Apply');
+    $this->submitForm([], 'Save');
+    $this->assertSession()->statusCodeEquals(200);
+
     $this->drupalLogout();
     $this->drupalGet('search-api-test');
     $this->assertSession()->statusCodeEquals(200);
@@ -1018,6 +1181,7 @@ class ViewsTest extends SearchApiBrowserTestBase {
       'search_api_datasource',
       'rendered_item',
       'search_api_rendered_item',
+      'search_api_url',
     ];
     // The "Fallback options" are only available for fields based on the Field
     // API.

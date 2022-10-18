@@ -1,6 +1,8 @@
 name: ricardoanalytic
-recipe: drupal8
+recipe: drupal9
 config:
   webroot: web
-  php: '7.3'
-
+  php: '8.1'
+  #xdebug: true
+  config:
+    php: .lando.php.ini

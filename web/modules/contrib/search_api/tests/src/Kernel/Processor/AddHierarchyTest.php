@@ -30,7 +30,7 @@ class AddHierarchyTest extends ProcessorTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'filter',
     'taxonomy',
   ];
@@ -77,7 +77,7 @@ class AddHierarchyTest extends ProcessorTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp($processor = NULL) {
+  public function setUp($processor = NULL): void {
     parent::setUp();
 
     $this->installConfig(['filter']);

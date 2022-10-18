@@ -24,7 +24,7 @@ class TokenizerTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->processor = new Tokenizer([], 'tokenizer', []);
@@ -136,6 +136,14 @@ class TokenizerTest extends UnitTestCase {
         'foobar',
         [Utility::createTextToken('foobr')],
         ['ignored' => 'a'],
+      ],
+      [
+        'foo-bar',
+        [Utility::createTextToken('foo-bar')],
+        [
+          'ignored' => '',
+          'spaces' => ' ',
+        ],
       ],
       // Test multiple ignored characters are still treated as word boundary.
       [

@@ -18,68 +18,68 @@ third_party_settings:
     group_article_acc_item_raw_json:
       children:
         - field_article_raw_json
+      label: 'Raw JSON'
+      region: content
       parent_name: group_acc_raw_json
       weight: 3
       format_type: accordion_item
-      region: content
       format_settings:
+        classes: ''
         show_empty_fields: false
         id: ''
-        classes: ''
         formatter: closed
-        required_fields: true
         description: ''
-      label: 'Raw JSON'
+        required_fields: true
     group_acc_raw_json:
       children:
         - group_article_acc_item_raw_json
+      label: 'Raw JSON'
+      region: content
       parent_name: ''
       weight: 4
       format_type: accordion
-      region: content
       format_settings:
-        effect: bounceslide
-        id: ''
         classes: ''
         show_empty_fields: false
-      label: 'Raw JSON'
+        id: ''
+        effect: bounceslide
 id: node.article.default
 targetEntityType: node
 bundle: article
 mode: default
 content:
   field_article_end_date:
+    type: datetime_default
     weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: datetime_default
-    region: content
   field_article_id:
+    type: string_textfield
     weight: 1
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_article_raw_json:
+    type: string_textarea
     weight: 3
+    region: content
     settings:
       rows: 25
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_article_seller_ref:
+    type: entity_reference_autocomplete
     weight: 3
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   moderation_state:
     type: moderation_state_default
     weight: 5

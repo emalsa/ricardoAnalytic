@@ -37,7 +37,7 @@ class EntityStatusTest extends UnitTestCase {
   /**
    * The test index.
    *
-   * @var \Drupal\search_api\IndexInterface|\PHPUnit_Framework_MockObject_MockObject
+   * @var \Drupal\search_api\IndexInterface|\PHPUnit\Framework\MockObject\MockObject
    */
   protected $index;
 
@@ -51,7 +51,7 @@ class EntityStatusTest extends UnitTestCase {
   /**
    * Creates a new processor object for use in the tests.
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->setUpMockContainer();

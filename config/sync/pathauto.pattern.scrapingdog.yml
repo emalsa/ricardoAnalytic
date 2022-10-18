@@ -10,13 +10,13 @@ type: 'canonical_entities:node'
 pattern: 'scrapingdog/[node:title]'
 selection_criteria:
   da7130d0-671b-4a4d-9c95-86cc879a2716:
-    id: node_type
-    bundles:
-      scrapingdog: scrapingdog
+    id: 'entity_bundle:node'
     negate: false
+    uuid: da7130d0-671b-4a4d-9c95-86cc879a2716
     context_mapping:
       node: node
-    uuid: da7130d0-671b-4a4d-9c95-86cc879a2716
+    bundles:
+      scrapingdog: scrapingdog
 selection_logic: and
 weight: -5
 relationships: {  }

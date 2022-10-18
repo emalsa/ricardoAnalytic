@@ -16,12 +16,12 @@ plugin: status_block
 settings:
   id: status_block
   label: 'Status block'
-  provider: ra_admin
   label_display: visible
+  provider: ra_admin
   show_of_bundle: article
 visibility:
   request_path:
     id: request_path
-    pages: '<front>'
     negate: false
     context_mapping: {  }
+    pages: '<front>'

@@ -20,34 +20,34 @@ type_settings:
       default_revision: true
     draft:
       label: Draft
+      weight: -5
       published: false
       default_revision: false
-      weight: -5
     failed:
-      published: true
-      default_revision: false
       label: Failed
       weight: 9
-    open:
       published: true
-      default_revision: true
+      default_revision: false
+    open:
       label: Open
       weight: 6
+      published: true
+      default_revision: true
     published:
       label: Published
-      published: true
-      default_revision: true
       weight: 0
-    to_process:
       published: true
       default_revision: true
+    to_process:
       label: 'To process (internal)'
       weight: 8
-    to_scrape:
       published: true
       default_revision: true
+    to_scrape:
       label: 'To scrape'
       weight: 7
+      published: true
+      default_revision: true
   transitions:
     failed:
       label: Failed

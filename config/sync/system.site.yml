@@ -1,3 +1,6 @@
+_core:
+  default_config_hash: yTxtFqBHnEWxQswuWvkjE8mKw2t8oKuCL1q8KnfHuGE
+langcode: de
 uuid: ee7ac092-e394-417e-8658-7ab1cd982fb4
 name: ricardoAnalytic
 mail: a@a.com
@@ -8,8 +11,5 @@ page:
   front: /node
 admin_compact_mode: false
 weight_select_max: 100
-langcode: de
 default_langcode: de
-_core:
-  default_config_hash: yTxtFqBHnEWxQswuWvkjE8mKw2t8oKuCL1q8KnfHuGE
 mail_notification: ''

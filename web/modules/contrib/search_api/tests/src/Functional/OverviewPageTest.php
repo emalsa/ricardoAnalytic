@@ -18,7 +18,7 @@ class OverviewPageTest extends SearchApiBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'block',
   ];
 
@@ -32,7 +32,7 @@ class OverviewPageTest extends SearchApiBrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->drupalLogin($this->adminUser);

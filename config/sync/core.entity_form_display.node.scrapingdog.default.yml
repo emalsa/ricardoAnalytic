@@ -22,63 +22,63 @@ third_party_settings:
         - field_scrapingdog_expires
         - status
         - field_scrapingdog_email
+      label: Information
+      region: content
       parent_name: ''
       weight: 0
       format_type: fieldset
-      region: content
       format_settings:
+        classes: ''
         show_empty_fields: false
         id: ''
-        classes: ''
         description: ''
         required_fields: true
-      label: Information
 id: node.scrapingdog.default
 targetEntityType: node
 bundle: scrapingdog
 mode: default
 content:
   field_scrapingdog_api_key:
-    weight: 2
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
     type: string_textfield
+    weight: 2
     region: content
-  field_scrapingdog_credits:
-    weight: 3
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: number
-    region: content
-  field_scrapingdog_email:
-    weight: 6
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: email_default
+  field_scrapingdog_credits:
+    type: number
+    weight: 3
     region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_scrapingdog_email:
+    type: email_default
+    weight: 6
+    region: content
+    settings:
+      placeholder: ''
+      size: 60
+    third_party_settings: {  }
   field_scrapingdog_expires:
+    type: datetime_default
     weight: 4
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: datetime_default
-    region: content
   moderation_state:
     type: moderation_state_default
     weight: 2
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   status:
     type: boolean_checkbox
-    settings:
-      display_label: true
     weight: 5
     region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   title:
     type: string_textfield

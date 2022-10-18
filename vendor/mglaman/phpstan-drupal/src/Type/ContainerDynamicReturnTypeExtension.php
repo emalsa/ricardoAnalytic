@@ -2,12 +2,15 @@
 
 namespace mglaman\PHPStanDrupal\Type;
 
+use mglaman\PHPStanDrupal\Drupal\DrupalServiceDefinition;
+use mglaman\PHPStanDrupal\Drupal\ServiceMap;
+use PhpParser\Node;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Analyser\Scope;
-use mglaman\PHPStanDrupal\Drupal\DrupalServiceDefinition;
-use mglaman\PHPStanDrupal\Drupal\ServiceMap;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\ShouldNotHappenException;
@@ -52,12 +55,11 @@ class ContainerDynamicReturnTypeExtension implements DynamicMethodReturnTypeExte
             throw new ShouldNotHappenException();
         }
         $arg1 = $arg1->value;
-        if (!$arg1 instanceof String_) {
-            // @todo determine what these types are.
+
+        $serviceId = $this->getServiceId($arg1);
+        if ($serviceId === null) {
             return $returnType;
         }
-
-        $serviceId = $arg1->value;
 
         if ($methodReflection->getName() === 'get') {
             $service = $this->serviceMap->getService($serviceId);
@@ -72,5 +74,19 @@ class ContainerDynamicReturnTypeExtension implements DynamicMethodReturnTypeExte
         }
 
         throw new ShouldNotHappenException();
+    }
+
+    protected function getServiceId(Node $arg1): ?string
+    {
+        if ($arg1 instanceof String_) {
+            // @todo determine what these types are.
+            return $arg1->value;
+        }
+
+        if ($arg1 instanceof ClassConstFetch && $arg1->class instanceof FullyQualified) {
+            return (string) $arg1->class;
+        }
+
+        return null;
     }
 }

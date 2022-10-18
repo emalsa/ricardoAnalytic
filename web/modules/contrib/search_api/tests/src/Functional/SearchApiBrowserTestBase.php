@@ -19,7 +19,7 @@ abstract class SearchApiBrowserTestBase extends BrowserTestBase {
    *
    * @var string[]
    */
-  public static $modules = [
+  protected static $modules = [
     'node',
     'search_api',
     'search_api_test',
@@ -101,7 +101,7 @@ abstract class SearchApiBrowserTestBase extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     // Create the users used for the tests.

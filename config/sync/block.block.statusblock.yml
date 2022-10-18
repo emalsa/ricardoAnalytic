@@ -17,19 +17,19 @@ plugin: status_block
 settings:
   id: status_block
   label: 'Status block'
-  provider: ra_admin
   label_display: visible
+  provider: ra_admin
   show_of_bundle: article
 visibility:
-  node_type:
-    id: node_type
-    bundles:
-      article: article
+  request_path:
+    id: request_path
+    negate: false
+    context_mapping: {  }
+    pages: '<front>'
+  'entity_bundle:node':
+    id: 'entity_bundle:node'
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
-  request_path:
-    id: request_path
-    pages: '<front>'
-    negate: false
-    context_mapping: {  }
+    bundles:
+      article: article

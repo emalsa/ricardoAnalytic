@@ -38,6 +38,7 @@ class RequestBuilder extends BaseRequestBuilder
     {
         $request = parent::build($query);
         $request->setMethod(Request::METHOD_POST);
+        $request->setContentType(Request::CONTENT_TYPE_APPLICATION_XML);
         $request->setRawData($this->getRawData($query));
 
         return $request;
@@ -111,8 +112,7 @@ class RequestBuilder extends BaseRequestBuilder
                 $xml .= $this->buildFieldsXml($name, $boost, $value, $modifier);
             }
 
-            $version = $doc->getVersion();
-            if (null !== $version) {
+            if (null !== $version = $doc->getVersion()) {
                 $xml .= $this->buildFieldXml('_version_', null, $version);
             }
 
@@ -204,7 +204,7 @@ class RequestBuilder extends BaseRequestBuilder
 
         foreach ($command->getCommands() as $raw) {
             // unwrap grouped commands, they must be consolidated in a single <update>
-            if (false !== ($pos = strpos($raw, '<update'))) {
+            if (false !== $pos = strpos($raw, '<update')) {
                 $start = strpos($raw, '>', $pos) + 1;
                 $raw = substr($raw, $start, strrpos($raw, '</update>') - $start);
             }
@@ -229,6 +229,8 @@ class RequestBuilder extends BaseRequestBuilder
      */
     protected function buildFieldXml(string $name, ?float $boost, $value, ?string $modifier = null): string
     {
+        $helper = $this->getHelper();
+
         $xml = '<field name="'.$name.'"';
         $xml .= $this->attrib('boost', $boost);
         $xml .= $this->attrib('update', $modifier);
@@ -239,9 +241,9 @@ class RequestBuilder extends BaseRequestBuilder
         } elseif (true === $value) {
             $value = 'true';
         } elseif ($value instanceof \DateTimeInterface) {
-            $value = $this->getHelper()->formatDate($value);
+            $value = $helper->formatDate($value);
         } else {
-            $value = $this->getHelper()->escapeXMLCharacterData($value);
+            $value = $helper->escapeXMLCharacterData($helper->filterControlCharacters($value));
         }
 
         $xml .= '>'.$value.'</field>';
@@ -262,38 +264,56 @@ class RequestBuilder extends BaseRequestBuilder
         $xml = '';
 
         // Remove the values if 'null' or empty list is specified as the new value
-        // @see https://lucene.apache.org/solr/guide/updating-parts-of-documents.html#atomic-updates
+        // @see https://solr.apache.org/guide/updating-parts-of-documents.html#atomic-updates
         if (Document::MODIFIER_SET === $modifier && \is_array($value) && empty($value)) {
             $value = null;
         }
 
         if (\is_array($value)) {
-            $nestedXml = '';
-            foreach ($value as $multival) {
-                if (\is_array($multival) && '_childDocuments_' === $key) {
-                    $xml .= '<doc>';
-                    foreach ($multival as $k => $v) {
-                        $xml .= $this->buildFieldsXml($k, $boost, $v, $modifier);
+            if (empty($value)) {
+                return '';
+            } elseif (is_numeric(array_key_first($value))) {
+                $nestedXml = '';
+
+                foreach ($value as $multival) {
+                    if (\is_array($multival) && '_childDocuments_' === $key) {
+                        $xml .= '<doc>';
+                        foreach ($multival as $k => $v) {
+                            $xml .= $this->buildFieldsXml($k, $boost, $v, $modifier);
+                        }
+                        $xml .= '</doc>';
+                    } elseif (\is_array($multival)) {
+                        $nestedXml .= '<doc';
+                        $nestedXml .= $this->attrib('update', $modifier);
+                        $nestedXml .= '>';
+                        foreach ($multival as $k => $v) {
+                            $nestedXml .= $this->buildFieldsXml($k, $boost, $v, null);
+                        }
+                        $nestedXml .= '</doc>';
+                    } else {
+                        if (!empty($nestedXml)) {
+                            $xml .= '<field name="'.$key.'">'.$nestedXml.'</field>';
+                            $nestedXml = '';
+                        }
+                        $xml .= $this->buildFieldXml($key, $boost, $multival, $modifier);
                     }
-                    $xml .= '</doc>';
-                } elseif (\is_array($multival)) {
-                    $nestedXml .= '<doc';
-                    $nestedXml .= $this->attrib('update', $modifier);
-                    $nestedXml .= '>';
-                    foreach ($multival as $k => $v) {
-                        $nestedXml .= $this->buildFieldsXml($k, $boost, $v, null);
-                    }
-                    $nestedXml .= '</doc>';
-                } else {
-                    if (!empty($nestedXml)) {
-                        $xml .= '<field name="'.$key.'">'.$nestedXml.'</field>';
-                        $nestedXml = '';
-                    }
-                    $xml .= $this->buildFieldXml($key, $boost, $multival, $modifier);
                 }
-            }
-            if (!empty($nestedXml) && '_childDocuments_' !== $key) {
-                $xml .= '<field name="'.$key.'">'.$nestedXml.'</field>';
+
+                if (!empty($nestedXml) && '_childDocuments_' !== $key) {
+                    $xml .= '<field name="'.$key.'">'.$nestedXml.'</field>';
+                }
+            } else {
+                $xml .= '<doc';
+                if ('_childDocuments_' !== $key) {
+                    // labelled single nested child documents can't be indexed in XML, but
+                    // we aim for forward compatibility with the proposed syntax in SOLR-16183
+                    $xml .= ' name="'.$key.'"';
+                }
+                $xml .= '>';
+                foreach ($value as $k => $v) {
+                    $xml .= $this->buildFieldsXml($k, $boost, $v, null);
+                }
+                $xml .= '</doc>';
             }
         } else {
             $xml .= $this->buildFieldXml($key, $boost, $value, $modifier);

@@ -35,6 +35,8 @@ $databases['default']['default'] = [
   'prefix' => '',
 ];
 $settings['hash_salt'] = 'whatever-i-like-29292929';
+$settings['config_sync_directory'] = '../config/sync';
+
 
 // Show all error messages on the site
 $config['system.logging']['error_level'] = 'all';
@@ -116,10 +118,6 @@ if (!drupal_installation_attempted() && extension_loaded('redis')) {
 //  }
 
 
-// Settings for all environments
-if (file_exists(__DIR__ . '/all.settings.php')) {
-  include __DIR__ . '/all.settings.php';
-}
 
 // Services for all environments
 if (file_exists(__DIR__ . '/all.services.yml')) {

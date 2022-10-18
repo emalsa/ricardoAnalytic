@@ -45,7 +45,7 @@ class LanguageKernelTest extends KernelTestBase {
    *
    * @var string[]
    */
-  public static $modules = [
+  protected static $modules = [
     'search_api',
     'search_api_test',
     'language',
@@ -65,7 +65,7 @@ class LanguageKernelTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     // Enable translation for the entity_test module.

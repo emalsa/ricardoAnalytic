@@ -15,7 +15,7 @@ class ViewsDisplayTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'field',
     'search_api',
     'search_api_db',
@@ -35,7 +35,7 @@ class ViewsDisplayTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->installEntitySchema('entity_test_mulrev_changed');

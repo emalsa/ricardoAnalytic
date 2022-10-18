@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\TypedData\ComplexDataDefinitionInterface;
+use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\TypedDataInterface;
 use Drupal\Core\TypedData\DataDefinitionInterface;
 use Drupal\search_api\Utility\DataTypeHelperInterface;
@@ -31,7 +32,7 @@ class FieldsHelperTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $entity_type_manager = $this->createMock(EntityTypeManagerInterface::class);
@@ -47,7 +48,7 @@ class FieldsHelperTest extends UnitTestCase {
    * @covers ::extractFieldValues
    */
   public function testExtractFieldValues() {
-    $field_data = $this->createMock(TestComplexDataInterface::class);
+    $field_data = $this->createMock(ComplexDataInterface::class);
 
     $field_data_definition = $this->createMock(ComplexDataDefinitionInterface::class);
     $field_data_definition->expects($this->any())
@@ -84,7 +85,7 @@ class FieldsHelperTest extends UnitTestCase {
         [TRUE, ['value' => $value]],
       ]);
 
-    $this->assertArrayEquals(['asd'], $this->fieldsHelper->extractFieldValues($field_data));
+    $this->assertEquals(['asd'], $this->fieldsHelper->extractFieldValues($field_data));
   }
 
 }

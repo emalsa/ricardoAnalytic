@@ -39,7 +39,7 @@ class DependencyRemovalTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'user',
     'system',
     'field',
@@ -50,7 +50,7 @@ class DependencyRemovalTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->installEntitySchema('user');

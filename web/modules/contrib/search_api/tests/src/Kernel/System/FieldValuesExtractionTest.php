@@ -46,7 +46,7 @@ class FieldValuesExtractionTest extends KernelTestBase {
    *
    * @var string[]
    */
-  public static $modules = [
+  protected static $modules = [
     'entity_test',
     'field',
     'search_api',
@@ -58,7 +58,7 @@ class FieldValuesExtractionTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->installSchema('system', ['sequences']);

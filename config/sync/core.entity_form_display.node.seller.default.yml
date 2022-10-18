@@ -24,17 +24,17 @@ third_party_settings:
         - title
         - field_seller_sellerid
         - field_seller_open_articles_count
+      label: 'Basic information'
+      region: content
       parent_name: ''
       weight: 0
       format_type: fieldset
-      region: content
       format_settings:
+        classes: ''
         show_empty_fields: true
         id: ''
-        classes: ''
         description: ''
         required_fields: true
-      label: 'Basic information'
     group_additional_information:
       children:
         - field_seller_member_since
@@ -43,93 +43,93 @@ third_party_settings:
         - field_id_savesellerid
         - field_seller_location
         - field_seller_postalcode
+      label: 'Additional information'
+      region: content
       parent_name: ''
       weight: 2
       format_type: fieldset
-      region: content
       format_settings:
-        description: ''
-        show_empty_fields: true
-        required_fields: true
-        id: ''
         classes: ''
-      label: 'Additional information'
+        show_empty_fields: true
+        id: ''
+        description: ''
+        required_fields: true
 id: node.seller.default
 targetEntityType: node
 bundle: seller
 mode: default
 content:
   field_id_savesellerid:
+    type: string_textfield
     weight: 8
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_seller_articles_sold:
+    type: number
     weight: 6
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
   field_seller_is_initial_create:
+    type: boolean_checkbox
     weight: 1
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_seller_is_pro:
+    type: boolean_checkbox
     weight: 7
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_seller_location:
+    type: string_textfield
     weight: 9
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_seller_member_since:
+    type: number
     weight: 5
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
   field_seller_open_articles_count:
+    type: number
     weight: 3
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
   field_seller_postalcode:
+    type: number
     weight: 10
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    type: number
-    region: content
   field_seller_sellerid:
+    type: string_textfield
     weight: 2
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   moderation_state:
     type: moderation_state_default
     weight: 100
-    settings: {  }
     region: content
+    settings: {  }
     third_party_settings: {  }
   path:
     type: path

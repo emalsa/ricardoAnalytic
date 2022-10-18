@@ -22,7 +22,7 @@ class AutocompleteTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
+  protected static $modules = [
     'entity_test',
     'field',
     'system',
@@ -54,7 +54,7 @@ class AutocompleteTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->installSchema('search_api', ['search_api_item']);

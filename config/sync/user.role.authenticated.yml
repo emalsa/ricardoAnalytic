@@ -1,7 +1,13 @@
 uuid: 6a91ab02-523a-4bfa-a6a6-2530d8255d83
 langcode: de
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - filter.format.full_html
+  module:
+    - filter
+    - shortcut
+    - system
 _core:
   default_config_hash: btW6TFHajhy7Eo6YUvdFiPh4TcPggo8GBXYctjV6zag
 id: authenticated
@@ -9,12 +15,6 @@ label: 'Angemeldeter Benutzer'
 weight: 1
 is_admin: false
 permissions:
-  - 'access comments'
   - 'access content'
   - 'access shortcuts'
-  - 'access site-wide contact form'
-  - 'post comments'
-  - 'search content'
-  - 'skip comment approval'
-  - 'use text format basic_html'
   - 'use text format full_html'
