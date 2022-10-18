@@ -9,7 +9,7 @@ id: node.seller.field_seller_is_initial_create
 field_name: field_seller_is_initial_create
 entity_type: node
 bundle: seller
-label: 'Is initial create (the ratings)'
+label: 'Is initial create'
 description: 'If true, the ratings will be crawled to create articles.'
 required: false
 translatable: false

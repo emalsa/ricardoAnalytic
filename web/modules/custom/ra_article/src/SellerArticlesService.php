@@ -63,7 +63,8 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     ClientInterface $httpClient,
     EntityTypeManagerInterface $entityTypeManager,
     LoggerChannelInterface $loggerChannelRaSellerArticles,
-    Connection $database) {
+    Connection $database
+  ) {
     $this->httpClient = $httpClient;
     $this->entityTypeManager = $entityTypeManager;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
@@ -90,22 +91,23 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     $result = reset($result);
     try {
       $response = $this->httpClient->post(
-        ArticleDetailFetchService::FETCHER_SERVICE_BASE_URL,
-        [
+        ArticleDetailFetchService::FETCHER_SERVICE_BASE_URL, [
           'headers' => [
             'Accept' => 'application/json',
           ],
           RequestOptions::JSON => json_decode(unserialize($result->data), TRUE),
-        ]);
+        ]
+      );
     }
     catch (\Exception $e) {
       $this->loggerChannelRaSellerArticles->error($e->getMessage());
+      $this->deleteQueueItem($result, 'singleItem');
       return;
     }
 
-
     if ($response->getStatusCode() != 200) {
       $this->loggerChannelRaSellerArticles->error($response->getBody()->getContents());
+      $this->deleteQueueItem($result, 'singleItem');
       return;
     }
 
@@ -113,6 +115,12 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     if (empty($data)) {
       $this->loggerChannelRaSellerArticles->error('Empty data from response.');
       return;
+    }
+
+    $totalArticlesCount = 0;
+    // No results, delete all queue items of this seller
+    if (empty($data['initialState']['srp']['results'])) {
+      $this->deleteQueueItem($result, 'all');
     }
 
     $existingArticlesCount = 0;
@@ -126,19 +134,27 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
       // Check if article already exist.
       $articleNode = $this->nodeStorage->loadByProperties(['field_article_id' => $item['id']]);
+      $totalArticlesCount = $data['initialState']['srp']['totalArticlesCount'];
+
       if (!empty($articleNode)) {
         $existingArticlesCount++;
         continue;
       }
 
       $this->createNode($sellerNode, $item);
-      $this->updateSellerTotalCount($sellerNode, $data);
     }
 
-    // Delete all seller article pages from the queue
-    // if we have reached a page with articles we have already.
+    // Delete all seller article pages from the queue, if we have reached a page
+    // with articles we already have.
     $mode = $existingArticlesCount > 55 ? 'all' : 'singleItem';
     $this->deleteQueueItem($result, $mode);
+
+    if (!$sellerNode) {
+      return;
+    }
+
+    $this->updateSellerTotalCount($sellerNode, $totalArticlesCount);
+
   }
 
   /**
@@ -165,11 +181,18 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
       // New seller added: Fetch the first 'self::LIMIT_PAGES' initial.
       // The total articles count will be updated after first run.
       if (!$totalArticlesCount || $totalArticlesCount == 0) {
-        $pages = 10;
+        $pages = 1;
       }
       else {
         $pages = ceil($totalArticlesCount / self::ITEMS_PER_PAGE);
         $pages = $pages > self::LIMIT_PAGES ? self::LIMIT_PAGES : $pages;
+      }
+
+      // Initial added seller set to 10 page and remove flag.
+      if ($sellerEntity->get('field_seller_is_initial_create')->value) {
+        $pages = 10;
+        $sellerEntity->set('field_seller_is_initial_create', 0);
+        $sellerEntity->save();
       }
 
       for ($i = 1; $i <= $pages; $i++) {
@@ -220,11 +243,11 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
    *
    * @param  \Drupal\node\NodeInterface  $sellerEntity
    *   The seller entity.
-   * @param $data
-   *   The response data.
+   * @param $totalArticlesCount
+   *   Total available article of this seller
    */
-  protected function updateSellerTotalCount(NodeInterface $sellerEntity, $data) {
-    $sellerEntity->set('field_seller_open_articles_count', $data['initialState']['srp']['totalArticlesCount']);
+  protected function updateSellerTotalCount(NodeInterface $sellerEntity, $totalArticlesCount) {
+    $sellerEntity->set('field_seller_open_articles_count', $totalArticlesCount);
     $sellerEntity->save();
   }
 

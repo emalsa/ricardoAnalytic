@@ -10,8 +10,8 @@ field_name: field_seller_sellerid
 entity_type: node
 bundle: seller
 label: sellerId
-description: 'The seller id (numeric).'
-required: false
+description: "The seller id (numeric). <br />\r\nweb console: <i>window.ricardo.initialState.userProfile.sellerId</i>"
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
