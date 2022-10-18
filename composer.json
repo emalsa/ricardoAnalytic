@@ -34,7 +34,10 @@
         "drupal/diff": "^1.0",
         "mkalkbrenner/php-htmldiff-advanced": "^0.0.8",
         "drush/drush": "^10.6",
-        "drupal/upgrade_status": "^3.17"
+        "drupal/upgrade_status": "^3.17",
+        "drupal/core-recommended": "^9",
+        "drupal/core-composer-scaffold": "^9",
+        "drupal/core-project-message": "^9"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "3.*"
@@ -57,7 +60,9 @@
             "cweagans/composer-patches": true,
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "zaporylie/composer-drupal-optimizations": true,
-            "drupal-composer/drupal-scaffold": true
+            "drupal-composer/drupal-scaffold": true,
+            "drupal/core-composer-scaffold": true,
+            "drupal/core-project-message": true
         }
     },
     "extra": {
