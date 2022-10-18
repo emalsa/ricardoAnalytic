@@ -21,7 +21,6 @@
         "drupal/adminimal_admin_toolbar": "^1.10",
         "drupal/adminimal_theme": "^1.5",
         "drupal/config_installer": "1.x-dev",
-        "drupal/console": "~1.0",
         "drupal/purge": "^3.0",
         "drupal/queue_throttle": "^1.1",
         "drupal/redis": "^1.0",
@@ -68,21 +67,6 @@
             "zaporylie/composer-drupal-optimizations": true,
             "drupal-composer/drupal-scaffold": true
         }
-    },
-    "scripts": {
-        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
-        "pre-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "pre-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "post-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
-        ],
-        "post-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
-        ]
     },
     "extra": {
         "installer-paths": {
