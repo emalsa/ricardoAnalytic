@@ -27,9 +27,9 @@
 
 $databases['default']['default'] = [
   'driver' => 'mysql',
-  'database' => 'drupal',
-  'username' => 'drupal',
-  'password' => 'drupal',
+  'database' => 'drupal9',
+  'username' => 'drupal9',
+  'password' => 'drupal9',
   'host' => 'database',
   'port' => 3306,
   'prefix' => '',

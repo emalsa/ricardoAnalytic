@@ -9,7 +9,7 @@ dependencies:
 _core:
   default_config_hash: P7F4DFe8BL31DRVqsvS-ix9KZZqvvaPjZ7zEvGo9yNM
 id: article_overview
-label: 'Article'
+label: Article
 module: node
 description: 'Find and manage article.'
 tag: default

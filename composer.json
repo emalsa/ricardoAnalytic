@@ -16,14 +16,12 @@
         }
     ],
     "require": {
-        "composer/installers": "^1.2",
-        "cweagans/composer-patches": "~1.0",
-        "drupal-composer/drupal-scaffold": "^2.2",
+        "composer/installers": "^1.9",
+        "cweagans/composer-patches": "^1.7",
         "drupal/adminimal_admin_toolbar": "^1.10",
         "drupal/adminimal_theme": "^1.5",
         "drupal/config_installer": "1.x-dev",
         "drupal/console": "~1.0",
-        "drupal/core": "^8.9",
         "drupal/purge": "^3.0",
         "drupal/queue_throttle": "^1.1",
         "drupal/redis": "^1.0",
@@ -31,14 +29,15 @@
         "drupal/search_api_solr": "^1.2",
         "drupal/ultimate_cron": "^2.0@alpha",
         "drush/drush": "~8.0",
-        "zaporylie/composer-drupal-optimizations": "^1.1",
         "drupal/coder": "^8.3",
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
         "friendsofphp/php-cs-fixer": "^2.16",
         "drupal/pathauto": "^1.8",
         "drupal/field_group": "^3.2",
         "drupal/diff": "^1.0",
-        "mkalkbrenner/php-htmldiff-advanced": "^0.0.8"
+        "mkalkbrenner/php-htmldiff-advanced": "^0.0.8",
+        "drupal/core-composer-scaffold": "^8.9",
+        "drupal/core-recommended": "^8.9"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "3.*",
@@ -61,7 +60,15 @@
         ]
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "allow-plugins": {
+            "composer/installers": true,
+            "drupal/console-extend-plugin": true,
+            "cweagans/composer-patches": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "zaporylie/composer-drupal-optimizations": true,
+            "drupal-composer/drupal-scaffold": true
+        }
     },
     "scripts": {
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
@@ -88,6 +95,9 @@
             "drush/contrib/{$name}": ["type:drupal-drush"]
         },
         "drupal-scaffold": {
+            "locations": {
+                "web-root": "web/"
+            },
             "excludes": [
                 "sites/development.services.yml",
                 "sites/example.settings.local.php"
