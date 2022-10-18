@@ -2753,49 +2753,6 @@
             "install-path": "../drupal/coder"
         },
         {
-            "name": "drupal/config_installer",
-            "version": "dev-1.x",
-            "version_normalized": "dev-1.x",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/config_installer.git",
-                "reference": "bf69125f99e176104296bb7968add27ffcbdd3e0"
-            },
-            "require": {
-                "drupal/core": "~8.0"
-            },
-            "type": "drupal-profile",
-            "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-1.8+4-dev",
-                    "datestamp": "1536395283",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Dev releases are not covered by Drupal security advisories."
-                    }
-                }
-            },
-            "installation-source": "source",
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "alexpott",
-                    "homepage": "https://www.drupal.org/user/157725"
-                }
-            ],
-            "homepage": "https://www.drupal.org/project/config_installer",
-            "support": {
-                "source": "https://git.drupalcode.org/project/config_installer"
-            },
-            "install-path": "../../web/profiles/contrib/config_installer"
-        },
-        {
             "name": "drupal/core",
             "version": "8.9.18",
             "version_normalized": "8.9.18.0",

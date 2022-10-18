@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "710bfa8834fe18aadaf2590d301e4f92",
+    "content-hash": "62ed32fab4cfb502fdfbbe43df9a65d6",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2411,46 +2411,6 @@
                 "standards"
             ],
             "time": "2021-02-06T10:44:32+00:00"
-        },
-        {
-            "name": "drupal/config_installer",
-            "version": "dev-1.x",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/config_installer.git",
-                "reference": "bf69125f99e176104296bb7968add27ffcbdd3e0"
-            },
-            "require": {
-                "drupal/core": "~8.0"
-            },
-            "type": "drupal-profile",
-            "extra": {
-                "branch-alias": {
-                    "dev-1.x": "1.x-dev"
-                },
-                "drupal": {
-                    "version": "8.x-1.8+4-dev",
-                    "datestamp": "1536395283",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Dev releases are not covered by Drupal security advisories."
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "alexpott",
-                    "homepage": "https://www.drupal.org/user/157725"
-                }
-            ],
-            "homepage": "https://www.drupal.org/project/config_installer",
-            "support": {
-                "source": "https://git.drupalcode.org/project/config_installer"
-            }
         },
         {
             "name": "drupal/core",
@@ -10631,7 +10591,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "drupal/config_installer": 20,
         "drupal/ultimate_cron": 15
     },
     "prefer-stable": true,

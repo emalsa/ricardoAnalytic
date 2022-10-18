@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'a0ab31c636b13b1dfd526b92fe7229aeac963a5a',
+        'reference' => '30a93feaf3603c16861ab24b105a53abe4882da2',
         'name' => 'ra/drupal-project',
         'dev' => true,
     ),
@@ -453,17 +453,6 @@
             'replaced' => array(
                 0 => '8.9.18',
             ),
-        ),
-        'drupal/config_installer' => array(
-            'pretty_version' => 'dev-1.x',
-            'version' => 'dev-1.x',
-            'type' => 'drupal-profile',
-            'install_path' => __DIR__ . '/../../web/profiles/contrib/config_installer',
-            'aliases' => array(
-                0 => '1.x-dev',
-            ),
-            'reference' => 'bf69125f99e176104296bb7968add27ffcbdd3e0',
-            'dev_requirement' => false,
         ),
         'drupal/config_translation' => array(
             'dev_requirement' => false,
@@ -1681,7 +1670,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'a0ab31c636b13b1dfd526b92fe7229aeac963a5a',
+            'reference' => '30a93feaf3603c16861ab24b105a53abe4882da2',
             'dev_requirement' => false,
         ),
         'ralouphie/getallheaders' => array(
