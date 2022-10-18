@@ -111,7 +111,7 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
 
     $data = json_decode($response->getBody()->getContents(), TRUE);
     if (empty($data)) {
-          $this->loggerChannelRaSellerArticles->error('Empty data from response.');
+      $this->loggerChannelRaSellerArticles->error('Empty data from response.');
       return;
     }
 

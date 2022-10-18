@@ -1969,6 +1969,9 @@
                         "[web-root]/profiles/README.txt": "assets/scaffold/files/profiles.README.txt",
                         "[web-root]/themes/README.txt": "assets/scaffold/files/themes.README.txt"
                     }
+                },
+                "patches_applied": {
+                    "Implicit conversion from float-string to int": "https://www.drupal.org/files/issues/2022-02-18/3264979-3.patch"
                 }
             },
             "installation-source": "dist",

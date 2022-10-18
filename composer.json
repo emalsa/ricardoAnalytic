@@ -70,6 +70,12 @@
         }
     },
     "extra": {
+        "enable-patching": true,
+        "patches": {
+            "drupal/core": {
+                "Implicit conversion from float-string to int": "https://www.drupal.org/files/issues/2022-02-18/3264979-3.patch"
+            }
+        },
         "installer-paths": {
             "web/core": [
                 "type:drupal-core"
