@@ -240,6 +240,8 @@ class SellerArticlesService implements SellerArticlesServiceInterface {
     $query = $this->database->delete('queue_ricardoanalytic');
     if ($mode === 'singleItem') {
       $query->condition('id', $result->id);
+      $query->execute();
+      return;
     }
     $query->condition('nid', $result->nid);
     $query->execute();
