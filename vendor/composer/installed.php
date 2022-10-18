@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '3d3cafb5343ca4e212f07b17c9a61450d0f76bb5',
+        'reference' => 'f04bd280d3628ba1b6bcd1c3a7f5c75b7fecdb97',
         'name' => 'ra/drupal-project',
         'dev' => true,
     ),
@@ -1170,6 +1170,15 @@
                 0 => '8.9.18',
             ),
         ),
+        'drupal/upgrade_status' => array(
+            'pretty_version' => '3.17.0',
+            'version' => '3.17.0.0',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/upgrade_status',
+            'aliases' => array(),
+            'reference' => '8.x-3.17',
+            'dev_requirement' => false,
+        ),
         'drupal/user' => array(
             'dev_requirement' => false,
             'replaced' => array(
@@ -1353,6 +1362,15 @@
             'reference' => '463fdae515fba30633906098c258d3b2c733c15c',
             'dev_requirement' => false,
         ),
+        'laminas/laminas-servicemanager' => array(
+            'pretty_version' => '3.7.0',
+            'version' => '3.7.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-servicemanager',
+            'aliases' => array(),
+            'reference' => '2b0aee477fdbd3191af7c302b93dbc5fda0626f4',
+            'dev_requirement' => false,
+        ),
         'laminas/laminas-stdlib' => array(
             'pretty_version' => '3.5.0',
             'version' => '3.5.0.0',
@@ -1360,6 +1378,15 @@
             'install_path' => __DIR__ . '/../laminas/laminas-stdlib',
             'aliases' => array(),
             'reference' => 'c8ac6a76a133e682acfabc821d4a2ec646934b12',
+            'dev_requirement' => false,
+        ),
+        'laminas/laminas-text' => array(
+            'pretty_version' => '2.8.1',
+            'version' => '2.8.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../laminas/laminas-text',
+            'aliases' => array(),
+            'reference' => 'd696fa1fb3880b9b8f02c08be58685013b421608',
             'dev_requirement' => false,
         ),
         'laminas/laminas-zendframework-bridge' => array(
@@ -1389,6 +1416,24 @@
             'reference' => 'f640ac1bdddff06ea333a920c95bbad8872429ab',
             'dev_requirement' => false,
         ),
+        'mathieuviossat/arraytotexttable' => array(
+            'pretty_version' => 'v1.0.8',
+            'version' => '1.0.8.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mathieuviossat/arraytotexttable',
+            'aliases' => array(),
+            'reference' => '6b1af924478cb9c3a903269e304fff006fe0dbf4',
+            'dev_requirement' => false,
+        ),
+        'mglaman/phpstan-drupal' => array(
+            'pretty_version' => '1.1.4',
+            'version' => '1.1.4.0',
+            'type' => 'phpstan-extension',
+            'install_path' => __DIR__ . '/../mglaman/phpstan-drupal',
+            'aliases' => array(),
+            'reference' => 'f51ff1ad597480944a7d2f255484a4255daa6e13',
+            'dev_requirement' => false,
+        ),
         'mikey179/vfsstream' => array(
             'pretty_version' => 'v1.6.9',
             'version' => '1.6.9.0',
@@ -1405,6 +1450,24 @@
             'install_path' => __DIR__ . '/../mkalkbrenner/php-htmldiff-advanced',
             'aliases' => array(),
             'reference' => '3a714b48c9c3d3730baaf6d3949691e654cd37c9',
+            'dev_requirement' => false,
+        ),
+        'nette/finder' => array(
+            'pretty_version' => 'v2.5.4',
+            'version' => '2.5.4.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nette/finder',
+            'aliases' => array(),
+            'reference' => '4a1236db9067d86a75c3dcc0d9c2aced17f9bde8',
+            'dev_requirement' => false,
+        ),
+        'nette/utils' => array(
+            'pretty_version' => 'v3.2.8',
+            'version' => '3.2.8.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nette/utils',
+            'aliases' => array(),
+            'reference' => '02a54c4c872b99e4ec05c4aec54b5a06eb0f6368',
             'dev_requirement' => false,
         ),
         'nikic/php-parser' => array(
@@ -1503,6 +1566,24 @@
             'reference' => '451c3cd1418cf640de218914901e51b064abb093',
             'dev_requirement' => true,
         ),
+        'phpstan/phpstan' => array(
+            'pretty_version' => '1.8.10',
+            'version' => '1.8.10.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpstan/phpstan',
+            'aliases' => array(),
+            'reference' => '0c4459dc42c568b818b3f25186589f3acddc1823',
+            'dev_requirement' => false,
+        ),
+        'phpstan/phpstan-deprecation-rules' => array(
+            'pretty_version' => '1.0.0',
+            'version' => '1.0.0.0',
+            'type' => 'phpstan-extension',
+            'install_path' => __DIR__ . '/../phpstan/phpstan-deprecation-rules',
+            'aliases' => array(),
+            'reference' => 'e5ccafb0dd8d835dd65d8d7a1a0d2b1b75414682',
+            'dev_requirement' => false,
+        ),
         'phpunit/php-code-coverage' => array(
             'pretty_version' => '2.2.4',
             'version' => '2.2.4.0',
@@ -1587,8 +1668,8 @@
         'psr/container-implementation' => array(
             'dev_requirement' => false,
             'provided' => array(
-                0 => '1.0',
-                1 => '^1.0',
+                0 => '^1.0',
+                1 => '1.0',
             ),
         ),
         'psr/event-dispatcher' => array(
@@ -1663,7 +1744,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '3d3cafb5343ca4e212f07b17c9a61450d0f76bb5',
+            'reference' => 'f04bd280d3628ba1b6bcd1c3a7f5c75b7fecdb97',
             'dev_requirement' => false,
         ),
         'ralouphie/getallheaders' => array(
@@ -2195,6 +2276,18 @@
             'dev_requirement' => false,
             'replaced' => array(
                 0 => '^2.12.0',
+            ),
+        ),
+        'zendframework/zend-servicemanager' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '^3.4.0',
+            ),
+        ),
+        'zendframework/zend-text' => array(
+            'dev_requirement' => false,
+            'replaced' => array(
+                0 => '^2.7.1',
             ),
         ),
     ),
