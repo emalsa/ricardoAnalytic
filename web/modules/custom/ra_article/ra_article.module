@@ -154,7 +154,7 @@ function _process_article_status_cron() {
       $article->set('moderation_state', ArticleDetailFetchService::STATE_CLOSED);
       $article->save();
 
-      $price = $jsonData["props"]["initialState"]["pdp"]["article"]['offer']['price'];
+      $price = $jsonData['props']['initialState']['pdp']['article']['offer']['price'];
       $initialQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
       $remainingQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
       $soldItems = $initialQuantity - $remainingQuantity;
