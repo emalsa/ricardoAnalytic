@@ -69,6 +69,36 @@ function _change_article_status_cron() {
     $article->setChangedTime(time());
     $article->save();
   }
+
+  // @todo: remove after some time
+  _add_scraping_attempts();
+}
+
+function _add_scraping_attempts(){
+  /** @var \Drupal\node\NodeStorage $nodeStorage */
+  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+  $entityQuery = $nodeStorage
+    ->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->notExists('field_article_scraping_attempts')
+    ->range(0,1000);
+  $articleNids = $entityQuery->execute();
+
+  if (empty($articleNids)) {
+    return;
+  }
+
+  foreach ($articleNids as $nid) {
+    $article = $nodeStorage->load($nid);
+    \Drupal::logger('update')->notice("$nid");
+    if ($article->get('field_article_scraping_attempts')->isEmpty()) {
+      $article->set('field_article_scraping_attempts', 0);
+      $article->save();
+    }
+
+
+  }
 }
 
 /**
