@@ -88,6 +88,7 @@ function ra_article_post_update_attempts() {
 
   foreach ($articleNids as $nid) {
     $article = $nodeStorage->load($nid);
+    \Drupal::logger('update')->notice("$nid");
     if ($article->get('field_article_scraping_attempts')->isEmpty()) {
       $article->set('field_article_scraping_attempts', 0);
       $article->save();
