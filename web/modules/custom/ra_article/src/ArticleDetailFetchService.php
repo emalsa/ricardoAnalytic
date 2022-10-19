@@ -50,7 +50,12 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
    */
   public const STATE_ERROR_FETCH = 'failed';
 
-
+  /**
+   * The state of the closed auction.
+   *
+   * @var string
+   */
+  public const STATE_CLOSED = 'closed';
   /**
    * The EntityTypeManager.
    *
@@ -178,8 +183,30 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       $article->set('field_article_raw_json', [
         'value' => serialize($data),
       ]);
-      $article->set('moderation_state', self::STATE_SUCCESSFUL_FETCH);
-      $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_SUCCESSFUL_FETCH);
+
+      $initialQuantity = $data['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
+      $remainingQuantity = $data['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
+      $scrapingAttempts = $article->get('field_article_scraping_attempts')->value + 1;
+
+      $article->set('field_article_remaining_quantity', $remainingQuantity);
+      $article->set('field_article_initial_quantity', $initialQuantity);
+      $article->set('field_article_scraping_attempts', $scrapingAttempts);
+
+      // Max. attempts reached or auction finished, then close it.
+      if ($article->get('field_article_scraping_attempts')->value >= 4
+        || $data['props']['initialState']['pdp']['article']['offer']['remaining_time'] < 0
+      ) {
+        $article->set('moderation_state', self::STATE_SUCCESSFUL_FETCH);
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_SUCCESSFUL_FETCH);
+      }
+      else {
+        $article->set('moderation_state', self::STATE_FOR_OPEN);
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_FOR_OPEN);
+
+        $endDate = $data['props']['initialState']['pdp']['article']['offer']['end_date'];
+        $article->set('field_article_end_date', str_replace('Z', '', $endDate));
+      }
+
       $article->save();
     }
   }
