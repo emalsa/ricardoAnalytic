@@ -160,8 +160,20 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
     foreach ($moderationStates as $state) {
       $build['#content'][$state]['count'] = $sortedResults[$state] ?? '0';
       $build['#content'][$state]['label'] = $state;
-
     }
+
+    // Sales items
+    $query = $this->connection
+      ->select('node', 'n')
+      ->condition('n.type', 'sale');
+    $countQuery = $query
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+
+    $build['#content']['sales']['label'] = 'Sales';
+    $build['#content']['sales']['count'] = $countQuery;
+
     $build['#theme'] = 'status_block';
 
     return $build;

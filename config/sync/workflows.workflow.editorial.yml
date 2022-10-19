@@ -18,6 +18,11 @@ type_settings:
       weight: 5
       published: false
       default_revision: true
+    closed:
+      label: Closed
+      weight: 10
+      published: true
+      default_revision: true
     draft:
       label: Draft
       weight: -5
@@ -49,10 +54,24 @@ type_settings:
       published: true
       default_revision: true
   transitions:
+    closed:
+      label: Closed
+      from:
+        - archived
+        - closed
+        - draft
+        - failed
+        - open
+        - published
+        - to_process
+        - to_scrape
+      to: closed
+      weight: 2
     failed:
       label: Failed
       from:
         - archived
+        - closed
         - draft
         - failed
         - open
@@ -64,6 +83,7 @@ type_settings:
     open:
       label: Open
       from:
+        - closed
         - open
         - to_scrape
       to: open
@@ -72,6 +92,7 @@ type_settings:
       label: 'To process'
       from:
         - archived
+        - closed
         - draft
         - failed
         - open
@@ -83,6 +104,7 @@ type_settings:
     to_scrape:
       label: 'To scrape'
       from:
+        - closed
         - failed
         - open
         - to_process

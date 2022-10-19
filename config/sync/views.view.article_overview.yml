@@ -252,12 +252,8 @@ display:
         options:
           perm: 'access content overview'
       cache:
-        type: time
-        options:
-          results_lifespan: 60
-          results_lifespan_custom: 0
-          output_lifespan: 60
-          output_lifespan_custom: 0
+        type: none
+        options: {  }
       empty:
         area_text_custom:
           id: area_text_custom
