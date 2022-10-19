@@ -3,6 +3,9 @@
 namespace Drupal\ra_admin\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -27,7 +30,7 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
   ];
 
   /**
-   * To ignore.
+   * Status to ignore.
    *
    * @var array
    */
@@ -38,29 +41,31 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
   ];
 
   /**
-   * Drupal\Core\Entity\EntityTypeManagerInterface definition.
+   * The EntityTypeManager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
-   * Bundle information.
+   * The entity nundle information.
    *
    * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
    */
-  protected $entityBundleInfo;
+  protected EntityTypeBundleInfoInterface $entityBundleInfo;
 
   /**
+   * The database connection.
+   *
    * @var \Drupal\Core\Database\Connection
    */
-  protected $connection;
+  protected Connection $connection;
 
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    $instance = new static($configuration, $plugin_id, $plugin_definition);
+  public static function create(ContainerInterface $container, array $configuration, $pluginId, $pluginDefinition) {
+    $instance = new static($configuration, $pluginId, $pluginDefinition);
     $instance->entityTypeManager = $container->get('entity_type.manager');
     $instance->entityBundleInfo = $container->get('entity_type.bundle.info');
     $instance->connection = $container->get('database');
@@ -71,8 +76,8 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
   /**
    * {@inheritdoc}
    */
-  public function blockForm($form, FormStateInterface $form_state) {
-    $form = parent::blockForm($form, $form_state);
+  public function blockForm($form, FormStateInterface $formState) {
+    $form = parent::blockForm($form, $formState);
 
     $form['label'] = [
       '#type' => 'textfield',
@@ -106,9 +111,9 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
   /**
    * {@inheritdoc}
    */
-  public function blockSubmit($form, FormStateInterface $form_state) {
-    $this->configuration['label'] = $form_state->getValue('label');
-    $this->configuration['show_of_bundle'] = $form_state->getValue('show_of_bundle');
+  public function blockSubmit($form, FormStateInterface $formState) {
+    $this->configuration['label'] = $formState->getValue('label');
+    $this->configuration['show_of_bundle'] = $formState->getValue('show_of_bundle');
   }
 
   /**

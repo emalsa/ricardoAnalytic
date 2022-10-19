@@ -3,6 +3,7 @@
 namespace Drupal\ra_article;
 
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\NodeInterface;
@@ -15,28 +16,28 @@ use GuzzleHttp\RequestOptions;
 class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
 
   /**
-   * Google Cloud service url.
+   * The Google Cloud service url.
    *
    * @var string
    */
   public const FETCHER_SERVICE_BASE_URL = 'https://ricardo-crawler-vimooyk3pq-wl.a.run.app/article';
 
   /**
-   * State to be fetched.
+   * The state to be fetched.
    *
    * @var string
    */
   public const STATE_FOR_SCRAPE = 'to_scrape';
 
   /**
-   * State after successful fetch.
+   * The state after successful fetch.
    *
    * @var string
    */
   public const STATE_SUCCESSFUL_FETCH = 'to_process';
 
   /**
-   * State after failed fetch.
+   * The state after failed fetch.
    *
    * @var string
    */
@@ -44,11 +45,11 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
 
 
   /**
-   * Drupal\Core\Entity\EntityTypeManagerInterface definition.
+   * The EntityTypeManager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
    * GuzzleHttp\ClientInterface definition.
@@ -58,37 +59,40 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
   protected $httpClient;
 
   /**
-   * Drupal\Core\Database\Driver\mysql\Connection definition.
+   * The database connection.
    *
-   * @var \Drupal\Core\Database\Driver\mysql\Connection
+   * @var \Drupal\Core\Database\Connection
    */
-  protected $database;
+  protected Connection $database;
 
   /**
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $logger;
-
-  /**
+   * The entity storage.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
-  protected $nodeStorage;
+  protected EntityStorageInterface $nodeStorage;
 
   /**
    * Drupal\Core\Logger\LoggerChannelInterface definition.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
-  protected $loggerChannelRaArticleDetail;
+  protected LoggerChannelInterface $loggerChannelRaArticleDetail;
 
   /**
    * Constructs a new ArticleDetailFetchService object.
+   *
+   * @param  \GuzzleHttp\ClientInterface  $httpClient
+   * @param  \Drupal\Core\Entity\EntityTypeManagerInterface  $entityTypeManager
+   * @param  \Drupal\Core\Logger\LoggerChannelInterface  $loggerChannelRaSellerArticles
+   * @param  \Drupal\Core\Database\Connection  $database
    */
   public function __construct(
     ClientInterface $httpClient,
     EntityTypeManagerInterface $entityTypeManager,
     LoggerChannelInterface $loggerChannelRaSellerArticles,
-    Connection $database) {
+    Connection $database
+  ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->httpClient = $httpClient;
     $this->database = $database;
@@ -97,28 +101,38 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
   }
 
   /**
-   *
+   * {@inheritDoc}
    */
-  public function getArticleToFetch() {
+  public function getArticleNidsToFetch(): array {
     $query = $this->database->select('node_field_data', 'n');
     $query->fields('n', ['nid'])
       ->condition('n.type', 'article')
       ->condition('n.status', NodeInterface::PUBLISHED)
       ->condition('cm.moderation_state', self::STATE_FOR_SCRAPE)
-      ->orderBy('n.changed','ASC')
+      ->orderBy('n.changed', 'ASC')
       ->range(0, 2)
       ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
+
     $articleNids = $query->execute()->fetchAll();
     if (empty($articleNids)) {
-      return;
+      return [];
     }
 
+    return $articleNids;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public function fetchArticleDetail(array $articleNids): void {
     foreach ($articleNids as $articleNid) {
+      // Load the node.
       $article = $this->entityTypeManager->getStorage('node')->load($articleNid->nid);
       if (!$article instanceof NodeInterface) {
         continue;
       }
 
+      // Fetch the article data.
       try {
         $response = $this->httpClient->post(
           self::FETCHER_SERVICE_BASE_URL,
@@ -158,7 +172,7 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
         'value' => serialize($data),
       ]);
       $article->set('moderation_state', self::STATE_SUCCESSFUL_FETCH);
-      $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
+      $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_SUCCESSFUL_FETCH);
       $article->save();
     }
   }

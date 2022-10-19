@@ -4,8 +4,8 @@ use Drupal\Core\Database\Database;
 
 /**
  * Implements hook_update_8000().
- * Create custom "queue" table to process items without cron and adding some
- * bad modules
+ *
+ * Create custom "queue" table to process items without adding some bad modules.
  */
 function ra_article_update_8000(&$sandbox) {
   $spec = [
@@ -46,6 +46,8 @@ function ra_article_update_8000(&$sandbox) {
 }
 
 /**
+ * Implements hook_update_8001().
+ *
  * Update all articles with new shop.
  */
 function ra_article_update_8001(&$sandbox) {

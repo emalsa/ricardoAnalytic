@@ -1,6 +1,6 @@
 name: 'ra_article'
 type: module
-description: 'Articles'
-core_version_requirement: ^8.8.0 || ^9
+description: 'Articles fetch'
+core_version_requirement: ^9
 
 package: 'Custom'

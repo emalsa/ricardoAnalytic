@@ -5,28 +5,42 @@ use Drupal\node\Entity\Node;
 use Drupal\ra_article\ArticleDetailFetchService;
 
 /**
- * @file
- * Contains ra_article.module.
+ * Implements hook_cron().
+ *
+ * Fetch the article detail.
  */
-
 function ra_article_scrape_article_cron() {
   /** @var \Drupal\ra_article\ArticleDetailFetchService $articleDetailFetch */
   $articleDetailFetch = \Drupal::service('ra_article.article_detail_fetch');
-  $articleDetailFetch->getArticleToFetch();
+  $articleNids = $articleDetailFetch->getArticleNidsToFetch();
+  $articleDetailFetch->fetchArticleDetail($articleNids);
 }
 
+/**
+ * Implements hook_cron().
+ *
+ * Fetch open article of a seller.
+ */
 function ra_article_scrape_seller_articles_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
   $sellerArticleService = \Drupal::service("ra_article.seller_articles");
   $sellerArticleService->fetchSellerArticles();
 }
 
+/**
+ * Implements hook_cron().
+ *
+ * Fills thew queue with the open article pages.
+ */
 function ra_article_scrape_seller_articles_init_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
   $sellerArticleService = \Drupal::service('ra_article.seller_articles');
   $sellerArticleService->createSellerArticleQueue();
 }
 
+/**
+ * Changes article status to scrape.
+ */
 function _change_article_status_cron() {
   $timestamp = strtotime('-3 days', time());
   $datetime = date('Y-m-d\Th:m:s', $timestamp);
@@ -37,7 +51,7 @@ function _change_article_status_cron() {
     ->condition('ed.field_article_end_date_value', $datetime, '<=')
     ->condition('cm.moderation_state', 'open')
     ->range(0, 10)
-    ->join('content_moderation_state_field_data','cm', 'ed.entity_id=cm.content_entity_id');
+    ->join('content_moderation_state_field_data', 'cm', 'ed.entity_id=cm.content_entity_id');
 
   $articleNids = $query->execute()->fetchAll();
   if (empty($articleNids)) {
