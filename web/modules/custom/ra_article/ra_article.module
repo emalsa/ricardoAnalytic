@@ -43,10 +43,6 @@ function ra_article_scrape_seller_articles_init_cron() {
  * Changes article status to scrape.
  */
 function _change_article_status_cron(): void {
-  // @todo: remove this function below, after some time.
-  _add_scraping_attempts();
-
-  // Change to_process
   $timestamp = strtotime('-3 days', time());
   $datetime = date('Y-m-d\Th:m:s', $timestamp);
 
@@ -75,32 +71,6 @@ function _change_article_status_cron(): void {
   }
 }
 
-function _add_scraping_attempts() {
-  /** @var \Drupal\node\NodeStorage $nodeStorage */
-  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
-  $entityQuery = $nodeStorage
-    ->getQuery()
-    ->accessCheck(FALSE)
-    ->condition('type', 'article')
-    ->notExists('field_article_scraping_attempts')
-    ->range(0, 1000);
-  $articleNids = $entityQuery->execute();
-
-  if (empty($articleNids)) {
-    return;
-  }
-
-  foreach ($articleNids as $nid) {
-    $article = $nodeStorage->load($nid);
-    if ($article->get('field_article_scraping_attempts')->isEmpty()) {
-      $article->set('field_article_scraping_attempts', 0);
-      $article->save();
-    }
-
-
-  }
-}
-
 /**
  * Determine if article was sold or not and create sale entities.
  */
@@ -110,8 +80,8 @@ function _process_article_status_cron() {
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
     ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_SUCCESSFUL_FETCH)
-    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id')
-    ->range(0, 500);
+    ->range(0,500)
+    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
   $articleNids = $query->execute()->fetchAll();
   if (empty($articleNids)) {
