@@ -42,7 +42,7 @@ function ra_article_scrape_seller_articles_init_cron() {
 /**
  * Changes article status to scrape.
  */
-function _change_article_status_cron() {
+function _change_article_status_cron(): void {
   // @todo: remove this function below, after some time.
   _add_scraping_attempts();
 
@@ -75,7 +75,7 @@ function _change_article_status_cron() {
   }
 }
 
-function _add_scraping_attempts(){
+function _add_scraping_attempts() {
   /** @var \Drupal\node\NodeStorage $nodeStorage */
   $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
   $entityQuery = $nodeStorage
@@ -83,7 +83,7 @@ function _add_scraping_attempts(){
     ->accessCheck(FALSE)
     ->condition('type', 'article')
     ->notExists('field_article_scraping_attempts')
-    ->range(0,1000);
+    ->range(0, 1000);
   $articleNids = $entityQuery->execute();
 
   if (empty($articleNids)) {
@@ -102,17 +102,16 @@ function _add_scraping_attempts(){
 }
 
 /**
- * Determine if article was sold or not.
+ * Determine if article was sold or not and create sale entities.
  */
 function _process_article_status_cron() {
-  return;
   $database = \Drupal::database();
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
     ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_SUCCESSFUL_FETCH)
-    ->range(1200, 200)
-    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
+    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id')
+    ->range(0, 500);
 
   $articleNids = $query->execute()->fetchAll();
   if (empty($articleNids)) {
@@ -122,39 +121,66 @@ function _process_article_status_cron() {
   foreach ($articleNids as $nid) {
     $article = Node::load($nid->nid);
     if (!$article instanceof NodeInterface) {
-
+      \Drupal::logger('ra_article')->error('No entity in _process_article_status_cron');
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_ERROR_FETCH);
+      $article->set('moderation_state', ArticleDetailFetchService::STATE_ERROR_FETCH);
+      $article->save();
     }
-    $jsonData = $article->get('field_article_raw_json')->getValue();
-    if (empty($jsonData) || empty($jsonData[0]['value'])) {
 
+    // Workaround, since loading value vie entity breaks everything.
+    $query = $database->select('node__field_article_raw_json', 'raw');
+    $query->fields('raw', ['field_article_raw_json_value'])->condition('raw.entity_id', $article->id());
+    $jsonData = $query->execute()->fetchAssoc();
+    $jsonData = $jsonData['field_article_raw_json_value'];
+    if (@unserialize($jsonData) !== TRUE && preg_match('/^[aOs]:/', $jsonData)) {
+      $jsonData = preg_replace_callback('/s\:(\d+)\:\"(.*?)\";/s', function ($matches) {
+        return 's:' . strlen($matches[2]) . ':"' . $matches[2] . '";';
+      }, $jsonData);
     }
 
+    $jsonData = unserialize($jsonData);
+    if (!$jsonData) {
+      \Drupal::logger('ra_article')->error('Empty data in _process_article_status_cron');
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_ERROR_FETCH);
+      $article->set('moderation_state', ArticleDetailFetchService::STATE_ERROR_FETCH);
+      $article->save();
+    }
 
-    $jsonData = unserialize($jsonData[0]['value']);
     $remainingTime = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_time'];
     // Auction is finished.
     if ($remainingTime < 0) {
+      // Close article.
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_CLOSED);
+      $article->set('moderation_state', ArticleDetailFetchService::STATE_CLOSED);
+      $article->save();
+
+      $price = $jsonData["props"]["initialState"]["pdp"]["article"]['offer']['price'];
       $initialQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
       $remainingQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
-      // Determine how many items has been sold.
       $soldItems = $initialQuantity - $remainingQuantity;
-      if ($soldItems > 1) {
 
+      // Determine how many items has been sold and create Sale node if necessary.
+      // Maybe we created some Sale node already in the further process.
+      /** @var \Drupal\node\NodeStorage $nodeStorage */
+      $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+      $existingSaleNodes = $nodeStorage->loadByProperties([
+        'type' => 'sale',
+        'field_sale_article_ref' => $article->id(),
+      ]);
+
+      $saleNodeToCreate = $soldItems - count($existingSaleNodes);
+      for ($i = 0; $i < $saleNodeToCreate; $i++) {
+        $sale = Node::create([
+          'type' => 'sale',
+          'title' => $article->getTitle(),
+          'field_sale_article_ref' => $article,
+          'field_sale_price' => (float) $price,
+        ]);
+        $sale->setRevisionUserId(1);
+        $sale->setRevisionLogMessage('Created');
+        $sale->save();
       }
     }
-
-    if (in_array($jsonData['props']['initialState']['pdp']['article']['seller']['nickname'], ['Apost008'])) {
-      continue;
-    }
-    $a = 1;
-
-    //    $article->set('moderation_state', ArticleDetailFetchService::STATE_FOR_SCRAPE);
-    //    if ($article instanceof RevisionLogInterface) {
-    //      $article->setRevisionUserId(1);
-    //      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FOR_SCRAPE);
-    //    }
-    //    $article->setChangedTime(time());
-    //    $article->save();
   }
 }
 
