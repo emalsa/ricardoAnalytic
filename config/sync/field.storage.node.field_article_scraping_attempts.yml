@@ -1,0 +1,20 @@
+uuid: 32479f29-668a-4e67-b3a2-cab09a40b22a
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_article_scraping_attempts
+field_name: field_article_scraping_attempts
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

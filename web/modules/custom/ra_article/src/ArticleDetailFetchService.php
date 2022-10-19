@@ -23,6 +23,13 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
   public const FETCHER_SERVICE_BASE_URL = 'https://ricardo-crawler-vimooyk3pq-wl.a.run.app/article';
 
   /**
+   * The state iof article is open.
+   *
+   * @var string
+   */
+  public const STATE_FOR_OPEN = 'open';
+
+  /**
    * The state to be fetched.
    *
    * @var string

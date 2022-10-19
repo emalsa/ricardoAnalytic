@@ -2,6 +2,7 @@
 
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
 use Drupal\ra_article\ArticleDetailFetchService;
 
 /**
@@ -23,7 +24,7 @@ function ra_article_scrape_article_cron() {
  */
 function ra_article_scrape_seller_articles_cron() {
   /** @var \Drupal\ra_article\SellerArticlesServiceInterface $sellerArticleService */
-  $sellerArticleService = \Drupal::service("ra_article.seller_articles");
+  $sellerArticleService = \Drupal::service('ra_article.seller_articles');
   $sellerArticleService->fetchSellerArticles();
 }
 
@@ -69,4 +70,62 @@ function _change_article_status_cron() {
     $article->save();
   }
 }
+
+/**
+ * Determine if article was sold or not.
+ */
+function _process_article_status_cron() {
+  return;
+  $database = \Drupal::database();
+  $query = $database->select('node_field_data', 'n');
+  $query->fields('n', ['nid'])
+    ->condition('n.type', 'article')
+    ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_SUCCESSFUL_FETCH)
+    ->range(1200, 200)
+    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
+
+  $articleNids = $query->execute()->fetchAll();
+  if (empty($articleNids)) {
+    return;
+  }
+
+  foreach ($articleNids as $nid) {
+    $article = Node::load($nid->nid);
+    if (!$article instanceof NodeInterface) {
+
+    }
+    $jsonData = $article->get('field_article_raw_json')->getValue();
+    if (empty($jsonData) || empty($jsonData[0]['value'])) {
+
+    }
+
+
+    $jsonData = unserialize($jsonData[0]['value']);
+    $remainingTime = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_time'];
+    // Auction is finished.
+    if ($remainingTime < 0) {
+      $initialQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
+      $remainingQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
+      // Determine how many items has been sold.
+      $soldItems = $initialQuantity - $remainingQuantity;
+      if ($soldItems > 1) {
+
+      }
+    }
+
+    if (in_array($jsonData['props']['initialState']['pdp']['article']['seller']['nickname'], ['Apost008'])) {
+      continue;
+    }
+    $a = 1;
+
+    //    $article->set('moderation_state', ArticleDetailFetchService::STATE_FOR_SCRAPE);
+    //    if ($article instanceof RevisionLogInterface) {
+    //      $article->setRevisionUserId(1);
+    //      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FOR_SCRAPE);
+    //    }
+    //    $article->setChangedTime(time());
+    //    $article->save();
+  }
+}
+
 

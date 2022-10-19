@@ -1,0 +1,23 @@
+uuid: e38eff5f-99e2-489b-ab0d-dd6042504cfd
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_sale_price
+    - node.type.sale
+id: node.sale.field_sale_price
+field_name: field_sale_price
+entity_type: node
+bundle: sale
+label: Price
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: decimal

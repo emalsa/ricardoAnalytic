@@ -1,0 +1,11 @@
+uuid: 4fc0205d-7f78-4340-8e9b-c9e051de547e
+langcode: de
+status: true
+dependencies:
+  config:
+    - node.type.sale
+id: node.sale
+target_entity_type_id: node
+target_bundle: sale
+default_langcode: site_default
+language_alterable: false

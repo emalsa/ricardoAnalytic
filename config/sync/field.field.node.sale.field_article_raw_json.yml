@@ -1,0 +1,19 @@
+uuid: 64de23d7-5aa6-4a57-8dcf-0dcb08f93335
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_raw_json
+    - node.type.sale
+id: node.sale.field_article_raw_json
+field_name: field_article_raw_json
+entity_type: node
+bundle: sale
+label: 'Raw JSON'
+description: 'Current JSON data'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

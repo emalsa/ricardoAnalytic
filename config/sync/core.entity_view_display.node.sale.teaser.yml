@@ -1,0 +1,30 @@
+uuid: 6c8674f9-d2df-4e0d-a3f0-8dfe2fa75ad6
+langcode: de
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.sale.field_article_raw_json
+    - field.field.node.sale.field_sale_article_ref
+    - field.field.node.sale.field_sale_price
+    - field.field.node.sale.field_sale_seller_ref
+    - node.type.sale
+  module:
+    - user
+id: node.sale.teaser
+targetEntityType: node
+bundle: sale
+mode: teaser
+content:
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  field_article_raw_json: true
+  field_sale_article_ref: true
+  field_sale_price: true
+  field_sale_seller_ref: true
+  langcode: true
+  search_api_excerpt: true

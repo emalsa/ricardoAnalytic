@@ -1,0 +1,59 @@
+uuid: 10c358d7-6f10-4333-9d68-08095a0278fe
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.field.node.sale.field_article_raw_json
+    - field.field.node.sale.field_sale_article_ref
+    - field.field.node.sale.field_sale_price
+    - field.field.node.sale.field_sale_seller_ref
+    - node.type.sale
+  module:
+    - user
+id: node.sale.default
+targetEntityType: node
+bundle: sale
+mode: default
+content:
+  field_article_raw_json:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 105
+    region: content
+  field_sale_article_ref:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 102
+    region: content
+  field_sale_price:
+    type: number_decimal
+    label: above
+    settings:
+      thousand_separator: ''
+      decimal_separator: .
+      scale: 2
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 104
+    region: content
+  field_sale_seller_ref:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: 103
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

@@ -83,6 +83,7 @@ type_settings:
     to_scrape:
       label: 'To scrape'
       from:
+        - failed
         - open
         - to_process
         - to_scrape

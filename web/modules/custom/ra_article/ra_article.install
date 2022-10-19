@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Core\Database\Database;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_update_8000().
@@ -51,6 +52,7 @@ function ra_article_update_8000(&$sandbox) {
  * Update all articles with new shop.
  */
 function ra_article_update_8001(&$sandbox) {
+  return;
   /** @var \Drupal\node\NodeStorage $nodeStorage */
   $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
   $sellerEntity = $nodeStorage->loadByProperties([
@@ -62,6 +64,36 @@ function ra_article_update_8001(&$sandbox) {
   foreach ($allArticles as $article) {
     $article->set('field_article_seller_ref', $sellerEntity);
     $article->save();
+  }
+
+}
+
+/**
+ * Implements hook_update_8002().
+ *
+ * Update all articles with scraping attempts.
+ */
+function ra_article_post_update_attempts() {
+  /** @var \Drupal\node\NodeStorage $nodeStorage */
+  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+  $entityQuery = $nodeStorage
+    ->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article');
+  $articleNids = $entityQuery->execute();
+
+  if (empty($articleNids)) {
+    return;
+  }
+
+  foreach ($articleNids as $nid) {
+    $article = $nodeStorage->load($nid);
+    if ($article->get('field_article_scraping_attempts')->isEmpty()) {
+      $article->set('field_article_scraping_attempts', 0);
+      $article->save();
+    }
+
+
   }
 
 }

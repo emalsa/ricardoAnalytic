@@ -1,0 +1,23 @@
+uuid: 03a09e4b-dbeb-4aa9-a6fb-4bad4e981fd9
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_initial_quantity
+    - node.type.article
+id: node.article.field_article_initial_quantity
+field_name: field_article_initial_quantity
+entity_type: node
+bundle: article
+label: 'Initial quantity'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

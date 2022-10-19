@@ -5,7 +5,10 @@ dependencies:
   config:
     - field.field.node.article.field_article_end_date
     - field.field.node.article.field_article_id
+    - field.field.node.article.field_article_initial_quantity
     - field.field.node.article.field_article_raw_json
+    - field.field.node.article.field_article_remaining_quantity
+    - field.field.node.article.field_article_scraping_attempts
     - field.field.node.article.field_article_seller_ref
     - node.type.article
   module:
@@ -38,12 +41,39 @@ content:
     third_party_settings: {  }
     weight: 104
     region: content
+  field_article_initial_quantity:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 105
+    region: content
   field_article_raw_json:
     type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
     weight: 102
+    region: content
+  field_article_remaining_quantity:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 106
+    region: content
+  field_article_scraping_attempts:
+    type: number_integer
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    weight: 107
     region: content
   field_article_seller_ref:
     type: entity_reference_label

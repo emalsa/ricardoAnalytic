@@ -1,0 +1,23 @@
+uuid: 1e085af7-af5e-4f19-b641-2cfa9282a6c8
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_remaining_quantity
+    - node.type.article
+id: node.article.field_article_remaining_quantity
+field_name: field_article_remaining_quantity
+entity_type: node
+bundle: article
+label: 'Remaining quantity'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

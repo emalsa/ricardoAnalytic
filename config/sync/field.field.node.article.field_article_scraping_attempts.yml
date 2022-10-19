@@ -1,0 +1,25 @@
+uuid: 3a91f939-52ee-4214-8984-b9fc600268de
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_article_scraping_attempts
+    - node.type.article
+id: node.article.field_article_scraping_attempts
+field_name: field_article_scraping_attempts
+entity_type: node
+bundle: article
+label: 'Scraping attempts'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

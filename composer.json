@@ -41,7 +41,8 @@
         "drupal/upgrade_status": "^3.17",
         "drupal/core-recommended": "^9",
         "drupal/core-composer-scaffold": "^9",
-        "drupal/core-project-message": "^9"
+        "drupal/core-project-message": "^9",
+        "drupal/console": "^1.9"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "3.*"

@@ -1,0 +1,17 @@
+uuid: 438fc175-49df-4b77-b264-4d463a213331
+langcode: de
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: Sale
+type: sale
+description: ''
+help: ''
+new_revision: true
+preview_mode: 0
+display_submitted: false
