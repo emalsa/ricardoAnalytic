@@ -43,6 +43,10 @@ function ra_article_scrape_seller_articles_init_cron() {
  * Changes article status to scrape.
  */
 function _change_article_status_cron() {
+  // @todo: remove this function below, after some time.
+  _add_scraping_attempts();
+
+  // Change to_process
   $timestamp = strtotime('-3 days', time());
   $datetime = date('Y-m-d\Th:m:s', $timestamp);
 
@@ -69,9 +73,6 @@ function _change_article_status_cron() {
     $article->setChangedTime(time());
     $article->save();
   }
-
-  // @todo: remove after some time
-  _add_scraping_attempts();
 }
 
 function _add_scraping_attempts(){
