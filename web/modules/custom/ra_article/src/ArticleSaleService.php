@@ -76,6 +76,10 @@ class ArticleSaleService implements ArticleSaleServiceInterface {
    * {@inheritDoc}
    */
   public function createSaleNode(NodeInterface $article, $initialQuantity, $remainingQuantity, $price) {
+    if ($remainingQuantity <= 0) {
+      return;
+    }
+
     // Determine how many items has been sold and create Sale node if necessary.
     // Maybe we created some Sale node already in the further process.
     /** @var \Drupal\node\NodeStorage $nodeStorage */
@@ -85,13 +89,9 @@ class ArticleSaleService implements ArticleSaleServiceInterface {
       'field_sale_article_ref' => $article->id(),
     ]);
 
-    if ($remainingQuantity > 0) {
-      $soldItems = $initialQuantity - $remainingQuantity;
-      $saleNodeToCreate = $soldItems - count($existingSaleNodes);
-    }
-    else {
-      $saleNodeToCreate = 0;
-    }
+    $soldItems = $initialQuantity - $remainingQuantity;
+    $saleNodeToCreate = $soldItems - count($existingSaleNodes);
+
     for ($i = 0; $i < $saleNodeToCreate; $i++) {
       $sale = Node::create([
         'type' => 'sale',

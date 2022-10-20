@@ -1,6 +1,6 @@
 uuid: 60620254-85e2-4599-b554-e0216a2948ca
 langcode: de
-status: false
+status: true
 dependencies:
   module:
     - ra_article
@@ -13,7 +13,7 @@ scheduler:
   id: crontab
   configuration:
     rules:
-      - '*/2+@ * * * *'
+      - '*/4+@ * * * *'
     catch_up: 0
 launcher:
   id: serial

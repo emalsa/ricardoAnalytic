@@ -43,33 +43,6 @@ function ra_article_scrape_seller_articles_init_cron() {
  * Changes article status: to_scrape.
  */
 function _change_article_status_cron(): void {
-  //  /** @var \Drupal\node\NodeStorage $nodeStorage */
-  //  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
-  //  $entityQuery = $nodeStorage
-  //    ->getQuery()
-  //    ->accessCheck(FALSE)
-  //    ->condition('type', 'article')
-  //    ->range(0, 5000);
-  //  $articleNids = $entityQuery->execute();
-
-  $database = \Drupal::database();
-  $query = $database->select('node_field_data', 'n');
-  $query->fields('n', ['nid'])
-    ->condition('n.type', 'sale')
-    ->range(0, 2000);
-
-  $articleNids = $query->execute()->fetchAll();
-
-  if (empty($articleNids)) {
-    return;
-  }
-
-  foreach ($articleNids as $nid) {
-    $article = Node::load($nid->nid);
-    $article->delete();
-  }
-
-  return;
   $timestamp = strtotime('-3 days', time());
   $datetime = date('Y-m-d\Th:m:s', $timestamp);
 
