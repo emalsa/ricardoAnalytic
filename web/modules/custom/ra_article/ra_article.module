@@ -154,7 +154,7 @@ function _delete_old_revision() {
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
     ->orderBy('n.changed', 'ASC')
-    ->range(0, 10)
+    ->range(0, 50)
     ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_TO_SCRAPE)
     ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
