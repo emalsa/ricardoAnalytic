@@ -55,7 +55,7 @@ function _change_article_status_cron(): void {
   $database = \Drupal::database();
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
-    ->condition('cm.moderation_state', 'closed')
+    ->condition('cm.moderation_state', 'to_process')
     ->range(0, 5000)
     ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
