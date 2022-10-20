@@ -4,6 +4,7 @@ status: true
 dependencies:
   module:
     - menu_ui
+    - node_revision_delete
 third_party_settings:
   menu_ui:
     available_menus: {  }
