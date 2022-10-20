@@ -118,39 +118,48 @@ function _process_article_status_cron() {
 
     $remainingTime = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_time'];
     // Auction is finished.
-    if ($remainingTime < 0) {
+    if ($article->get('field_article_scraping_attempts')->value >= 4 || $remainingTime < 0) {
       // Close article.
       $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_CLOSED);
       $article->set('moderation_state', ArticleDetailFetchService::STATE_CLOSED);
-      $article->save();
-
-      $price = $jsonData['props']['initialState']['pdp']['article']['offer']['price'];
-      $initialQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
-      $remainingQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
-      $soldItems = $initialQuantity - $remainingQuantity;
-
-      // Determine how many items has been sold and create Sale node if necessary.
-      // Maybe we created some Sale node already in the further process.
-      /** @var \Drupal\node\NodeStorage $nodeStorage */
-      $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
-      $existingSaleNodes = $nodeStorage->loadByProperties([
-        'type' => 'sale',
-        'field_sale_article_ref' => $article->id(),
-      ]);
-
-      $saleNodeToCreate = $soldItems - count($existingSaleNodes);
-      for ($i = 0; $i < $saleNodeToCreate; $i++) {
-        $sale = Node::create([
-          'type' => 'sale',
-          'title' => $article->getTitle(),
-          'field_sale_article_ref' => $article,
-          'field_sale_price' => (float) $price,
-        ]);
-        $sale->setRevisionUserId(1);
-        $sale->setRevisionLogMessage('Created');
-        $sale->save();
-      }
     }
+    else {
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FOR_OPEN);
+      $article->set('moderation_state', ArticleDetailFetchService::STATE_FOR_OPEN);
+      $endDate = $jsonData['props']['initialState']['pdp']['article']['offer']['end_date'];
+      $article->set('field_article_end_date', str_replace('Z', '', $endDate));
+    }
+    $price = $jsonData['props']['initialState']['pdp']['article']['offer']['price'];
+    $initialQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
+    $remainingQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
+    $soldItems = $initialQuantity - $remainingQuantity;
+
+    $article->set('field_article_remaining_quantity', $remainingQuantity);
+    $article->set('field_article_initial_quantity', $initialQuantity);
+    $article->save();
+
+    // Determine how many items has been sold and create Sale node if necessary.
+    // Maybe we created some Sale node already in the further process.
+    /** @var \Drupal\node\NodeStorage $nodeStorage */
+    $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+    $existingSaleNodes = $nodeStorage->loadByProperties([
+      'type' => 'sale',
+      'field_sale_article_ref' => $article->id(),
+    ]);
+
+    $saleNodeToCreate = $soldItems - count($existingSaleNodes);
+    for ($i = 0; $i < $saleNodeToCreate; $i++) {
+      $sale = Node::create([
+        'type' => 'sale',
+        'title' => $article->getTitle(),
+        'field_sale_article_ref' => $article,
+        'field_sale_price' => (float) $price,
+      ]);
+      $sale->setRevisionUserId(1);
+      $sale->setRevisionLogMessage('Created');
+      $sale->save();
+    }
+
   }
 }
 
