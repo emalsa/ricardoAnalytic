@@ -171,6 +171,9 @@ class StatusBlock extends BlockBase implements ContainerFactoryPluginInterface {
       ->execute()
       ->fetchField();
 
+    $build['#content']['empty']['label'] = '';
+    $build['#content']['empty']['count'] = '';
+
     $build['#content']['sales']['label'] = 'Sales';
     $build['#content']['sales']['count'] = $countQuery;
 
