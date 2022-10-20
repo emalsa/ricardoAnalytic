@@ -1,3 +1,0 @@
-administer node_revision_delete:
-  title: 'Administer Node Revision Delete'
-  description: 'Allows access to configure the module settings.'
