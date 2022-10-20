@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'b4c29bb14d29abb7316e01e8a034aaf5f63ca0da',
+        'reference' => 'bcbb8d2d1c62d6346ecc49bc49232a813c56e9c1',
         'name' => 'ra/drupal-project',
         'dev' => true,
     ),
@@ -592,12 +592,12 @@
             'dev_requirement' => false,
         ),
         'drupal/search_api' => array(
-            'pretty_version' => '1.26.0',
-            'version' => '1.26.0.0',
+            'pretty_version' => '1.27.0',
+            'version' => '1.27.0.0',
             'type' => 'drupal-module',
             'install_path' => __DIR__ . '/../../web/modules/contrib/search_api',
             'aliases' => array(),
-            'reference' => '8.x-1.26',
+            'reference' => '8.x-1.27',
             'dev_requirement' => false,
         ),
         'drupal/search_api_solr' => array(
@@ -1033,7 +1033,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'b4c29bb14d29abb7316e01e8a034aaf5f63ca0da',
+            'reference' => 'bcbb8d2d1c62d6346ecc49bc49232a813c56e9c1',
             'dev_requirement' => false,
         ),
         'ralouphie/getallheaders' => array(
