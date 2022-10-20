@@ -149,16 +149,20 @@ function _process_article_status_cron() {
  * Delete old revisions.
  */
 function _delete_old_revision() {
+  $start = \Drupal::state()->get('start');
+  if (!$start) {
+    $start = 0;
+  }
+
   $database = \Drupal::database();
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
-    ->orderBy('n.changed', 'ASC')
-    ->range(0, 50)
-    ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_TO_SCRAPE)
-    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
-
+    ->range($start, 20);
   $articleNids = $query->execute()->fetchAll();
+
+  \Drupal::state()->set('start', $start + 20);
+
   if (empty($articleNids)) {
     return;
   }
