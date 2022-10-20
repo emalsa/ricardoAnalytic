@@ -43,20 +43,20 @@ function ra_article_scrape_seller_articles_init_cron() {
  * Changes article status: to_scrape.
  */
 function _change_article_status_cron(): void {
-//  /** @var \Drupal\node\NodeStorage $nodeStorage */
-//  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
-//  $entityQuery = $nodeStorage
-//    ->getQuery()
-//    ->accessCheck(FALSE)
-//    ->condition('type', 'article')
-//    ->range(0, 5000);
-//  $articleNids = $entityQuery->execute();
+  //  /** @var \Drupal\node\NodeStorage $nodeStorage */
+  //  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+  //  $entityQuery = $nodeStorage
+  //    ->getQuery()
+  //    ->accessCheck(FALSE)
+  //    ->condition('type', 'article')
+  //    ->range(0, 5000);
+  //  $articleNids = $entityQuery->execute();
 
   $database = \Drupal::database();
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
     ->condition('cm.moderation_state', 'closed')
-    ->range(0, 10)
+    ->range(0, 5000)
     ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
   $articleNids = $query->execute()->fetchAll();
@@ -67,13 +67,6 @@ function _change_article_status_cron(): void {
 
   foreach ($articleNids as $nid) {
     $article = Node::load($nid->nid);
-    if ($article->get('moderation_state')->value === ArticleDetailFetchService::STATE_OPEN) {
-      continue;
-    }
-    if (!$article->get('field_article_reset')->isEmpty() && $article->get('field_article_reset')->value == '1') {
-      continue;
-    }
-
     $article->set('field_article_reset', TRUE);
     $article->set('moderation_state', ArticleDetailFetchService::STATE_OPEN);
     $article->setRevisionLogMessage('Reset, changed to ' . ArticleDetailFetchService::STATE_OPEN);
