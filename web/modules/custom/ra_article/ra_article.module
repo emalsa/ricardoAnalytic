@@ -49,7 +49,7 @@ function _change_article_status_cron(): void {
     ->getQuery()
     ->accessCheck(FALSE)
     ->condition('type', 'article')
-    ->range(0, 1000)
+    ->range(0, 5000)
     ->sort('changed','ASC');
   $articleNids = $entityQuery->execute();
 
