@@ -1,6 +1,6 @@
 uuid: 4482ca59-bb7b-400a-aaae-d3bc0e349179
 langcode: de
-status: true
+status: false
 dependencies:
   module:
     - locale

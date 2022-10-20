@@ -10,18 +10,18 @@ weight: 0
 module: ra_article
 callback: ra_article_scrape_article_cron
 scheduler:
-  id: simple
+  id: crontab
   configuration:
     rules:
-      - '*/5+@ * * * *'
+      - '*/4+@ * * * *'
+    catch_up: 0
 launcher:
   id: serial
   configuration:
     timeouts:
       lock_timeout: 3600
-      max_execution_time: 3600
     launcher:
-      max_threads: 1
+      thread: 0
 logger:
   id: database
   configuration:

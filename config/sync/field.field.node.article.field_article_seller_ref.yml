@@ -12,7 +12,7 @@ entity_type: node
 bundle: article
 label: Seller
 description: ''
-required: true
+required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
@@ -23,6 +23,7 @@ settings:
       seller: seller
     sort:
       field: _none
+      direction: ASC
     auto_create: false
     auto_create_bundle: ''
 field_type: entity_reference
