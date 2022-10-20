@@ -56,6 +56,7 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
    * @var string
    */
   public const STATE_CLOSED = 'closed';
+
   /**
    * The EntityTypeManager.
    *
@@ -144,6 +145,9 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
         continue;
       }
 
+      $scrapingAttempts = $article->get('field_article_scraping_attempts')->value + 1;
+      $article->set('field_article_scraping_attempts', $scrapingAttempts);
+
       // Fetch the article data.
       try {
         $response = $this->httpClient->post(
@@ -161,14 +165,17 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       catch (\Exception $e) {
         $this->loggerChannelRaArticleDetail->error($e->getMessage());
         $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
-        $article->set('moderation_state', self::STATE_ERROR_FETCH)->save();
+        $article->set('field_article_scraping_attempts', $scrapingAttempts);
+        $article->set('moderation_state', self::STATE_ERROR_FETCH);
+        $article->save();
         continue;
       }
 
       if ($response->getStatusCode() != 200) {
         $this->loggerChannelRaArticleDetail->error('Returned a non 200 status code');
         $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
-        $article->set('moderation_state', self::STATE_ERROR_FETCH)->save();
+        $article->set('moderation_state', self::STATE_ERROR_FETCH);
+        $article->save();
         continue;
       }
 
@@ -176,39 +183,52 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       if (empty($data)) {
         $this->loggerChannelRaArticleDetail->error('Empty data from response');
         $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
-        $article->set('moderation_state', self::STATE_ERROR_FETCH)->save();
+        $article->set('moderation_state', self::STATE_ERROR_FETCH);
+        $article->save();
         continue;
       }
 
+      $data = self::cleanJsonData($data);
       $article->set('field_article_raw_json', [
         'value' => serialize($data),
       ]);
 
       $initialQuantity = $data['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
       $remainingQuantity = $data['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
-      $scrapingAttempts = $article->get('field_article_scraping_attempts')->value + 1;
 
       $article->set('field_article_remaining_quantity', $remainingQuantity);
       $article->set('field_article_initial_quantity', $initialQuantity);
       $article->set('field_article_scraping_attempts', $scrapingAttempts);
 
       // Max. attempts reached or auction finished, then close it.
-      if ($article->get('field_article_scraping_attempts')->value >= 4
-        || $data['props']['initialState']['pdp']['article']['offer']['remaining_time'] < 0
-      ) {
+      $remainingTime = $data['props']['initialState']['pdp']['article']['offer']['remaining_time'];
+      if ($article->get('field_article_scraping_attempts')->value >= 4 || $remainingTime < 0) {
         $article->set('moderation_state', self::STATE_SUCCESSFUL_FETCH);
         $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_SUCCESSFUL_FETCH);
       }
       else {
         $article->set('moderation_state', self::STATE_FOR_OPEN);
         $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_FOR_OPEN);
-
         $endDate = $data['props']['initialState']['pdp']['article']['offer']['end_date'];
         $article->set('field_article_end_date', str_replace('Z', '', $endDate));
       }
 
       $article->save();
     }
+  }
+
+  /**
+   * Clean json data.
+   *
+   * @param  array  $jsonData
+   * The json data to clean
+   *
+   * @return array
+   * The cleaned data.
+   */
+  public static function cleanJsonData(array $jsonData): array {
+    $cleanData['props']['initialState']['pdp'] = $jsonData['props']['initialState']['pdp'];
+    return $cleanData;
   }
 
 }
