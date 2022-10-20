@@ -69,7 +69,7 @@ function _change_article_status_cron(): void {
     $article->set('field_article_reset', TRUE);
     $article->set('moderation_state', ArticleDetailFetchService::STATE_OPEN);
     $article->setRevisionLogMessage('Reset, changed to ' . ArticleDetailFetchService::STATE_OPEN);
-    $article->set('field_article_scraping_attempts', 2);
+    $article->set('field_article_scraping_attempts', 1000);
     $article->save();
   }
 
