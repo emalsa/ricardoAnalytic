@@ -55,7 +55,7 @@ function _change_article_status_cron(): void {
   $database = \Drupal::database();
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
-    ->condition('cm.moderation_state', 'to_process')
+    ->condition('cm.moderation_state', 'to_scrape')
     ->range(0, 5000)
     ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
@@ -161,36 +161,18 @@ function _process_article_status_cron() {
       $endDate = $jsonData['props']['initialState']['pdp']['article']['offer']['end_date'];
       $article->set('field_article_end_date', str_replace('Z', '', $endDate));
     }
+
     $price = $jsonData['props']['initialState']['pdp']['article']['offer']['price'];
     $initialQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
     $remainingQuantity = $jsonData['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
-    $soldItems = $initialQuantity - $remainingQuantity;
 
     $article->set('field_article_remaining_quantity', $remainingQuantity);
     $article->set('field_article_initial_quantity', $initialQuantity);
     $article->save();
 
-    // Determine how many items has been sold and create Sale node if necessary.
-    // Maybe we created some Sale node already in the further process.
-    /** @var \Drupal\node\NodeStorage $nodeStorage */
-    $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
-    $existingSaleNodes = $nodeStorage->loadByProperties([
-      'type' => 'sale',
-      'field_sale_article_ref' => $article->id(),
-    ]);
-
-    $saleNodeToCreate = $soldItems - count($existingSaleNodes);
-    for ($i = 0; $i < $saleNodeToCreate; $i++) {
-      $sale = Node::create([
-        'type' => 'sale',
-        'title' => $article->getTitle(),
-        'field_sale_article_ref' => $article,
-        'field_sale_price' => (float) $price,
-      ]);
-      $sale->setRevisionUserId(1);
-      $sale->setRevisionLogMessage('Created');
-      $sale->save();
-    }
+    /** @var \Drupal\ra_article\ArticleSaleServiceInterface $articleSale */
+    $articleSale = \Drupal::service('ra_article.sale');
+    $articleSale->createSaleNode($article, $initialQuantity, $remainingQuantity, $price);
 
   }
 }

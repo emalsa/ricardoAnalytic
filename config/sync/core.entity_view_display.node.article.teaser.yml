@@ -9,7 +9,6 @@ dependencies:
     - field.field.node.article.field_article_initial_quantity
     - field.field.node.article.field_article_raw_json
     - field.field.node.article.field_article_remaining_quantity
-    - field.field.node.article.field_article_reset
     - field.field.node.article.field_article_scraping_attempts
     - field.field.node.article.field_article_seller_ref
     - node.type.article
@@ -36,7 +35,6 @@ hidden:
   field_article_initial_quantity: true
   field_article_raw_json: true
   field_article_remaining_quantity: true
-  field_article_reset: true
   field_article_scraping_attempts: true
   field_article_seller_ref: true
   langcode: true

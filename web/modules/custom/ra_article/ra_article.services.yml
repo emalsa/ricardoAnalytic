@@ -15,9 +15,18 @@ services:
       - '@entity_type.manager'
       - '@logger.channel.ra_seller_articles'
       - '@database'
+      - '@ra_article.sale'
 
   ra_article.seller_articles:
     class: Drupal\ra_article\SellerArticlesService
+    arguments:
+      - '@http_client'
+      - '@entity_type.manager'
+      - '@logger.channel.ra_seller_articles'
+      - '@database'
+
+  ra_article.sale:
+    class: Drupal\ra_article\ArticleSaleService
     arguments:
       - '@http_client'
       - '@entity_type.manager'

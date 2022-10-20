@@ -8,7 +8,6 @@ dependencies:
     - field.field.node.article.field_article_initial_quantity
     - field.field.node.article.field_article_raw_json
     - field.field.node.article.field_article_remaining_quantity
-    - field.field.node.article.field_article_reset
     - field.field.node.article.field_article_scraping_attempts
     - field.field.node.article.field_article_seller_ref
     - node.type.article
@@ -87,13 +86,6 @@ content:
     region: content
     settings:
       placeholder: ''
-    third_party_settings: {  }
-  field_article_reset:
-    type: boolean_checkbox
-    weight: 26
-    region: content
-    settings:
-      display_label: true
     third_party_settings: {  }
   field_article_scraping_attempts:
     type: number

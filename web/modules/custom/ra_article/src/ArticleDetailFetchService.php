@@ -100,6 +100,13 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
   protected LoggerChannelInterface $loggerChannelRaArticleDetail;
 
   /**
+   * Article sale service.
+   *
+   * @var \Drupal\ra_article\ArticleSaleServiceInterface
+   */
+  protected ArticleSaleServiceInterface $articleSale;
+
+  /**
    * Constructs a new ArticleDetailFetchService object.
    *
    * @param  \GuzzleHttp\ClientInterface  $httpClient
@@ -111,13 +118,15 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
     ClientInterface $httpClient,
     EntityTypeManagerInterface $entityTypeManager,
     LoggerChannelInterface $loggerChannelRaSellerArticles,
-    Connection $database
+    Connection $database,
+    ArticleSaleServiceInterface $articleSale
   ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->httpClient = $httpClient;
     $this->database = $database;
     $this->nodeStorage = $this->entityTypeManager->getStorage('node');
     $this->loggerChannelRaArticleDetail = $loggerChannelRaSellerArticles;
+    $this->articleSale = $articleSale;
   }
 
   /**
@@ -200,6 +209,7 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
         'value' => serialize($data),
       ]);
 
+      $price = $data['props']['initialState']['pdp']['article']['offer']['price'];
       $initialQuantity = $data['props']['initialState']['pdp']['article']['offer']['initial_quantity'];
       $remainingQuantity = $data['props']['initialState']['pdp']['article']['offer']['remaining_quantity'];
 
@@ -212,15 +222,20 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       if ($article->get('field_article_scraping_attempts')->value >= 4 || $remainingTime < 0) {
         $article->set('moderation_state', self::STATE_TO_PROCESS);
         $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_TO_PROCESS);
+        $article->save();
       }
       else {
         $article->set('moderation_state', self::STATE_OPEN);
         $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_OPEN);
         $endDate = $data['props']['initialState']['pdp']['article']['offer']['end_date'];
         $article->set('field_article_end_date', str_replace('Z', '', $endDate));
+        $article->save();
+
+        /** @var \Drupal\ra_article\ArticleSaleServiceInterface $articleSale */
+        $articleSale = \Drupal::service('ra_article.sale');
+        $articleSale->createSaleNode($article, $initialQuantity, $remainingQuantity, $price);
       }
 
-      $article->save();
     }
   }
 
