@@ -23,32 +23,39 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
   public const FETCHER_SERVICE_BASE_URL = 'https://ricardo-crawler-vimooyk3pq-wl.a.run.app/article';
 
   /**
+   * Amount of article fetch per cron.
+   *
+   * @var int
+   */
+  public const FETCH_ARTICLE_MAX = 5;
+
+  /**
    * The state iof article is open.
    *
    * @var string
    */
-  public const STATE_FOR_OPEN = 'open';
+  public const STATE_OPEN = 'open';
 
   /**
    * The state to be fetched.
    *
    * @var string
    */
-  public const STATE_FOR_SCRAPE = 'to_scrape';
+  public const STATE_TO_SCRAPE = 'to_scrape';
 
   /**
    * The state after successful fetch.
    *
    * @var string
    */
-  public const STATE_SUCCESSFUL_FETCH = 'to_process';
+  public const STATE_TO_PROCESS = 'to_process';
 
   /**
    * The state after failed fetch.
    *
    * @var string
    */
-  public const STATE_ERROR_FETCH = 'failed';
+  public const STATE_FAILED = 'failed';
 
   /**
    * The state of the closed auction.
@@ -121,9 +128,9 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
     $query->fields('n', ['nid'])
       ->condition('n.type', 'article')
       ->condition('n.status', NodeInterface::PUBLISHED)
-      ->condition('cm.moderation_state', self::STATE_FOR_SCRAPE)
+      ->condition('cm.moderation_state', self::STATE_TO_SCRAPE)
       ->orderBy('n.changed', 'ASC')
-      ->range(0, 2)
+      ->range(0, self::FETCH_ARTICLE_MAX)
       ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
     $articleNids = $query->execute()->fetchAll();
@@ -164,17 +171,17 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       }
       catch (\Exception $e) {
         $this->loggerChannelRaArticleDetail->error($e->getMessage());
-        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_FAILED);
         $article->set('field_article_scraping_attempts', $scrapingAttempts);
-        $article->set('moderation_state', self::STATE_ERROR_FETCH);
+        $article->set('moderation_state', self::STATE_FAILED);
         $article->save();
         continue;
       }
 
       if ($response->getStatusCode() != 200) {
         $this->loggerChannelRaArticleDetail->error('Returned a non 200 status code');
-        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
-        $article->set('moderation_state', self::STATE_ERROR_FETCH);
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_FAILED);
+        $article->set('moderation_state', self::STATE_FAILED);
         $article->save();
         continue;
       }
@@ -182,8 +189,8 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       $data = json_decode($response->getBody()->getContents(), TRUE);
       if (empty($data)) {
         $this->loggerChannelRaArticleDetail->error('Empty data from response');
-        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_ERROR_FETCH);
-        $article->set('moderation_state', self::STATE_ERROR_FETCH);
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_FAILED);
+        $article->set('moderation_state', self::STATE_FAILED);
         $article->save();
         continue;
       }
@@ -203,12 +210,12 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
       // Max. attempts reached or auction finished, then close it.
       $remainingTime = $data['props']['initialState']['pdp']['article']['offer']['remaining_time'];
       if ($article->get('field_article_scraping_attempts')->value >= 4 || $remainingTime < 0) {
-        $article->set('moderation_state', self::STATE_SUCCESSFUL_FETCH);
-        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_SUCCESSFUL_FETCH);
+        $article->set('moderation_state', self::STATE_TO_PROCESS);
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_TO_PROCESS);
       }
       else {
-        $article->set('moderation_state', self::STATE_FOR_OPEN);
-        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_FOR_OPEN);
+        $article->set('moderation_state', self::STATE_OPEN);
+        $article->setRevisionLogMessage('Scraped, changed to ' . self::STATE_OPEN);
         $endDate = $data['props']['initialState']['pdp']['article']['offer']['end_date'];
         $article->set('field_article_end_date', str_replace('Z', '', $endDate));
       }

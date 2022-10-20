@@ -40,9 +40,40 @@ function ra_article_scrape_seller_articles_init_cron() {
 }
 
 /**
- * Changes article status to scrape.
+ * Changes article status: to_scrape.
  */
 function _change_article_status_cron(): void {
+  /** @var \Drupal\node\NodeStorage $nodeStorage */
+  $nodeStorage = \Drupal::service('entity_type.manager')->getStorage('node');
+  $entityQuery = $nodeStorage
+    ->getQuery()
+    ->accessCheck(FALSE)
+    ->condition('type', 'article')
+    ->range(0, 2)
+    ->sort('changed','ASC');
+  $articleNids = $entityQuery->execute();
+
+  if (empty($articleNids)) {
+    return;
+  }
+
+  foreach ($articleNids as $nid) {
+    $article = $nodeStorage->load($nid);
+    if ($article->get('moderation_state')->value === ArticleDetailFetchService::STATE_OPEN) {
+      continue;
+    }
+    if (!$article->get('field_article_reset')->isEmpty() && $article->get('field_article_reset')->value == '1') {
+      continue;
+    }
+
+    $article->set('field_article_reset', TRUE);
+    $article->set('moderation_state', ArticleDetailFetchService::STATE_OPEN);
+    $article->setRevisionLogMessage('Reset, changed to ' . ArticleDetailFetchService::STATE_OPEN);
+    $article->set('field_article_scraping_attempts', 2);
+    $article->save();
+  }
+
+  return;
   $timestamp = strtotime('-3 days', time());
   $datetime = date('Y-m-d\Th:m:s', $timestamp);
 
@@ -61,10 +92,10 @@ function _change_article_status_cron(): void {
 
   foreach ($articleNids as $nid) {
     $article = Node::load($nid->entity_id);
-    $article->set('moderation_state', ArticleDetailFetchService::STATE_FOR_SCRAPE);
+    $article->set('moderation_state', ArticleDetailFetchService::STATE_TO_SCRAPE);
     if ($article instanceof RevisionLogInterface) {
       $article->setRevisionUserId(1);
-      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FOR_SCRAPE);
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_TO_SCRAPE);
     }
     $article->setChangedTime(time());
     $article->save();
@@ -79,7 +110,7 @@ function _process_article_status_cron() {
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
-    ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_SUCCESSFUL_FETCH)
+    ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_TO_PROCESS)
     ->range(0, 500)
     ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
@@ -92,8 +123,8 @@ function _process_article_status_cron() {
     $article = Node::load($nid->nid);
     if (!$article instanceof NodeInterface) {
       \Drupal::logger('ra_article')->error('No entity in _process_article_status_cron');
-      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_ERROR_FETCH);
-      $article->set('moderation_state', ArticleDetailFetchService::STATE_ERROR_FETCH);
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FAILED);
+      $article->set('moderation_state', ArticleDetailFetchService::STATE_FAILED);
       $article->save();
     }
 
@@ -111,8 +142,8 @@ function _process_article_status_cron() {
     $jsonData = unserialize($jsonData);
     if (!$jsonData) {
       \Drupal::logger('ra_article')->error('Empty data in _process_article_status_cron');
-      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_ERROR_FETCH);
-      $article->set('moderation_state', ArticleDetailFetchService::STATE_ERROR_FETCH);
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FAILED);
+      $article->set('moderation_state', ArticleDetailFetchService::STATE_FAILED);
       $article->save();
     }
 
@@ -124,8 +155,8 @@ function _process_article_status_cron() {
       $article->set('moderation_state', ArticleDetailFetchService::STATE_CLOSED);
     }
     else {
-      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_FOR_OPEN);
-      $article->set('moderation_state', ArticleDetailFetchService::STATE_FOR_OPEN);
+      $article->setRevisionLogMessage('Changed to ' . ArticleDetailFetchService::STATE_OPEN);
+      $article->set('moderation_state', ArticleDetailFetchService::STATE_OPEN);
       $endDate = $jsonData['props']['initialState']['pdp']['article']['offer']['end_date'];
       $article->set('field_article_end_date', str_replace('Z', '', $endDate));
     }

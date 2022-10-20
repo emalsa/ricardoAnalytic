@@ -1,6 +1,6 @@
 uuid: 60620254-85e2-4599-b554-e0216a2948ca
 langcode: de
-status: true
+status: false
 dependencies:
   module:
     - ra_article
