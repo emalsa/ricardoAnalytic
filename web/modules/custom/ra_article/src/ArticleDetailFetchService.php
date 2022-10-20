@@ -248,7 +248,18 @@ class ArticleDetailFetchService implements ArticleDetailFetchServiceInterface {
    * @return array
    * The cleaned data.
    */
-  public static function cleanJsonData(array $jsonData): array {
+  public static function cleanJsonData(array $jsonData): null|array {
+    if (!isset($jsonData['props']['initialState']['pdp'])) {
+      return null;
+    }
+
+    unset($jsonData['props']['initialState']['pdp']['article']['description']);
+    unset($jsonData['props']['initialState']['pdp']['article']['images']);
+    unset($jsonData['props']['initialState']['pdp']['article']['shippingInfo']);
+    unset($jsonData['props']['initialState']['pdp']['article']['seoMeta']);
+    unset($jsonData['props']['initialState']['pdp']['questionsAnswers']);
+    unset($jsonData['props']['initialState']['pdp']['realtimeFlags']);
+    unset($jsonData['props']['initialState']['pdp']['buyBox']);
     $cleanData['props']['initialState']['pdp'] = $jsonData['props']['initialState']['pdp'];
     return $cleanData;
   }
