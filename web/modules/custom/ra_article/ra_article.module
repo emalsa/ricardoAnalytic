@@ -149,9 +149,10 @@ function _process_article_status_cron() {
  * Delete old revisions.
  */
 function _delete_old_revision() {
-  $start = \Drupal::state()->get('start');
+
+  $start = \Drupal::state()->get("start");
   if (!$start) {
-    $start = 0;
+    $start = 48500;
   }
 
   $database = \Drupal::database();
@@ -161,7 +162,7 @@ function _delete_old_revision() {
     ->range($start, 20);
   $articleNids = $query->execute()->fetchAll();
 
-  \Drupal::state()->set('start', $start + 20);
+  \Drupal::state()->set('start', $start - 20);
 
   if (empty($articleNids)) {
     return;
