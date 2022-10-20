@@ -34,8 +34,8 @@ display:
           total_pages: 0
           id: 0
           tags:
-            next: 'Nächste Seite ›'
-            previous: '‹ Vorherige Seite'
+            next: 'Next ›'
+            previous: '‹ Previous'
             first: '« Anfang'
             last: 'Ende »'
           expose:
@@ -52,11 +52,11 @@ display:
         options:
           submit_button: Anwenden
           reset_button: false
-          reset_button_label: Zurücksetzen
-          exposed_sorts_label: 'Sortieren nach'
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
           expose_sort_order: true
-          sort_asc_label: Aufsteigend
-          sort_desc_label: Absteigend
+          sort_asc_label: Asc
+          sort_desc_label: Desc
       access:
         type: perm
         options:
@@ -274,7 +274,7 @@ display:
       tags: {  }
   page_1:
     id: page_1
-    display_title: Seite
+    display_title: Page
     display_plugin: page
     position: 1
     display_options:

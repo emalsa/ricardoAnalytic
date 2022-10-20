@@ -1,5 +1,5 @@
 uuid: 60620254-85e2-4599-b554-e0216a2948ca
-langcode: en
+langcode: de
 status: true
 dependencies:
   module:
@@ -10,10 +10,11 @@ weight: 0
 module: ra_article
 callback: _process_article_status_cron
 scheduler:
-  id: simple
+  id: crontab
   configuration:
     rules:
-      - '*/5+@ * * * *'
+      - '*/2+@ * * * *'
+    catch_up: 0
 launcher:
   id: serial
   configuration:

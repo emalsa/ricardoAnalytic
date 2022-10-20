@@ -80,7 +80,7 @@ function _process_article_status_cron() {
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
     ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_SUCCESSFUL_FETCH)
-    ->range(0,500)
+    ->range(0, 500)
     ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
 
   $articleNids = $query->execute()->fetchAll();

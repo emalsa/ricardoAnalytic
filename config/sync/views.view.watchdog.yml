@@ -395,7 +395,7 @@ display:
           group_type: group
           admin_label: ''
           plugin_id: dblog_operations
-          label: Aktionen
+          label: Operations
           exclude: false
           alter:
             alter_text: false
@@ -459,11 +459,11 @@ display:
         options:
           submit_button: Filter
           reset_button: true
-          reset_button_label: Zurücksetzen
-          exposed_sorts_label: 'Sortieren nach'
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
           expose_sort_order: false
-          sort_asc_label: Aufsteigend
-          sort_desc_label: Absteigend
+          sort_asc_label: Asc
+          sort_desc_label: Desc
       access:
         type: perm
         options:
@@ -697,7 +697,7 @@ display:
       tags: {  }
   page:
     id: page
-    display_title: Seite
+    display_title: Page
     display_plugin: page
     position: 1
     display_options:

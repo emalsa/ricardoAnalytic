@@ -8,6 +8,10 @@ third_party_settings:
   menu_ui:
     available_menus: {  }
     parent: ''
+  node_revision_delete:
+    minimum_revisions_to_keep: 1
+    minimum_age_to_delete: 1
+    when_to_delete: 0
 name: Article
 type: article
 description: ''

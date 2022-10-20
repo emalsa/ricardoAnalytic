@@ -1,0 +1,30 @@
+uuid: 47538183-87a0-4684-bb9b-15f90623f3ad
+langcode: de
+status: true
+dependencies:
+  module:
+    - node_revision_delete
+title: 'Default cron handler'
+id: node_revision_delete_cron
+weight: 0
+module: node_revision_delete
+callback: node_revision_delete_cron
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '*/5+@ * * * *'
+    catch_up: 0
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000

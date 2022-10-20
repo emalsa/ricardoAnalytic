@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'a6c7d38b96cf2c2095f9c0fe8fdfc6471aa50e1f',
+        'reference' => '08995c15c636114679c7ad2a6ad6d283991f6ac9',
         'name' => 'ra/drupal-project',
         'dev' => true,
     ),
@@ -546,6 +546,15 @@
             'reference' => '8.x-3.3',
             'dev_requirement' => false,
         ),
+        'drupal/node_revision_delete' => array(
+            'pretty_version' => '1.0.0-rc5',
+            'version' => '1.0.0.0-RC5',
+            'type' => 'drupal-module',
+            'install_path' => __DIR__ . '/../../web/modules/contrib/node_revision_delete',
+            'aliases' => array(),
+            'reference' => '8.x-1.0-rc5',
+            'dev_requirement' => false,
+        ),
         'drupal/pathauto' => array(
             'pretty_version' => '1.11.0',
             'version' => '1.11.0.0',
@@ -1024,7 +1033,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'a6c7d38b96cf2c2095f9c0fe8fdfc6471aa50e1f',
+            'reference' => '08995c15c636114679c7ad2a6ad6d283991f6ac9',
             'dev_requirement' => false,
         ),
         'ralouphie/getallheaders' => array(
