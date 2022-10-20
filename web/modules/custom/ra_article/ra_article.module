@@ -50,7 +50,7 @@ function _change_article_status_cron(): void {
     ->accessCheck(FALSE)
     ->condition('type', 'article')
     ->range(0, 5000)
-    ->sort('changed','ASC');
+    ->notExists('field_article_reset');
   $articleNids = $entityQuery->execute();
 
   if (empty($articleNids)) {
