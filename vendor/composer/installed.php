@@ -5,7 +5,7 @@
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '08995c15c636114679c7ad2a6ad6d283991f6ac9',
+        'reference' => 'b4c29bb14d29abb7316e01e8a034aaf5f63ca0da',
         'name' => 'ra/drupal-project',
         'dev' => true,
     ),
@@ -1033,7 +1033,7 @@
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '08995c15c636114679c7ad2a6ad6d283991f6ac9',
+            'reference' => 'b4c29bb14d29abb7316e01e8a034aaf5f63ca0da',
             'dev_requirement' => false,
         ),
         'ralouphie/getallheaders' => array(
