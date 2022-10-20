@@ -159,10 +159,10 @@ function _delete_old_revision() {
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
-    ->range($start, 400);
+    ->range($start, 800);
   $articleNids = $query->execute()->fetchAll();
 
-  \Drupal::state()->set('start', $start - 400);
+  \Drupal::state()->set('start', $start - 800);
 
   if (empty($articleNids)) {
     return;

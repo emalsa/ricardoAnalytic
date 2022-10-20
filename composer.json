@@ -42,7 +42,8 @@
         "drupal/core-recommended": "^9",
         "drupal/core-composer-scaffold": "^9",
         "drupal/core-project-message": "^9",
-        "drupal/console": "^1.9"
+        "drupal/console": "^1.9",
+        "drupal/node_revision_delete": "^1.0@RC"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "3.*"
