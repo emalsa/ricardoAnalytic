@@ -50,7 +50,7 @@ function _change_article_status_cron(): void {
   $query = $database->select('node__field_article_end_date', 'ed');
   $query->fields('ed', ['entity_id'])
     ->condition('ed.field_article_end_date_value', $datetime, '<=')
-    ->condition('cm.moderation_state', 'open')
+    ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_OPEN)
     ->range(0, 10)
     ->join('content_moderation_state_field_data', 'cm', 'ed.entity_id=cm.content_entity_id');
 
