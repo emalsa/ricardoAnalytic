@@ -55,9 +55,8 @@ function _change_article_status_cron(): void {
   $database = \Drupal::database();
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
-    ->condition('cm.moderation_state', 'to_scrape')
-    ->range(0, 5000)
-    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
+    ->condition('n.type', 'sale')
+    ->range(0, 2000);
 
   $articleNids = $query->execute()->fetchAll();
 
@@ -67,11 +66,7 @@ function _change_article_status_cron(): void {
 
   foreach ($articleNids as $nid) {
     $article = Node::load($nid->nid);
-    $article->set('field_article_reset', TRUE);
-    $article->set('moderation_state', ArticleDetailFetchService::STATE_OPEN);
-    $article->setRevisionLogMessage('Reset, changed to ' . ArticleDetailFetchService::STATE_OPEN);
-    $article->set('field_article_scraping_attempts', 2);
-    $article->save();
+    $article->delete();
   }
 
   return;
