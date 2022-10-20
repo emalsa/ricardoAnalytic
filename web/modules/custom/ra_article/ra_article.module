@@ -145,4 +145,50 @@ function _process_article_status_cron() {
   }
 }
 
+/**
+ * Delete old revisions.
+ */
+function _delete_old_revision() {
+  $database = \Drupal::database();
+  $query = $database->select('node_field_data', 'n');
+  $query->fields('n', ['nid'])
+    ->condition('n.type', 'article')
+    ->orderBy('n.changed', 'DESC')
+    ->range(0, 10)
+    ->condition('cm.moderation_state', ArticleDetailFetchService::STATE_TO_SCRAPE)
+    ->join('content_moderation_state_field_data', 'cm', 'n.nid=cm.content_entity_id');
+
+  $articleNids = $query->execute()->fetchAll();
+  if (empty($articleNids)) {
+    return;
+  }
+
+  foreach ($articleNids as $nid) {
+    $article = Node::load($nid->nid);
+    if (!$article instanceof NodeInterface) {
+      \Drupal::logger('ra_article')->error('No entity in _delete_old_revision');
+    }
+
+    $vids = \Drupal::service('entity_type.manager')->getStorage('node')->revisionIds($article);
+    if (count($vids) <= 1) {
+      continue;
+    }
+
+    foreach ($vids as $vid) {
+      // Delete revision, except the loaded revision.
+      if ($article->getLoadedRevisionId() != $vid) {
+        try {
+          \Drupal::service('entity_type.manager')->getStorage('node')->deleteRevision($vid);
+        }
+        catch (\Exception $e) {
+          \Drupal::logger('ra_article')->error("Could not delete revision $vid of node $nid");
+          \Drupal::logger('ra_article')->error($e->getMessage());
+          continue;
+        }
+      }
+    }
+
+  }
+}
+
 

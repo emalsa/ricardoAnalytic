@@ -1,0 +1,30 @@
+uuid: c46b2de4-7a80-462b-b0ed-cfe9d90f5ee8
+langcode: en
+status: true
+dependencies:
+  module:
+    - ra_article
+title: 'Delete old revision'
+id: delete_old_revision
+weight: 0
+module: ra_article
+callback: _delete_old_revision
+scheduler:
+  id: crontab
+  configuration:
+    rules:
+      - '*/2+@ * * * *'
+    catch_up: 0
+launcher:
+  id: serial
+  configuration:
+    timeouts:
+      lock_timeout: 3600
+    launcher:
+      thread: 0
+logger:
+  id: database
+  configuration:
+    method: '3'
+    expire: 1209600
+    retain: 1000
