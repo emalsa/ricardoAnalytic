@@ -1,0 +1,23 @@
+uuid: dddf4882-1ec5-45ab-9513-a27443864425
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_field_article_cleanup
+    - node.type.article
+id: node.article.field_field_article_cleanup
+field_name: field_field_article_cleanup
+entity_type: node
+bundle: article
+label: Cleanup
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

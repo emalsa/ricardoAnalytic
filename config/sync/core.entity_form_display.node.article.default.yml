@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.article.field_article_remaining_quantity
     - field.field.node.article.field_article_scraping_attempts
     - field.field.node.article.field_article_seller_ref
+    - field.field.node.article.field_field_article_cleanup
     - node.type.article
     - workflows.workflow.editorial
   module:
@@ -103,6 +104,13 @@ content:
       match_limit: 10
       size: 60
       placeholder: ''
+    third_party_settings: {  }
+  field_field_article_cleanup:
+    type: boolean_checkbox
+    weight: 26
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   moderation_state:
     type: moderation_state_default

@@ -10,6 +10,7 @@ dependencies:
     - field.field.node.article.field_article_remaining_quantity
     - field.field.node.article.field_article_scraping_attempts
     - field.field.node.article.field_article_seller_ref
+    - field.field.node.article.field_field_article_cleanup
     - node.type.article
   module:
     - datetime
@@ -82,6 +83,16 @@ content:
       link: true
     third_party_settings: {  }
     weight: 101
+    region: content
+  field_field_article_cleanup:
+    type: boolean
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    weight: 108
     region: content
   links:
     settings: {  }

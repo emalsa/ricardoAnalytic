@@ -11,6 +11,7 @@ dependencies:
     - field.field.node.article.field_article_remaining_quantity
     - field.field.node.article.field_article_scraping_attempts
     - field.field.node.article.field_article_seller_ref
+    - field.field.node.article.field_field_article_cleanup
     - node.type.article
   module:
     - user
@@ -37,5 +38,6 @@ hidden:
   field_article_remaining_quantity: true
   field_article_scraping_attempts: true
   field_article_seller_ref: true
+  field_field_article_cleanup: true
   langcode: true
   search_api_excerpt: true
