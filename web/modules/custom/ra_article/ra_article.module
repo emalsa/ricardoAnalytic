@@ -158,7 +158,7 @@ function _delete_old_revision() {
   $query = $database->select('node_field_data', 'n');
   $query->fields('n', ['nid'])
     ->condition('n.type', 'article')
-    ->range($start, 2000);
+    ->range($start, 5000);
   \Drupal::state()->set('start', $start - 10000);
 
   if ($start <= 0) {
